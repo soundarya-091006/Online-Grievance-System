@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SafeReport | User Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #8b5cf6;
+            --accent: #ec4899;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+            --bg: #f8fafc;
+            --white: #ffffff;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+        }
+        
+        /* Topbar */
+        .topbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+        }
+        
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .logo-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
+        }
+        
+        .logo-icon svg {
+            width: 24px;
+            height: 24px;
+        }
+        
+        .logo-text {
+            font-size: 20px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+        
+        .search-box {
+            position: relative;
+        }
+        
+        .search-box input {
+            width: 300px;
+            padding: 10px 15px 10px 40px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            background: var(--white);
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+        
+        .search-box svg {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 18px;
+            height: 18px;
+            stroke: var(--text-light);
+        }
+        
+        .notification-icon {
+            position: relative;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: var(--white);
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .notification-icon:hover {
+            background: var(--bg);
+            transform: translateY(-2px);
+        }
+        
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--danger);
+            color: white;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 10px;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 15px;
+            border-radius: 12px;
+            background: var(--white);
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .user-menu:hover {
+            background: var(--bg);
+            transform: translateY(-2px);
+        }
+        
+        .user-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 14px;
+        }
+        
+        .user-info {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .user-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text);
+        }
+        
+        .user-role {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 70px;
+            bottom: 0;
+            width: 260px;
+            background: var(--white);
+            border-right: 1px solid var(--border);
+            padding: 30px 0;
+            overflow-y: auto;
+            z-index: 999;
+        }
+        
+        .sidebar-menu {
+            list-style: none;
+        }
+        
+        .menu-item {
+            margin: 5px 15px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+        
+        .menu-link {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 14px 18px;
+            color: black;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 500;
+            border-radius: 12px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+        
+        .menu-link::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 0 4px 4px 0;
+            transform: scaleY(0);
+            transition: transform 0.3s ease;
+        }
+        
+        .menu-link:hover {
+            color: var(--primary);
+            background: rgba(99, 102, 241, 0.05);
+            transform: translateX(5px);
+        }
+        
+        .menu-link.active {
+            color: var(--primary);
+            background: rgba(99, 102, 241, 0.1);
+            font-weight: 600;
+        }
+        
+        .menu-link.active::before {
+            transform: scaleY(1);
+        }
+        
+        .menu-icon {
+            width: 22px;
+            height: 22px;
+            stroke-width: 2;
+        }
+        
+        .menu-badge {
+            margin-left: auto;
+            background: var(--danger);
+            color: white;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 10px;
+        }
+        
+        /* Main Content */
+        .main-content {
+            margin-left: 260px;
+            margin-top: 70px;
+            padding: 30px;
+            min-height: calc(100vh - 70px);
+        }
+        
+        .page-header {
+            margin-bottom: 35px;
+            animation: fadeInUp 0.6s ease;
+        }
+        
+        .page-title {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+        
+        .page-subtitle {
+            font-size: 15px;
+            color: var(--text-light);
+        }
+        
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 25px;
+            margin-bottom: 35px;
+        }
+        
+        .stat-card {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 28px;
+            border: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            animation: fadeInUp 0.6s ease;
+            animation-fill-mode: both;
+        }
+        
+        .stat-card:nth-child(1) { animation-delay: 0.1s; }
+        .stat-card:nth-child(2) { animation-delay: 0.2s; }
+        .stat-card:nth-child(3) { animation-delay: 0.3s; }
+        .stat-card:nth-child(4) { animation-delay: 0.4s; }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+        }
+        
+        .stat-card:hover::before {
+            transform: scaleX(1);
+        }
+        
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+        
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+        
+        .stat-card:nth-child(1) .stat-icon {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(139, 92, 246, 0.15));
+        }
+        
+        .stat-card:nth-child(2) .stat-icon {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(251, 191, 36, 0.15));
+        }
+        
+        .stat-card:nth-child(3) .stat-icon {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(52, 211, 153, 0.15));
+        }
+        
+        .stat-card:nth-child(4) .stat-icon {
+            background: linear-gradient(135deg, rgba(236, 72, 153, 0.15), rgba(219, 39, 119, 0.15));
+        }
+        
+        .stat-trend {
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 8px;
+        }
+        
+        .trend-up {
+            color: var(--success);
+            background: rgba(16, 185, 129, 0.1);
+        }
+        
+        .trend-down {
+            color: var(--danger);
+            background: rgba(239, 68, 68, 0.1);
+        }
+        
+        .stat-number {
+            font-size: 36px;
+            font-weight: 800;
+            color: var(--text);
+            margin-bottom: 5px;
+            line-height: 1;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: var(--text-light);
+            font-weight: 500;
+        }
+        
+        /* Quick Actions */
+        .quick-actions {
+            margin-bottom: 35px;
+            animation: fadeInUp 0.6s ease 0.3s both;
+        }
+        
+        .section-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 20px;
+        }
+        
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        
+        .action-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 25px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .action-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
+            border-color: var(--primary);
+        }
+        
+        .action-icon {
+            width: 55px;
+            height: 55px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
+        }
+        
+        .action-content h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 5px;
+        }
+        
+        .action-content p {
+            font-size: 13px;
+            color: var(--text-light);
+        }
+        
+        /* Recent Complaints */
+        .recent-section {
+            animation: fadeInUp 0.6s ease 0.4s both;
+        }
+        
+        .table-card {
+            background: var(--white);
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+        }
+        
+        .table-header {
+            padding: 25px 30px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .table-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text);
+        }
+        
+        .filter-btn {
+            padding: 8px 18px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            background: var(--white);
+            color: var(--text);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .filter-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            background: rgba(99, 102, 241, 0.05);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        thead {
+            background: var(--bg);
+        }
+        
+        th {
+            padding: 18px 30px;
+            text-align: left;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        td {
+            padding: 20px 30px;
+            border-top: 1px solid var(--border);
+            font-size: 14px;
+            color: var(--text);
+        }
+        
+        tbody tr {
+            transition: all 0.3s ease;
+        }
+        
+        tbody tr:hover {
+            background: var(--bg);
+        }
+        
+        .complaint-id {
+            font-weight: 600;
+            color: var(--primary);
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .status-new {
+            background: rgba(59, 130, 246, 0.1);
+            color: #1e40af;
+        }
+        
+        .status-progress {
+            background: rgba(245, 158, 11, 0.1);
+            color: #92400e;
+        }
+        
+        .status-resolved {
+            background: rgba(16, 185, 129, 0.1);
+            color: #065f46;
+        }
+        
+        .priority-high {
+            color: var(--danger);
+            font-weight: 600;
+        }
+        
+        .priority-medium {
+            color: var(--warning);
+            font-weight: 600;
+        }
+        
+        .priority-low {
+            color: var(--text-light);
+            font-weight: 600;
+        }
+        
+        .action-btn {
+            padding: 6px 16px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--white);
+            color: var(--text);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .action-btn:hover {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border-color: transparent;
+            transform: translateY(-2px);
+        }
+        
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .actions-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .search-box input {
+                width: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Topbar -->
+    <div class="topbar">
+        <div class="logo-section">
+            <div class="logo-icon">
+                <svg viewBox="0 0 24 24" fill="none">
+                    <defs>
+                        <linearGradient id="shieldGrad" x1="0" y1="0" x2="1" y2="1">
+                            <stop offset="0%" stop-color="#6366f1"/>
+                            <stop offset="100%" stop-color="#8b5cf6"/>
+                        </linearGradient>
+                    </defs>
+                    <path d="M12 2L4 5V11C4 16 7.5 20 12 22C16.5 20 20 16 20 11V5L12 2Z"
+                        fill="url(#shieldGrad)"/>
+                    <path d="M9.5 12.5L11 14L14.5 10.5"
+                        stroke="white"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"/>
+                </svg>
+            </div>
+            <span class="logo-text">SafeReport</span>
+        </div>
+        
+        <div class="topbar-right">
+            <div class="search-box">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <circle cx="11" cy="11" r="8"/>
+                    <path d="M21 21l-4.35-4.35"/>
+                </svg>
+                <input type="text" placeholder="Search complaints...">
+            </div>
+            
+            <div class="notification-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                </svg>
+                <span class="notification-badge">3</span>
+            </div>
+            
+            <div class="user-menu">
+                <div class="user-avatar">JD</div>
+                <div class="user-info">
+                    <div class="user-name">Jane Doe</div>
+                    <div class="user-role">User</div>
+                </div>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="6 9 12 15 18 9"/>
+                </svg>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <ul class="sidebar-menu">
+            <li class="menu-item">
+                <a href="#" class="menu-link active">
+                    <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <rect x="3" y="3" width="7" height="7"/>
+                        <rect x="14" y="3" width="7" height="7"/>
+                        <rect x="14" y="14" width="7" height="7"/>
+                        <rect x="3" y="14" width="7" height="7"/>
+                    </svg>
+                    Dashboard
+                </a>
+            </li>
+            <li class="menu-item">
+                <a href="submit-complaint.html" class="menu-link">
+                    <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <circle cx="12" cy="12" r="10"/>
+                        <line x1="12" y1="8" x2="12" y2="12"/>
+                        <line x1="12" y1="16" x2="12.01" y2="16"/>
+                    </svg>
+                    Submit Complaint
+                </a>
+            </li>
+            <li class="menu-item">
+                <a href="#" class="menu-link">
+                    <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                        <polyline points="14 2 14 8 20 8"/>
+                    </svg>
+                    My Complaints
+                </a>
+            </li>
+            <li class="menu-item">
+                <a href="user-tracking.html" class="menu-link">
+                    <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+                    </svg>
+                    Track Status
+                </a>
+            </li>
+            <li class="menu-item">
+                <a href="#" class="menu-link">
+                    <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                        <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                    </svg>
+                    Notifications
+                    <span class="menu-badge">3</span>
+                </a>
+            </li>
+            <li class="menu-item">
+                <a href="#" class="menu-link">
+                    <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                        <circle cx="12" cy="7" r="4"/>
+                    </svg>
+                    My Profile
+                </a>
+            </li>
+            <li class="menu-item">
+                <a href="#" class="menu-link">
+                    <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <circle cx="12" cy="12" r="10"/>
+                        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+                        <line x1="12" y1="17" x2="12.01" y2="17"/>
+                    </svg>
+                    Help & Support
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title">Welcome back, Jane! 👋</h1>
+            <p class="page-subtitle">Here's what's happening with your complaints today</p>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon">📊</div>
+                    <!--<span class="stat-trend trend-up">↑ 12%</span>-->
+                </div>
+                <div class="stat-number">0</div>
+                <div class="stat-label">Total Complaints</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon">⏳</div>
+                    <!--<span class="stat-trend trend-up">↑ 8%</span>-->
+                </div>
+                <div class="stat-number">0</div>
+                <div class="stat-label">Pending Review</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon">✅</div>
+                    <!--<span class="stat-trend trend-up">↑ 25%</span>-->
+                </div>
+                <div class="stat-number">0</div>
+                <div class="stat-label">In Progress</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon">🎯</div>
+                    <!--<span class="stat-trend trend-up">↑ 15%</span>-->
+                </div>
+                <div class="stat-number">0</div>
+                <div class="stat-label">Resolved</div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+            <h2 class="section-title">Quick Actions</h2>
+            <div class="actions-grid">
+                <div class="action-card">
+                    <div class="action-icon">➕</div>
+                    <div class="action-content">
+                        <a href="submit-complaint.html" class="menu-link">New Complaint</a>
+                        <p>Submit a new complaint</p>
+                    </div>
+                </div>
+                
+                <div class="action-card">
+                    <div class="action-icon">📍</div>
+                    <div class="action-content">
+                        <a href="user-tracking.html" class="menu-link">Track Complaint</a>
+                        <p>View status updates</p>
+                    </div>
+                </div>
+                
+                <div class="action-card">
+                    <div class="action-icon">📎</div>
+                    <div class="action-content">
+                        <h3>Upload Evidence</h3>
+                        <p>Add supporting documents</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Complaints -->
+        <div class="recent-section">
+            <h2 class="section-title">Recent Complaints</h2>
+            <div class="table-card">
+                <div class="table-header">
+                    <div class="table-title">Your Complaints</div>
+                    <div style="position: relative;">
+    <button class="filter-btn" onclick="toggleFilter()">
+        <span>Filter</span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: inline; vertical-align: middle; margin-left: 5px;">
+            <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>
+        </svg>
+    </button>
+
+    <div id="filterPanel" style="
+        position:absolute;
+        right:0;
+        top:45px;
+        width:220px;
+        background:white;
+        border:1px solid var(--border);
+        border-radius:14px;
+        padding:18px;
+        box-shadow:0 15px 35px rgba(0,0,0,0.08);
+        display:none;
+        z-index:100;
+    ">
+        <label style="font-size:13px;font-weight:600;">Status</label>
+        <select id="statusFilter" style="width:100%;margin:8px 0 15px;padding:8px;border:1px solid var(--border);border-radius:8px;">
+            <option value="">All</option>
+            <option value="NEW">NEW</option>
+            <option value="IN PROGRESS">IN PROGRESS</option>
+            <option value="RESOLVED">RESOLVED</option>
+        </select>
+
+        <label style="font-size:13px;font-weight:600;">Priority</label>
+        <select id="priorityFilter" style="width:100%;margin:8px 0 15px;padding:8px;border:1px solid var(--border);border-radius:8px;">
+            <option value="">All</option>
+            <option value="HIGH">HIGH</option>
+            <option value="MEDIUM">MEDIUM</option>
+            <option value="LOW">LOW</option>
+        </select>
+
+        <button onclick="applyFilter()" class="filter-btn" style="width:100%;margin-bottom:8px;">Apply</button>
+        <button onclick="resetFilter()" class="filter-btn" style="width:100%;">Reset</button>
+    </div>
+</div>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Subject</th>
+                            <th>Category</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th>Priority</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <!--<tbody>
+                        <tr>
+                            <td class="complaint-id">#C001</td>
+                            <td>Workplace harassment incident</td>
+                            <td>Sexual Harassment</td>
+                            <td>Jan 15, 2024</td>
+                            <td><span class="status-badge status-new">NEW</span></td>
+                            <td class="priority-high">HIGH</td>
+                            <td><button class="action-btn">View Details</button></td>
+                        </tr>
+                        <tr>
+                            <td class="complaint-id">#C002</td>
+                            <td>Verbal abuse in public place</td>
+                            <td>Verbal Abuse</td>
+                            <td>Jan 14, 2024</td>
+                            <td><span class="status-badge status-progress">IN PROGRESS</span></td>
+                            <td class="priority-medium">MEDIUM</td>
+                            <td><button class="action-btn">View Details</button></td>
+                        </tr>
+                        <tr>
+                            <td class="complaint-id">#C003</td>
+                            <td>Stalking case investigation</td>
+                            <td>Stalking</td>
+                            <td>Jan 10, 2024</td>
+                            <td><span class="status-badge status-resolved">RESOLVED</span></td>
+                            <td class="priority-high">HIGH</td>
+                            <td><button class="action-btn">View Details</button></td>
+                        </tr>
+                        <tr>
+                            <td class="complaint-id">#C004</td>
+                            <td>Inappropriate behavior</td>
+                            <td>Misconduct</td>
+                            <td>Jan 8, 2024</td>
+                            <td><span class="status-badge status-progress">IN PROGRESS</span></td>
+                            <td class="priority-low">LOW</td>
+                            <td><button class="action-btn">View Details</button></td>
+                        </tr>
+                    </tbody>-->
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Smooth animations on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+        
+        // Observe all animated elements
+        document.querySelectorAll('.stat-card, .action-card, .table-card').forEach(el => {
+            observer.observe(el);
+        });
+        function toggleFilter(){
+    const panel = document.getElementById("filterPanel");
+    panel.style.display = panel.style.display === "block" ? "none" : "block";
+}
+
+function applyFilter(){
+    const status = document.getElementById("statusFilter").value;
+    const priority = document.getElementById("priorityFilter").value;
+
+    const rows = document.querySelectorAll("tbody tr");
+
+    rows.forEach(row => {
+        const rowStatus = row.querySelector(".status-badge").innerText.trim();
+        const rowPriority = row.querySelector("td:nth-child(6)").innerText.trim();
+
+        const statusMatch = status === "" || rowStatus === status;
+        const priorityMatch = priority === "" || rowPriority === priority;
+
+        if(statusMatch && priorityMatch){
+            row.style.display = "";
+        } else {
+            row.style.display = "none";
+        }
+    });
+
+    toggleFilter();
+}
+
+function resetFilter(){
+    document.getElementById("statusFilter").value = "";
+    document.getElementById("priorityFilter").value = "";
+
+    document.querySelectorAll("tbody tr").forEach(row => {
+        row.style.display = "";
+    });
+
+    toggleFilter();
+}
+
+/* ================= LOAD CURRENT USER ================= */
+
+window.addEventListener("load", function(){
+
+    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+
+    if(currentUser){
+
+        document.querySelector(".user-name").innerText = currentUser.fullname;
+        document.querySelector(".user-role").innerText = currentUser.role;
+
+        const initials = currentUser.fullname
+            .split(" ")
+            .map(n => n[0])
+            .join("")
+            .toUpperCase();
+
+        document.querySelector(".user-avatar").innerText = initials;
+
+    } else {
+        window.location.href = "login.html";
+    }
+
+});
+
+/* ================= LOAD USER COMPLAINTS ================= */
+
+window.addEventListener("load", function(){
+
+    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+    const complaints = JSON.parse(localStorage.getItem("complaints")) || [];
+
+    const userComplaints = complaints.filter(c => 
+        c.userEmail === currentUser.email
+    );
+
+    const table = document.querySelector("table");
+    const tbody = document.createElement("tbody");
+
+    userComplaints.forEach(c => {
+
+        const row = document.createElement("tr");
+
+        row.innerHTML = `
+            <td class="complaint-id">#${c.id}</td>
+            <td>${c.subject}</td>
+            <td>${c.category}</td>
+            <td>${c.date}</td>
+            <td><span class="status-badge status-new">${c.status}</span></td>
+            <td class="priority-${c.priority.toLowerCase()}">${c.priority}</td>
+            <td><button class="action-btn">View</button></td>
+        `;
+
+        tbody.appendChild(row);
+    });
+
+    table.appendChild(tbody);
+});
+
+    </script>
+</body>
+</html>

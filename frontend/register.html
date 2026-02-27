@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SafeReport | Register</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root{
+--primary:#6366f1;
+--secondary:#8b5cf6;
+--success:#10b981;
+--danger:#ef4444;
+--warning:#f59e0b;
+--text:#1e293b;
+--border:#e2e8f0;
+--bg:#f8fafc;
+}
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Inter',sans-serif;
+}
+
+body{
+height:100vh;
+background:var(--bg);
+display:flex;
+justify-content:center;
+align-items:center;
+}
+
+.register-container{
+width:520px;
+background:white;
+padding:45px;
+border-radius:24px;
+box-shadow:0 25px 70px rgba(0,0,0,0.08);
+}
+
+.logo-box{
+width:75px;
+height:75px;
+margin:0 auto 15px;
+border-radius:18px;
+background:linear-gradient(135deg,var(--primary),var(--secondary));
+display:flex;
+align-items:center;
+justify-content:center;
+}
+
+.logo-box svg{
+width:38px;
+height:38px;
+stroke:white;
+}
+
+h1{
+text-align:center;
+color:var(--text);
+}
+
+.subtitle{
+text-align:center;
+color:#64748b;
+margin-bottom:25px;
+}
+
+.role-options{
+display:flex;
+gap:12px;
+margin-bottom:25px;
+}
+
+.role-card{
+flex:1;
+padding:20px 10px;
+border:2px solid var(--border);
+border-radius:16px;
+text-align:center;
+cursor:pointer;
+transition:.3s;
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+gap:8px;
+}
+
+.role-card svg{
+width:28px;
+height:28px;
+stroke:var(--primary);
+}
+
+.role-label{
+font-size:14px;
+font-weight:500;
+color:var(--text);
+}
+
+.role-card.active{
+border-color:var(--primary);
+background:rgba(99,102,241,0.08);
+}
+
+.role-card.active .role-label{
+color:var(--primary);
+font-weight:600;
+}
+
+.form-group{
+margin-bottom:18px;
+}
+
+label{
+display:block;
+font-size:14px;
+margin-bottom:6px;
+color:var(--text);
+}
+
+input{
+width:100%;
+padding:12px;
+border-radius:10px;
+border:1px solid var(--border);
+outline:none;
+transition:.3s;
+}
+
+input:focus{
+border-color:var(--primary);
+box-shadow:0 0 0 3px rgba(99,102,241,0.15);
+}
+
+.password-wrapper{
+position:relative;
+}
+
+.password-wrapper input{
+padding-right:45px;
+}
+
+.password-wrapper svg{
+position:absolute;
+right:12px;
+top:50%;
+transform:translateY(-50%);
+width:18px;
+height:18px;
+cursor:pointer;
+stroke:#64748b;
+}
+
+.password-feedback{
+display:none;
+}
+
+.password-feedback.active{
+display:block;
+margin-top:8px;
+}
+
+.password-rules{
+list-style:none;
+font-size:12px;
+color:#64748b;
+margin-top:5px;
+}
+
+.password-rules li{
+margin-bottom:4px;
+}
+
+.password-rules li.valid{
+color:var(--success);
+font-weight:500;
+}
+
+.caps-warning{
+font-size:12px;
+color:var(--danger);
+margin-top:5px;
+display:none;
+}
+
+.register-btn{
+width:100%;
+padding:13px;
+border:none;
+border-radius:12px;
+background:linear-gradient(135deg,var(--primary),var(--secondary));
+color:white;
+font-weight:600;
+cursor:pointer;
+margin-top:10px;
+}
+
+.register-text{
+margin-top:18px;
+text-align:center;
+font-size:14px;
+color:#64748b;
+}
+
+.register-text a{
+color:var(--primary);
+text-decoration:none;
+font-weight:500;
+}
+
+.toast{
+position:fixed;
+top:20px;
+right:20px;
+background:var(--primary);
+color:white;
+padding:12px 18px;
+border-radius:10px;
+opacity:0;
+transition:.4s;
+}
+
+.toast.show{
+opacity:1;
+}
+</style>
+</head>
+
+<body>
+
+<div class="register-container">
+
+<div class="logo-box">
+<svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+<path d="M12 2L4 7v5c0 5 3.5 8 8 10 4.5-2 8-5 8-10V7l-8-5z"/>
+</svg>
+</div>
+
+<h1>Create Account</h1>
+<div class="subtitle">Register for your SafeReport account</div>
+
+<div class="role-options">
+<div class="role-card active" onclick="selectRole(this,'User')">
+<svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+<circle cx="12" cy="7" r="4"/>
+<path d="M5.5 21a6.5 6.5 0 0 1 13 0"/>
+</svg>
+<span class="role-label">User</span>
+</div>
+
+<div class="role-card" onclick="selectRole(this,'Admin')">
+<svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+<path d="M12 2L4 7v5c0 5 3.5 8 8 10 4.5-2 8-5 8-10V7l-8-5z"/>
+</svg>
+<span class="role-label">Admin</span>
+</div>
+
+<div class="role-card" onclick="selectRole(this,'Authority')">
+<svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+<path d="M12 2L4 7v5c0 5 3.5 8 8 10 4.5-2 8-5 8-10V7l-8-5z"/>
+<path d="M9 12l2 2 4-4"/>
+</svg>
+<span class="role-label">Authority</span>
+</div>
+</div>
+
+<form id="registerForm">
+
+<div class="form-group">
+<label>Full Name</label>
+<input type="text" id="fullname" placeholder="Enter your full name">
+</div>
+
+<div class="form-group">
+<label>Email</label>
+<input type="text" id="email" placeholder="Enter your email">
+</div>
+
+<div class="form-group">
+<label>Phone Number</label>
+<input type="text" id="phone" placeholder="Enter your phone number">
+</div>
+
+<div class="form-group">
+<label>Password</label>
+<div class="password-wrapper">
+<input type="password" id="password" placeholder="Create a password"
+onfocus="showChecklist()" onkeyup="checkRules(event)">
+<svg onclick="togglePassword()" viewBox="0 0 24 24" fill="none" stroke-width="2">
+<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"/>
+<circle cx="12" cy="12" r="3"/>
+</svg>
+</div>
+
+<div class="password-feedback" id="passwordFeedback">
+<ul class="password-rules">
+<li id="ruleLength">Minimum 6 characters</li>
+<li id="ruleUpper">At least 1 uppercase letter</li>
+<li id="ruleNumber">At least 1 number</li>
+<li id="ruleSpecial">At least 1 special character</li>
+</ul>
+<div class="caps-warning" id="capsWarning">Caps Lock is ON</div>
+</div>
+</div>
+
+<div class="form-group">
+<label>Confirm Password</label>
+<div class="password-wrapper">
+<input type="password" id="confirmPassword" placeholder="Re-enter your password">
+<svg onclick="toggleConfirmPassword()" viewBox="0 0 24 24" fill="none" stroke-width="2">
+<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"/>
+<circle cx="12" cy="12" r="3"/>
+</svg>
+</div>
+</div>
+
+<button class="register-btn">REGISTER</button>
+
+</form>
+
+<div class="register-text">
+Already have an account? <a href="login.html">Login here</a>
+</div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+let selectedRole="User";
+
+function selectRole(el,role){
+document.querySelectorAll(".role-card").forEach(card=>card.classList.remove("active"));
+el.classList.add("active");
+selectedRole=role;
+}
+
+function togglePassword(){
+const input=document.getElementById("password");
+input.type=input.type==="password"?"text":"password";
+}
+
+function toggleConfirmPassword(){
+const input=document.getElementById("confirmPassword");
+input.type=input.type==="password"?"text":"password";
+}
+
+function showChecklist(){
+document.getElementById("passwordFeedback").classList.add("active");
+}
+
+function checkRules(e){
+const pwd=document.getElementById("password").value;
+
+document.getElementById("ruleLength").classList.toggle("valid",pwd.length>=6);
+document.getElementById("ruleUpper").classList.toggle("valid",/[A-Z]/.test(pwd));
+document.getElementById("ruleNumber").classList.toggle("valid",/[0-9]/.test(pwd));
+document.getElementById("ruleSpecial").classList.toggle("valid",/[^A-Za-z0-9]/.test(pwd));
+
+if(e.getModifierState && e.getModifierState("CapsLock")){
+document.getElementById("capsWarning").style.display="block";
+}else{
+document.getElementById("capsWarning").style.display="none";
+}
+}
+
+function showToast(message){
+const toast=document.getElementById("toast");
+toast.innerText=message;
+toast.classList.add("show");
+setTimeout(()=>toast.classList.remove("show"),3000);
+}
+
+/* ================= REGISTER USER STORAGE ================= */
+
+document.getElementById("registerForm").addEventListener("submit", function(e){
+    e.preventDefault();
+
+    const fullname = document.getElementById("fullname").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const phone = document.getElementById("phone").value.trim();
+    const password = document.getElementById("password").value;
+    const confirmPassword = document.getElementById("confirmPassword").value;
+
+    if(!fullname || !email || !phone || !password){
+        showToast("Please fill all fields");
+        return;
+    }
+
+    if(password !== confirmPassword){
+        showToast("Passwords do not match");
+        return;
+    }
+
+    let users = JSON.parse(localStorage.getItem("users")) || [];
+
+    const userExists = users.find(user => user.email === email);
+
+    if(userExists){
+        showToast("User already registered");
+        return;
+    }
+
+    const newUser = {
+        fullname,
+        email,
+        phone,
+        password,
+        role: selectedRole
+    };
+
+    users.push(newUser);
+    localStorage.setItem("users", JSON.stringify(users));
+
+    showToast("Registration Successful");
+
+    setTimeout(()=>{
+        window.location.href = "login.html";
+    },1500);
+});
+
+</script>
+
+</body>
+</html>
