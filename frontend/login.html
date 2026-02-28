@@ -459,9 +459,9 @@ else {
 /* ================= ROLE BASED REDIRECT ================= */
 function redirectToDashboard(role) {
   switch (role.toLowerCase()) {
-    case "user":      window.location.href = "user-dashboard.html";      break;
-    case "admin":     window.location.href = "admin-dashboard.html";     break;
-    case "authority": window.location.href = "authority-dashboard.html"; break;
+    case "user":      window.location.href = "user/user-dashboard.html";      break;
+    case "admin":     window.location.href = "admin/admin-dashboard.html";     break;
+    case "authority": window.location.href = "authority/authority-dashboard.html"; break;
     default:          window.location.href = "index.html";
   }
 }

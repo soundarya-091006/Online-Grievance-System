@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SafeReport | Evidence Repository</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        /* BASE CSS OMITTED FOR BREVITY */
+        :root { --primary: #6366f1; --primary-dark: #4f46e5; --text: #1e293b; --text-light: #64748b; --border: #e2e8f0; --bg: #f8fafc; --white: #ffffff; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); margin:0; }
+        .topbar { position: fixed; top: 0; left: 0; right: 0; height: 70px; background: rgba(255, 255, 255, 0.95); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 30px; }
+        .main-content { margin-top: 70px; padding: 30px; max-width: 1400px; margin: 70px auto 0; }
+        
+        .toolbar { display: flex; justify-content: space-between; align-items: center; background: var(--white); padding: 20px; border-radius: 16px; border: 1px solid var(--border); margin-bottom: 30px; }
+        .search-input { padding: 10px 15px; border: 1px solid var(--border); border-radius: 8px; width: 300px; outline:none; }
+        .btn { padding: 10px 20px; border-radius: 8px; border:none; cursor: pointer; font-weight:600; }
+        .btn-primary { background: var(--primary); color: white; }
+        
+        /* File Grid */
+        .file-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
+        .file-card { background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 20px; text-align: center; transition: all 0.2s; position: relative; }
+        .file-card:hover { border-color: var(--primary); box-shadow: 0 10px 20px rgba(99,102,241,0.1); transform: translateY(-3px); }
+        .file-icon { font-size: 48px; margin-bottom: 15px; }
+        .file-name { font-size: 14px; font-weight: 600; margin-bottom: 5px; word-break: break-all;}
+        .file-meta { font-size: 12px; color: var(--text-light); margin-bottom: 15px; }
+        .case-tag { position: absolute; top: 10px; right: 10px; background: var(--bg); font-size: 11px; padding: 4px 8px; border-radius: 6px; font-weight: 600; border: 1px solid var(--border); }
+        
+        .file-actions { display: flex; gap: 10px; justify-content: center; border-top: 1px solid var(--border); padding-top: 15px; }
+        .action-icon { padding: 6px 12px; font-size: 12px; background: var(--bg); border-radius: 6px; text-decoration: none; color: var(--text); font-weight:600; }
+        .action-icon:hover { background: var(--border); }
+    </style>
+</head>
+<body>
+    <div class="topbar">
+        <h2 style="color:var(--primary); font-weight:800;">SafeReport | Evidence Room</h2>
+    </div>
+
+    <div class="main-content">
+        <div style="margin-bottom: 30px;">
+            <h1 style="font-size:32px; font-weight:800;">Evidence Repository 🗂️</h1>
+            <p style="color:var(--text-light)">Secure storage for all case-related documents and media.</p>
+        </div>
+
+        <div class="toolbar">
+            <div style="display:flex; gap:15px;">
+                <input type="text" class="search-input" placeholder="Search by filename or Case ID...">
+                <select class="search-input" style="width:150px;">
+                    <option>All File Types</option>
+                    <option>PDF Documents</option>
+                    <option>Images</option>
+                    <option>Videos</option>
+                </select>
+            </div>
+            <button class="btn btn-primary">+ Upload Evidence</button>
+        </div>
+
+        <div class="file-grid">
+            <div class="file-card">
+                <div class="case-tag">#C001</div>
+                <div class="file-icon">📄</div>
+                <div class="file-name">harassment_complaint_letter.pdf</div>
+                <div class="file-meta">2.4 MB • Uploaded Jan 15, 2024</div>
+                <div class="file-actions">
+                    <a href="#" class="action-icon">👁️ Preview</a>
+                    <a href="#" class="action-icon">⬇️ Download</a>
+                </div>
+            </div>
+            
+            <div class="file-card">
+                <div class="case-tag">#C002</div>
+                <div class="file-icon">🖼️</div>
+                <div class="file-name">incident_screenshot_01.png</div>
+                <div class="file-meta">856 KB • Uploaded Jan 14, 2024</div>
+                <div class="file-actions">
+                    <a href="#" class="action-icon">👁️ Preview</a>
+                    <a href="#" class="action-icon">⬇️ Download</a>
+                </div>
+            </div>
+
+            <div class="file-card">
+                <div class="case-tag">#C003</div>
+                <div class="file-icon">🎥</div>
+                <div class="file-name">cctv_footage_lobby.mp4</div>
+                <div class="file-meta">45.2 MB • Uploaded Jan 10, 2024</div>
+                <div class="file-actions">
+                    <a href="#" class="action-icon">👁️ Preview</a>
+                    <a href="#" class="action-icon">⬇️ Download</a>
+                </div>
+            </div>
+            
+            <div class="file-card">
+                <div class="case-tag">#C001</div>
+                <div class="file-icon">📑</div>
+                <div class="file-name">witness_statement_signed.docx</div>
+                <div class="file-meta">1.1 MB • Uploaded Jan 16, 2024</div>
+                <div class="file-actions">
+                    <a href="#" class="action-icon">👁️ Preview</a>
+                    <a href="#" class="action-icon">⬇️ Download</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    /* --- REAL-TIME SEARCH & FILTER LOGIC --- */
+    const searchInput = document.querySelector('.search-input[type="text"]');
+    const typeSelect = document.querySelectorAll('.search-input')[1]; // The select dropdown
+    const fileCards = document.querySelectorAll('.file-card');
+
+    function filterEvidence() {
+        const searchTerm = searchInput.value.toLowerCase();
+        const selectedType = typeSelect.value;
+
+        fileCards.forEach(card => {
+            const fileName = card.querySelector('.file-name').innerText.toLowerCase();
+            const caseTag = card.querySelector('.case-tag').innerText.toLowerCase();
+            
+            // Text Match (checks both filename and case ID)
+            const matchesText = fileName.includes(searchTerm) || caseTag.includes(searchTerm);
+            
+            // Type Match
+            let matchesType = false;
+            if (selectedType === "All File Types") {
+                matchesType = true;
+            } else if (selectedType === "PDF Documents" && fileName.endsWith('.pdf')) {
+                matchesType = true;
+            } else if (selectedType === "Images" && (fileName.endsWith('.png') || fileName.endsWith('.jpg'))) {
+                matchesType = true;
+            } else if (selectedType === "Videos" && fileName.endsWith('.mp4')) {
+                matchesType = true;
+            } else if (selectedType === "Documents" && fileName.endsWith('.docx')) {
+                matchesType = true;
+            }
+
+            // Show or hide based on both conditions
+            if (matchesText && matchesType) {
+                card.style.display = "block";
+                card.style.opacity = "1";
+            } else {
+                card.style.display = "none";
+                card.style.opacity = "0";
+            }
+        });
+    }
+
+    // Attach event listeners
+    searchInput.addEventListener('input', filterEvidence);
+    typeSelect.addEventListener('change', filterEvidence);
+
+    /* --- ACTION BUTTON SIMULATORS --- */
+    document.querySelectorAll('.action-icon').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const action = this.innerText;
+            const filename = this.closest('.file-card').querySelector('.file-name').innerText;
+            alert(`Simulating ${action} for: ${filename}`);
+        });
+    });
+</script>
+
+</body>
+</html>

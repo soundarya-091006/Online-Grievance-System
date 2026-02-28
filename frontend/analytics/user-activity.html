@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SafeReport | User Activity</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        /* BASE CSS OMITTED FOR BREVITY - ASSUME SAME AS ABOVE */
+        :root { --primary: #6366f1; --primary-dark: #4f46e5; --secondary: #8b5cf6; --success: #10b981; --warning: #f59e0b; --danger: #ef4444; --text: #1e293b; --text-light: #64748b; --border: #e2e8f0; --bg: #f8fafc; --white: #ffffff; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); }
+        .topbar { position: fixed; top: 0; left: 0; right: 0; height: 70px; background: rgba(255, 255, 255, 0.95); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 30px; z-index: 1000; }
+        .logo-section { display: flex; align-items: center; gap: 15px; }
+        .logo-text { font-size: 20px; font-weight: 800; color: var(--primary); }
+        .main-content { margin-top: 70px; padding: 30px; max-width: 1400px; margin: 70px auto 0; }
+        .page-header { margin-bottom: 35px; }
+        .page-title { font-size: 32px; font-weight: 800; }
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; margin-bottom: 35px; }
+        .stat-card { background: var(--white); border-radius: 20px; padding: 28px; border: 1px solid var(--border); }
+        .stat-number { font-size: 36px; font-weight: 800; color: var(--text); }
+        .card { background: var(--white); border-radius: 20px; border: 1px solid var(--border); padding: 25px; margin-bottom: 30px;}
+        .card-header { font-size: 18px; font-weight: 700; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid var(--border); }
+        
+        /* Activity List */
+        .activity-list { display: flex; flex-direction: column; gap: 15px; }
+        .activity-item { display: flex; align-items: center; gap: 15px; padding: 15px; background: var(--bg); border-radius: 12px; }
+        .act-icon { width: 40px; height: 40px; border-radius: 50%; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; }
+        .act-details h4 { font-size: 14px; color: var(--text); }
+        .act-details p { font-size: 12px; color: var(--text-light); }
+        .act-time { margin-left: auto; font-size: 12px; color: var(--text-light); font-weight: 600; }
+    </style>
+</head>
+<body>
+    <div class="topbar">
+        <div class="logo-section"><span class="logo-text">SafeReport | Analytics</span></div>
+    </div>
+
+    <div class="main-content">
+        <div class="page-header">
+            <h1 class="page-title">User Activity & Engagement 👥</h1>
+            <p style="color:var(--text-light)">Monitor registration trends, active users, and system engagement.</p>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div style="color:var(--text-light); font-weight:600; margin-bottom:10px;">Total Registered Users</div>
+                <div class="stat-number">4,289</div>
+                <div style="color:var(--success); font-size:13px; margin-top:5px;">+124 this month</div>
+            </div>
+            <div class="stat-card">
+                <div style="color:var(--text-light); font-weight:600; margin-bottom:10px;">Daily Active Users (DAU)</div>
+                <div class="stat-number">856</div>
+                <div style="color:var(--success); font-size:13px; margin-top:5px;">+12% vs last week</div>
+            </div>
+            <div class="stat-card">
+                <div style="color:var(--text-light); font-weight:600; margin-bottom:10px;">Avg. Session Duration</div>
+                <div class="stat-number">4m 12s</div>
+                <div style="color:var(--danger); font-size:13px; margin-top:5px;">-15s vs last week</div>
+            </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 25px;">
+            <div class="card">
+                <div class="card-header">Recent System Activity</div>
+                <div class="activity-list">
+                    <div class="activity-item">
+                        <div class="act-icon" style="background:var(--success)">✓</div>
+                        <div class="act-details"><h4>Jane Doe resolved Complaint #C003</h4><p>Ethics Committee</p></div>
+                        <div class="act-time">2 mins ago</div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="act-icon" style="background:var(--primary)">+</div>
+                        <div class="act-details"><h4>New User Registration</h4><p>user123@email.com</p></div>
+                        <div class="act-time">15 mins ago</div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="act-icon" style="background:var(--warning)">!</div>
+                        <div class="act-details"><h4>Failed Login Attempt</h4><p>IP: 192.168.1.1</p></div>
+                        <div class="act-time">1 hour ago</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">Engagement Breakdown</div>
+                <div style="padding: 20px; background:var(--bg); border-radius:12px; margin-bottom:15px;">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:10px;"><strong>Web Portal Logins</strong> <span>65%</span></div>
+                    <div style="width:100%; height:8px; background:var(--border); border-radius:4px;"><div style="width:65%; height:100%; background:var(--primary); border-radius:4px;"></div></div>
+                </div>
+                <div style="padding: 20px; background:var(--bg); border-radius:12px; margin-bottom:15px;">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:10px;"><strong>Mobile App Logins</strong> <span>30%</span></div>
+                    <div style="width:100%; height:8px; background:var(--border); border-radius:4px;"><div style="width:30%; height:100%; background:var(--secondary); border-radius:4px;"></div></div>
+                </div>
+                <div style="padding: 20px; background:var(--bg); border-radius:12px;">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:10px;"><strong>API Access</strong> <span>5%</span></div>
+                    <div style="width:100%; height:8px; background:var(--border); border-radius:4px;"><div style="width:5%; height:100%; background:var(--text-light); border-radius:4px;"></div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    /* --- NUMBER COUNTING ANIMATION --- */
+    function animateValue(obj, start, end, duration) {
+        let startTimestamp = null;
+        const step = (timestamp) => {
+            if (!startTimestamp) startTimestamp = timestamp;
+            const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+            
+            // Format with commas if it's a large number
+            let currentValue = Math.floor(progress * (end - start) + start);
+            obj.innerHTML = currentValue.toLocaleString();
+            
+            if (progress < 1) {
+                window.requestAnimationFrame(step);
+            } else {
+                // Ensure exact final value is set
+                obj.innerHTML = end.toLocaleString(); 
+            }
+        };
+        window.requestAnimationFrame(step);
+    }
+
+    window.addEventListener('load', () => {
+        const statCards = document.querySelectorAll('.stat-number');
+        
+        // Animate Total Users
+        animateValue(statCards[0], 0, 4289, 1500);
+        
+        // Animate Daily Active Users
+        animateValue(statCards[1], 0, 856, 1500);
+        
+        // Skip animating the time string (4m 12s) to avoid complexity, 
+        // or write a custom time animator if needed.
+    });
+</script>
+
+</body>
+</html>

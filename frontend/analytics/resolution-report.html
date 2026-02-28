@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SafeReport | Resolution Report</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        /* --- BASE CSS (Imported from your template) --- */
+        :root { --primary: #6366f1; --primary-dark: #4f46e5; --secondary: #8b5cf6; --accent: #ec4899; --success: #10b981; --warning: #f59e0b; --danger: #ef4444; --text: #1e293b; --text-light: #64748b; --border: #e2e8f0; --bg: #f8fafc; --white: #ffffff; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; }
+        .topbar { position: fixed; top: 0; left: 0; right: 0; height: 70px; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 30px; z-index: 1000; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03); gap: 20px; }
+        .hamburger-btn { display: flex; background: none; border: none; cursor: pointer; padding: 8px; border-radius: 8px; transition: all 0.3s ease; }
+        .hamburger-btn:hover { background: var(--bg); }
+        .hamburger-btn svg { width: 24px; height: 24px; stroke: var(--text); stroke-width: 2; }
+        .logo-section { display: flex; align-items: center; gap: 15px; }
+        .logo-icon { width: 45px; height: 45px; border-radius: 12px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25); }
+        .logo-icon svg { width: 24px; height: 24px; }
+        .logo-text { font-size: 20px; font-weight: 800; background: linear-gradient(135deg, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .topbar-right { display: flex; align-items: center; gap: 25px; }
+        .user-menu { display: flex; align-items: center; gap: 12px; padding: 8px 15px; border-radius: 12px; background: var(--white); border: 1px solid var(--border); cursor: pointer; }
+        .user-avatar { width: 38px; height: 38px; border-radius: 10px; background: linear-gradient(135deg, var(--primary), var(--secondary)); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 14px; }
+        .user-info { display: flex; flex-direction: column; }
+        .user-name { font-size: 14px; font-weight: 600; color: var(--text); }
+        .user-role { font-size: 12px; color: var(--text-light); }
+        
+        .main-content { margin-left: 0; margin-top: 70px; padding: 30px; min-height: calc(100vh - 70px); max-width: 1400px; margin: 70px auto 0; }
+        .page-header { margin-bottom: 35px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;}
+        .page-title { font-size: 32px; font-weight: 800; color: var(--text); margin-bottom: 8px; }
+        .page-subtitle { font-size: 15px; color: var(--text-light); }
+        
+        .btn { padding: 10px 20px; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.3s; border: none; display: inline-flex; align-items: center; gap: 8px; }
+        .btn-primary { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; }
+        .btn-outline { background: white; border: 1px solid var(--border); color: var(--text); }
+        
+        /* Stats Grid */
+        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 25px; margin-bottom: 35px; }
+        .stat-card { background: var(--white); border-radius: 20px; padding: 28px; border: 1px solid var(--border); position: relative; overflow: hidden; transition: all 0.3s; }
+        .stat-card:hover { transform: translateY(-5px); box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05); }
+        .stat-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
+        .stat-icon { width: 50px; height: 50px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 24px; background: rgba(99,102,241,0.1); }
+        .stat-number { font-size: 32px; font-weight: 800; color: var(--text); margin-bottom: 5px; }
+        .stat-label { font-size: 14px; color: var(--text-light); font-weight: 500; }
+        
+        /* Report specific UI */
+        .content-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 25px; margin-bottom: 35px; }
+        .card { background: var(--white); border-radius: 20px; border: 1px solid var(--border); padding: 25px; }
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 15px; }
+        .card-title { font-size: 18px; font-weight: 700; color: var(--text); }
+        
+        /* Progress Bars */
+        .progress-item { margin-bottom: 20px; }
+        .progress-header { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px; font-weight: 600; }
+        .progress-track { width: 100%; height: 10px; background: var(--bg); border-radius: 10px; overflow: hidden; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, var(--primary), var(--secondary)); border-radius: 10px; }
+        
+        /* Table */
+        table { width: 100%; border-collapse: collapse; }
+        th { padding: 15px; text-align: left; font-size: 13px; font-weight: 600; color: var(--text-light); text-transform: uppercase; border-bottom: 1px solid var(--border); }
+        td { padding: 15px; border-bottom: 1px solid var(--border); font-size: 14px; }
+        
+        @media (max-width: 1024px) { .stats-grid, .content-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 768px) { .stats-grid, .content-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <div class="topbar">
+        <div class="logo-section">
+            <button class="hamburger-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+            <div class="logo-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2L4 5V11C4 16 7.5 20 12 22C16.5 20 20 16 20 11V5L12 2Z" fill="#6366f1"/></svg></div>
+            <span class="logo-text">SafeReport</span>
+        </div>
+        <div class="topbar-right">
+            <div class="user-menu">
+                <div class="user-avatar">AD</div>
+                <div class="user-info"><div class="user-name">Admin User</div><div class="user-role">System Admin</div></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="page-header">
+            <div>
+                <h1 class="page-title">Resolution Report 📈</h1>
+                <p class="page-subtitle">Analyze complaint resolution times, success rates, and bottlenecks.</p>
+            </div>
+            <div>
+                <button class="btn btn-outline">📅 Last 30 Days</button>
+                <button class="btn btn-primary">⬇ Export PDF</button>
+            </div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-header"><div class="stat-icon" style="color:var(--success); background:rgba(16,185,129,0.1)">✅</div></div>
+                <div class="stat-number">84.5%</div>
+                <div class="stat-label">Overall Resolution Rate</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-header"><div class="stat-icon" style="color:var(--warning); background:rgba(245,158,11,0.1)">⏱</div></div>
+                <div class="stat-number">4.2 Days</div>
+                <div class="stat-label">Avg. Resolution Time</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-header"><div class="stat-icon" style="color:var(--primary); background:rgba(99,102,241,0.1)">🎯</div></div>
+                <div class="stat-number">92%</div>
+                <div class="stat-label">SLA Compliance</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-header"><div class="stat-icon" style="color:var(--accent); background:rgba(236,72,153,0.1)">⭐</div></div>
+                <div class="stat-number">4.8/5</div>
+                <div class="stat-label">Satisfaction Score</div>
+            </div>
+        </div>
+
+        <div class="content-grid">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Resolution Rate by Category</h2>
+                </div>
+                <div class="card-body">
+                    <div class="progress-item">
+                        <div class="progress-header"><span>Harassment</span> <span>88% (124/140)</span></div>
+                        <div class="progress-track"><div class="progress-fill" style="width: 88%; background: var(--success)"></div></div>
+                    </div>
+                    <div class="progress-item">
+                        <div class="progress-header"><span>Workplace Misconduct</span> <span>75% (90/120)</span></div>
+                        <div class="progress-track"><div class="progress-fill" style="width: 75%; background: var(--warning)"></div></div>
+                    </div>
+                    <div class="progress-item">
+                        <div class="progress-header"><span>Fraud / Ethics</span> <span>95% (190/200)</span></div>
+                        <div class="progress-track"><div class="progress-fill" style="width: 95%; background: var(--primary)"></div></div>
+                    </div>
+                    <div class="progress-item">
+                        <div class="progress-header"><span>Safety Hazards</span> <span>60% (30/50)</span></div>
+                        <div class="progress-track"><div class="progress-fill" style="width: 60%; background: var(--danger)"></div></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Time to Resolve (Avg)</h2>
+                </div>
+                <div class="card-body" style="display: flex; flex-direction: column; gap: 20px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border); padding-bottom:10px;">
+                        <span style="font-weight:600">High Priority</span> <span style="color:var(--success); font-weight:700">1.2 Days</span>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border); padding-bottom:10px;">
+                        <span style="font-weight:600">Medium Priority</span> <span style="color:var(--warning); font-weight:700">3.5 Days</span>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <span style="font-weight:600">Low Priority</span> <span style="color:var(--text-light); font-weight:700">7.1 Days</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Authority Performance Metrics</h2>
+            </div>
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Authority / Department</th>
+                            <th>Assigned Cases</th>
+                            <th>Resolved</th>
+                            <th>Avg Resolve Time</th>
+                            <th>Success Rate</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>HR Department</strong></td>
+                            <td>145</td>
+                            <td>130</td>
+                            <td>3.1 Days</td>
+                            <td><span style="color:var(--success); font-weight:600">89%</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Ethics Committee</strong></td>
+                            <td>80</td>
+                            <td>76</td>
+                            <td>5.5 Days</td>
+                            <td><span style="color:var(--success); font-weight:600">95%</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Security Team</strong></td>
+                            <td>65</td>
+                            <td>40</td>
+                            <td>2.0 Days</td>
+                            <td><span style="color:var(--warning); font-weight:600">61%</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    /* --- NAVIGATION TOGGLES --- */
+    function toggleMenu() {
+            const dropdown = document.getElementById("hamburgerDropdown");
+            dropdown.classList.toggle("active");
+        }
+
+        function toggleUserMenu() {
+            const dropdown = document.getElementById("userMenuDropdown");
+            dropdown.classList.toggle("active");
+        }
+
+        function logoutUser() {
+            localStorage.removeItem("currentUser");
+            window.location.href = "../../login.html";
+        }
+
+        // Close menus on outside click
+        document.addEventListener("click", function(event) {
+            const hamburgerMenu = document.querySelector(".hamburger-menu");
+            const dropdown = document.getElementById("hamburgerDropdown");
+            const userMenu = document.querySelector(".user-menu");
+            const userMenuDropdown = document.getElementById("userMenuDropdown");
+            
+            if (!hamburgerMenu.contains(event.target)) {
+                dropdown.classList.remove("active");
+            }
+            if (!userMenu.contains(event.target)) {
+                userMenuDropdown.classList.remove("active");
+            }
+        });
+
+        // Smooth scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.stat-card, .chart-card').forEach(el => {
+            observer.observe(el);
+        });
+    
+    document.querySelector('.user-menu').addEventListener('click', function() {
+        // Toggle user dropdown
+        console.log("User menu clicked");
+    });
+
+    /* --- PROGRESS BAR ANIMATION --- */
+    window.addEventListener('load', () => {
+        const progressFills = document.querySelectorAll('.progress-fill');
+        
+        // Temporarily set to 0, then animate to target width
+        progressFills.forEach(fill => {
+            const targetWidth = fill.style.width;
+            fill.style.width = '0%';
+            fill.style.transition = 'width 1s cubic-bezier(0.4, 0, 0.2, 1)';
+            
+            setTimeout(() => {
+                fill.style.width = targetWidth;
+            }, 100);
+        });
+    });
+
+    /* --- EXPORT BUTTON SIMULATION --- */
+    document.querySelector('.btn-primary').addEventListener('click', function() {
+        const originalText = this.innerHTML;
+        this.innerHTML = '⏳ Generating PDF...';
+        this.style.opacity = '0.8';
+        this.style.pointerEvents = 'none';
+        
+        setTimeout(() => {
+            this.innerHTML = '✅ Download Complete';
+            this.style.background = 'var(--success)';
+            
+            setTimeout(() => {
+                this.innerHTML = originalText;
+                this.style.background = 'linear-gradient(135deg, var(--primary), var(--secondary))';
+                this.style.opacity = '1';
+                this.style.pointerEvents = 'auto';
+            }, 3000);
+        }, 1500);
+    });
+</script>
+
+</body>
+</html>

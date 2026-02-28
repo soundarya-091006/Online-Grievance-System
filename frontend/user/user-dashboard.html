@@ -906,7 +906,7 @@
             <div id="hamburgerDropdown" class="hamburger-menu-dropdown">
                 <ul class="sidebar-menu">
                     <li class="menu-item">
-                        <a href="#" class="menu-link active" onclick="closeMenu()">
+                        <a href="../user/user-dashboard.html" class="menu-link active" onclick="closeMenu()">
                             <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                                 <rect x="3" y="3" width="7" height="7"/>
                                 <rect x="14" y="3" width="7" height="7"/>
@@ -936,7 +936,7 @@
                         </a>
                     </li>
                     <li class="menu-item">
-                        <a href="#" class="menu-link" onclick="closeMenu()">
+                        <a href="user-profile.html" class="menu-link" onclick="closeMenu()">
                             <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
                                 <circle cx="12" cy="7" r="4"/>
@@ -945,7 +945,7 @@
                         </a>
                     </li>
                     <li class="menu-item">
-                        <a href="login.html" class="menu-link" onclick="logoutUser()">
+                        <a href="../login.html" class="menu-link" onclick="logoutUser()">
                             <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                                 <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
                                 <polyline points="16 17 21 12 16 7"/>
@@ -967,13 +967,13 @@
                 <input type="text" placeholder="Search complaints...">
             </div>
             
-            <div class="notification-icon">
+                <a href="../notifications/center.html" class="notification-icon">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
                     <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
                 </svg>
                 <span class="notification-badge">3</span>
-            </div>
+            </a>
             
             <div class="user-menu" onclick="toggleUserMenu()">
                 <div class="user-avatar">JD</div>
@@ -986,14 +986,14 @@
                 </svg>
                 
                 <div id="userMenuDropdown" class="user-menu-dropdown">
-                    <a href="user-profile.html" onclick="event.preventDefault();">
+                    <a href="user-profile.html" onclick="toggleUserMenu()">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
                             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
                             <circle cx="12" cy="7" r="4"/>
                         </svg>
                         My Profile
                     </a>
-                    <a href="login.html" onclick="logoutUser()">
+                    <a href="../login.html" onclick="logoutUser()">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
                             <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
                             <polyline points="16 17 21 12 16 7"/>
@@ -1266,7 +1266,7 @@ window.addEventListener("load", function(){
         document.querySelector(".user-avatar").innerText = initials;
 
     } else {
-        window.location.href = "login.html";
+        window.location.href = "../login.html";
     }
 
 });
@@ -1490,9 +1490,20 @@ function toggleUserMenu() {
 
 /* ================= LOGOUT FUNCTION ================= */
 
+document.addEventListener('DOMContentLoaded', () => {
+    const profileLink = document.querySelector('.user-menu-dropdown a[href="user-profile.html"]');
+    if (profileLink) {
+        profileLink.addEventListener('click', (e) => {
+            // Close dropdown first
+            document.getElementById("userMenuDropdown")?.classList.remove("active");
+            // Let normal navigation happen (no preventDefault)
+        });
+    }
+});
+
 function logoutUser() {
     localStorage.removeItem("currentUser");
-    window.location.href = "login.html";
+    window.location.href = "../login.html";
 }
 
     </script>
