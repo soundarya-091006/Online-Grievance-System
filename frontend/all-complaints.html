@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SafeReport | All Complaints</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #8b5cf6;
+            --accent: #ec4899;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #3b82f6;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+            --bg: #f8fafc;
+            --white: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+        }
+
+        /* Topbar */
+        .topbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+        }
+
+        .logo-text {
+            font-size: 20px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .admin-badge {
+            background: linear-gradient(135deg, var(--danger), var(--accent));
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 70px;
+            width: 280px;
+            height: calc(100vh - 70px);
+            background: var(--white);
+            border-right: 1px solid var(--border);
+            overflow-y: auto;
+            z-index: 500;
+            padding: 20px 0;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 20px;
+            color: var(--text-light);
+            text-decoration: none;
+            transition: all 0.3s;
+            border-left: 3px solid transparent;
+        }
+
+        .sidebar-menu a:hover {
+            background: var(--bg);
+            color: var(--primary);
+            border-left-color: var(--primary);
+        }
+
+        .sidebar-menu a.active {
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--primary);
+            border-left-color: var(--primary);
+            font-weight: 600;
+        }
+
+        .sidebar-menu svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 280px;
+            margin-top: 70px;
+            padding: 30px;
+            min-height: calc(100vh - 70px);
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .page-title {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--text);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 6px;
+            border: none;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            background: var(--white);
+            color: var(--primary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--primary);
+            background: var(--bg);
+        }
+
+        /* Filters */
+        .filters-section {
+            background: var(--white);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            margin-bottom: 20px;
+        }
+
+        .filter-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .filter-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .filter-item {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .filter-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .filter-item input,
+        .filter-item select {
+            padding: 8px 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .filter-item input:focus,
+        .filter-item select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        /* Table */
+        .table-container {
+            background: var(--white);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            padding: 15px;
+            background: var(--bg);
+            border-bottom: 2px solid var(--border);
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--text);
+            text-align: left;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover {
+            background: var(--bg);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-new {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--info);
+        }
+
+        .status-progress {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+        }
+
+        .status-resolved {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+
+        .status-closed {
+            background: rgba(107, 114, 128, 0.1);
+            color: var(--text-light);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn-small {
+            padding: 6px 12px;
+            border: 1px solid var(--border);
+            background: var(--white);
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--primary);
+            transition: all 0.3s;
+        }
+
+        .action-btn-small:hover {
+            background: var(--bg);
+            border-color: var(--primary);
+        }
+
+        .checkbox {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin-top: 20px;
+            padding: 20px;
+        }
+
+        .pagination button,
+        .pagination a {
+            padding: 8px 12px;
+            border: 1px solid var(--border);
+            background: var(--white);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+
+        .pagination button:hover,
+        .pagination a:hover {
+            background: var(--bg);
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .pagination .active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* Empty State */
+        .empty-state {
+            display: none;
+            text-align: center;
+            padding: 60px 20px;
+            background: var(--white);
+            border-radius: 12px;
+        }
+
+        .empty-state.show {
+            display: block;
+        }
+
+        .empty-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .empty-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+
+        .empty-description {
+            color: var(--text-light);
+            font-size: 14px;
+        }
+
+        .logout-btn {
+            background: var(--danger);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: #dc2626;
+        }
+
+        @media (max-width: 1200px) {
+            .sidebar {
+                width: 250px;
+            }
+
+            .main-content {
+                margin-left: 250px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                top: 0;
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+            }
+
+            .main-content {
+                margin-left: 0;
+                margin-top: 70px;
+                padding: 20px;
+            }
+
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .filter-group {
+                grid-template-columns: 1fr;
+            }
+
+            table {
+                font-size: 13px;
+            }
+
+            th, td {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Topbar -->
+    <div class="topbar">
+        <div style="display: flex; align-items: center;">
+            <div class="logo-text">SafeReport</div>
+            <span class="admin-badge">ADMIN</span>
+        </div>
+        <div class="topbar-right">
+            <span id="userEmail" style="font-size: 14px; color: var(--text-light);"></span>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <ul class="sidebar-menu">
+            <li><a href="../admin-dashboard.html" data-page="dashboard">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-3m0 0l7-4 7 4M5 9v10a1 1 0 001 1h12a1 1 0 001-1V9m-9 11l4-4m0 0l4 4m-8 4v-8m8 0v8"/>
+                </svg>
+                Dashboard
+            </a></li>
+            <li><a href="all-complaints.html" class="active" data-page="complaints">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+                All Complaints
+            </a></li>
+            <li><a href="pending-review.html" data-page="pending">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                Pending Review
+            </a></li>
+            <li><a href="assigned-cases.html" data-page="assigned">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.856-1.487M15 6a3 3 0 11-6 0 3 3 0 016 0zM16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
+                </svg>
+                Assigned Cases
+            </a></li>
+            <li><a href="user-management.html" data-page="users">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.856-1.487M15 6a3 3 0 11-6 0 3 3 0 016 0zM16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
+                </svg>
+                User Management
+            </a></li>
+            <li><a href="authority-management.html" data-page="authorities">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/>
+                </svg>
+                Authorities
+            </a></li>
+            <li><a href="reports.html" data-page="reports">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                </svg>
+                Reports
+            </a></li>
+            <li><a href="audit-logs.html" data-page="audit">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                Audit Logs
+            </a></li>
+            <li><a href="notifications.html" data-page="notifications">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 1118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                </svg>
+                Notifications
+            </a></li>
+            <li><a href="settings.html" data-page="settings">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                </svg>
+                Settings
+            </a></li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="page-header">
+            <h1 class="page-title">All Complaints</h1>
+            <div class="header-actions">
+                <button class="btn btn-secondary" onclick="exportAsCSV()">📥 Export</button>
+                <button class="btn btn-primary" onclick="bulkApprove()">✓ Approve Selected</button>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters-section">
+            <div class="filter-group">
+                <div class="filter-item">
+                    <label class="filter-label">Search</label>
+                    <input type="text" id="searchInput" placeholder="Search by ID, subject, or email..." onkeyup="applyFilters()">
+                </div>
+                <div class="filter-item">
+                    <label class="filter-label">Status</label>
+                    <select id="statusFilter" onchange="applyFilters()">
+                        <option value="">All Status</option>
+                        <option value="NEW">New</option>
+                        <option value="UNDER REVIEW">Under Review</option>
+                        <option value="ASSIGNED">Assigned</option>
+                        <option value="IN PROGRESS">In Progress</option>
+                        <option value="RESOLVED">Resolved</option>
+                        <option value="CLOSED">Closed</option>
+                    </select>
+                </div>
+                <div class="filter-item">
+                    <label class="filter-label">Category</label>
+                    <select id="categoryFilter" onchange="applyFilters()">
+                        <option value="">All Categories</option>
+                        <option value="Harassment">Harassment</option>
+                        <option value="Discrimination">Discrimination</option>
+                        <option value="Safety">Safety</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="filter-item">
+                    <label class="filter-label">Priority</label>
+                    <select id="priorityFilter" onchange="applyFilters()">
+                        <option value="">All Priorities</option>
+                        <option value="Low">Low</option>
+                        <option value="Medium">Medium</option>
+                        <option value="High">High</option>
+                        <option value="Critical">Critical</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Complaints Table -->
+        <div class="table-container">
+            <table id="complaintsTable">
+                <thead>
+                    <tr>
+                        <th><input type="checkbox" class="checkbox" id="selectAllCheckbox" onchange="toggleSelectAll()"></th>
+                        <th>ID</th>
+                        <th>Subject</th>
+                        <th>Submitted By</th>
+                        <th>Status</th>
+                        <th>Priority</th>
+                        <th>Category</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="complaintsList">
+                </tbody>
+            </table>
+            <div class="empty-state" id="emptyState">
+                <div class="empty-icon">📋</div>
+                <div class="empty-title">No Complaints Found</div>
+                <div class="empty-description">There are no complaints matching your filters</div>
+            </div>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination" id="paginationContainer"></div>
+    </div>
+
+    <script>
+        let allComplaints = [];
+        let filteredComplaints = [];
+        const itemsPerPage = 10;
+        let currentPage = 1;
+
+        function checkAdminAccess() {
+            const currentUser = JSON.parse(localStorage.getItem("currentUser")) || {};
+            if (currentUser.role !== "admin") {
+                window.location.href = "../login.html";
+            }
+            document.getElementById("userEmail").innerText = currentUser.email || "Admin";
+        }
+
+        function loadComplaints() {
+            const complaints = JSON.parse(localStorage.getItem("complaints")) || [];
+            const users = JSON.parse(localStorage.getItem("users")) || [];
+
+            allComplaints = complaints.map(complaint => {
+                const user = users.find(u => u.email === complaint.userEmail);
+                return {
+                    ...complaint,
+                    userName: user?.name || 'Unknown',
+                    userPhone: user?.phone || 'N/A'
+                };
+            });
+
+            filteredComplaints = [...allComplaints];
+            displayComplaints();
+        }
+
+        function applyFilters() {
+            const searchTerm = document.getElementById("searchInput").value.toLowerCase();
+            const status = document.getElementById("statusFilter").value;
+            const category = document.getElementById("categoryFilter").value;
+            const priority = document.getElementById("priorityFilter").value;
+
+            filteredComplaints = allComplaints.filter(complaint => {
+                const matchSearch = !searchTerm || 
+                    complaint.id.toString().includes(searchTerm) ||
+                    complaint.subject.toLowerCase().includes(searchTerm) ||
+                    complaint.userEmail.toLowerCase().includes(searchTerm);
+
+                const matchStatus = !status || complaint.status === status;
+                const matchCategory = !category || complaint.category === category;
+                const matchPriority = !priority || complaint.priority === priority;
+
+                return matchSearch && matchStatus && matchCategory && matchPriority;
+            });
+
+            currentPage = 1;
+            displayComplaints();
+        }
+
+        function displayComplaints() {
+            const start = (currentPage - 1) * itemsPerPage;
+            const end = start + itemsPerPage;
+            const paginatedComplaints = filteredComplaints.slice(start, end);
+
+            const tbody = document.getElementById("complaintsList");
+            tbody.innerHTML = paginatedComplaints.map(complaint => `
+                <tr>
+                    <td><input type="checkbox" class="checkbox complaint-checkbox" value="${complaint.id}"></td>
+                    <td>#${complaint.id}</td>
+                    <td>${complaint.subject}</td>
+                    <td>${complaint.userEmail}</td>
+                    <td><span class="status-badge status-${complaint.status.toLowerCase().replace(' ', '-')}">${complaint.status}</span></td>
+                    <td>${complaint.priority}</td>
+                    <td>${complaint.category}</td>
+                    <td>${complaint.createdAt.split(' ')[0]}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="action-btn-small" onclick="reviewComplaint('${complaint.id}')">Review</button>
+                            <button class="action-btn-small" onclick="viewDetails('${complaint.id}')">View</button>
+                        </div>
+                    </td>
+                </tr>
+            `).join("");
+
+            if (paginatedComplaints.length === 0) {
+                document.getElementById("emptyState").classList.add("show");
+                document.getElementById("complaintsTable").style.display = "none";
+            } else {
+                document.getElementById("emptyState").classList.remove("show");
+                document.getElementById("complaintsTable").style.display = "table";
+            }
+
+            displayPagination();
+        }
+
+        function displayPagination() {
+            const totalPages = Math.ceil(filteredComplaints.length / itemsPerPage);
+            const container = document.getElementById("paginationContainer");
+            let html = "";
+
+            if (currentPage > 1) {
+                html += `<button onclick="goToPage(${currentPage - 1})">← Previous</button>`;
+            }
+
+            for (let i = 1; i <= totalPages; i++) {
+                if (i === currentPage) {
+                    html += `<a class="active">${i}</a>`;
+                } else {
+                    html += `<a onclick="goToPage(${i})">${i}</a>`;
+                }
+            }
+
+            if (currentPage < totalPages) {
+                html += `<button onclick="goToPage(${currentPage + 1})">Next →</button>`;
+            }
+
+            container.innerHTML = html;
+        }
+
+        function goToPage(page) {
+            currentPage = page;
+            displayComplaints();
+        }
+
+        function toggleSelectAll() {
+            const checkboxes = document.querySelectorAll(".complaint-checkbox");
+            const selectAll = document.getElementById("selectAllCheckbox");
+            checkboxes.forEach(checkbox => checkbox.checked = selectAll.checked);
+        }
+
+        function reviewComplaint(complaintId) {
+            window.location.href = `review-complaint.html?id=${complaintId}`;
+        }
+
+        function viewDetails(complaintId) {
+            window.location.href = `review-complaint.html?id=${complaintId}`;
+        }
+
+        function bulkApprove() {
+            const selected = Array.from(document.querySelectorAll(".complaint-checkbox:checked")).map(cb => cb.value);
+            if (selected.length === 0) {
+                alert("Please select at least one complaint");
+                return;
+            }
+            alert(`Approved ${selected.length} complaint(s)`);
+            loadComplaints();
+        }
+
+        function exportAsCSV() {
+            const headers = ["ID", "Subject", "Email", "Status", "Priority", "Category", "Date"];
+            const rows = filteredComplaints.map(c => [
+                c.id,
+                c.subject,
+                c.userEmail,
+                c.status,
+                c.priority,
+                c.category,
+                c.createdAt
+            ]);
+
+            let csv = headers.join(",") + "\n";
+            rows.forEach(row => csv += row.map(cell => `"${cell}"`).join(",") + "\n");
+
+            const link = document.createElement("a");
+            link.href = "data:text/csv;charset=utf-8," + encodeURIComponent(csv);
+            link.download = "complaints_export.csv";
+            link.click();
+        }
+
+        function logout() {
+            localStorage.removeItem("currentUser");
+            window.location.href = "../login.html";
+        }
+
+        window.addEventListener("DOMContentLoaded", () => {
+            checkAdminAccess();
+            loadComplaints();
+        });
+    </script>
+</body>
+</html>

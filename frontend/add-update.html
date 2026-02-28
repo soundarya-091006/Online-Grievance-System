@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SafeReport Authority | Dashboard</title>
+<title>SafeReport Authority | Add Update</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="authority-shared.css">
 <style>
@@ -49,7 +49,7 @@
       </div>
       <div class="nav-section-label">OVERVIEW</div><ul class="sidebar-menu">
             <li class="menu-item">
-              <a href="dashboard.html" class="menu-link active" onclick="closeMenu()">
+              <a href="dashboard.html" class="menu-link" onclick="closeMenu()">
                 <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 3h7v7H3V3zm11 0h7v7h-7V3zm0 11h7v7h-7v-7zm-11 0h7v7H3v-7z" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 Dashboard
               </a>
@@ -79,7 +79,7 @@
               </a>
             </li></ul><div class="nav-section-label">ACTIONS</div><ul class="sidebar-menu">
             <li class="menu-item">
-              <a href="add-update.html" class="menu-link" onclick="closeMenu()">
+              <a href="add-update.html" class="menu-link active" onclick="closeMenu()">
                 <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 Add Update
               </a>
@@ -165,152 +165,154 @@
 <div class="page-header">
   <div class="page-header-top">
     <div>
-      <h1 class="page-title">Authority Dashboard 📊</h1>
-      <p class="page-subtitle">Welcome back — here is your investigative overview for today.</p>
+      <div class="breadcrumb"><a href="dashboard.html">Dashboard</a> <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg> Add Investigation Update</div>
+      <h1 class="page-title">Add Investigation Update ✏️</h1>
+      <p class="page-subtitle">Log new findings, add evidence, and notify the complainant.</p>
     </div>
     <div class="page-actions">
-      <a href="new-assignments.html" class="btn btn-outline">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-        5 New Assignments
-      </a>
-      <a href="generate-report.html" class="btn btn-primary">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-        Generate Report
-      </a>
+      <a href="my-cases.html" class="btn btn-outline">← Back to Cases</a>
     </div>
   </div>
 </div>
 
-<!-- STATS -->
-<div class="stats-grid">
-  <div class="stat-card" style="animation-delay:0.05s">
-    <div class="stat-header">
-      <div class="stat-icon" style="background:linear-gradient(135deg,rgba(99,102,241,0.12),rgba(139,92,246,0.12))">📋</div>
-      <span class="stat-trend trend-up">↑ 3 this week</span>
-    </div>
-    <div class="stat-number">24</div>
-    <div class="stat-label">Total Assigned Cases</div>
-  </div>
-  <div class="stat-card" style="animation-delay:0.1s">
-    <div class="stat-header">
-      <div class="stat-icon" style="background:linear-gradient(135deg,rgba(245,158,11,0.12),rgba(251,191,36,0.12))">⚡</div>
-      <span class="stat-trend trend-up">↑ 2 new</span>
-    </div>
-    <div class="stat-number">8</div>
-    <div class="stat-label">Active Investigations</div>
-  </div>
-  <div class="stat-card" style="animation-delay:0.15s">
-    <div class="stat-header">
-      <div class="stat-icon" style="background:linear-gradient(135deg,rgba(239,68,68,0.12),rgba(220,38,38,0.12))">🔔</div>
-      <span class="stat-trend trend-down">Needs attention</span>
-    </div>
-    <div class="stat-number">5</div>
-    <div class="stat-label">Pending Assignments</div>
-  </div>
-  <div class="stat-card" style="animation-delay:0.2s">
-    <div class="stat-header">
-      <div class="stat-icon" style="background:linear-gradient(135deg,rgba(16,185,129,0.12),rgba(5,150,105,0.12))">✅</div>
-      <span class="stat-trend trend-up">↑ 25% rate</span>
-    </div>
-    <div class="stat-number">11</div>
-    <div class="stat-label">Cases Resolved</div>
-  </div>
-</div>
-
-<div class="grid-21" style="gap:22px">
-  <!-- RECENT CASES -->
-  <div>
-    <div class="table-wrap" style="animation:fadeInUp 0.5s ease 0.2s both">
-      <div class="card-header" style="padding:20px 24px">
+<div class="grid-21">
+  <div class="form-card">
+    <!-- SELECT CASE -->
+    <div class="form-section">
+      <div class="form-section-title"><span class="section-icon">📋</span> Select Case</div>
+      <div class="form-group">
+        <label class="form-label">Case ID <span class="required">*</span></label>
+        <select class="form-select" id="caseSelect" onchange="loadCaseInfo()">
+          <option value="">— Select a case —</option>
+          <option value="C1042" selected>#C1042 · Workplace Harassment · IN PROGRESS</option>
+          <option value="C1039">#C1039 · Verbal Abuse · UNDER REVIEW</option>
+          <option value="C1036">#C1036 · Stalking · NEW</option>
+          <option value="C1029">#C1029 · Physical Assault · IN PROGRESS</option>
+        </select>
+      </div>
+      <div id="caseInfoBox" style="background:linear-gradient(135deg,rgba(99,102,241,0.06),rgba(139,92,246,0.06));border:1px solid rgba(99,102,241,0.2);border-radius:12px;padding:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
         <div>
-          <div class="card-title">Recent Cases</div>
-          <div class="card-subtitle">Your latest assigned investigations</div>
+          <div style="font-size:14px;font-weight:700">Case #C1042 — Workplace Harassment</div>
+          <div style="font-size:12px;color:var(--text-light)">Tech Park, Chennai · Assigned: Jan 20, 2025</div>
         </div>
-        <a href="my-cases.html" class="btn btn-outline btn-sm">View All</a>
+        <div style="display:flex;gap:8px"><span class="badge badge-urgent">HIGH</span><span class="badge badge-progress">IN PROGRESS</span></div>
       </div>
-      <table>
-        <thead>
-          <tr>
-            <th>Case ID</th><th>Subject</th><th>Category</th><th>Priority</th><th>Status</th><th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr><td><b style="color:var(--primary)">#C1042</b></td><td>Workplace Harassment</td><td>Sexual Harassment</td><td><span class="badge badge-urgent">HIGH</span></td><td><span class="badge badge-progress">IN PROGRESS</span></td><td><a href="investigate.html" class="btn btn-primary btn-sm">Investigate</a></td></tr>
-          <tr><td><b style="color:var(--primary)">#C1039</b></td><td>Verbal Abuse at Office</td><td>Verbal Abuse</td><td><span class="badge badge-medium">MEDIUM</span></td><td><span class="badge badge-pending">UNDER REVIEW</span></td><td><a href="investigate.html" class="btn btn-primary btn-sm">Investigate</a></td></tr>
-          <tr><td><b style="color:var(--primary)">#C1036</b></td><td>Stalking Complaint</td><td>Stalking</td><td><span class="badge badge-urgent">HIGH</span></td><td><span class="badge badge-new">NEW</span></td><td><a href="investigate.html" class="btn btn-primary btn-sm">Investigate</a></td></tr>
-          <tr><td><b style="color:var(--primary)">#C1031</b></td><td>Discrimination Case</td><td>Discrimination</td><td><span class="badge badge-low">LOW</span></td><td><span class="badge badge-resolved">RESOLVED</span></td><td><a href="investigate.html" class="btn btn-outline btn-sm">View</a></td></tr>
-          <tr><td><b style="color:var(--primary)">#C1029</b></td><td>Physical Assault Report</td><td>Physical Assault</td><td><span class="badge badge-urgent">CRITICAL</span></td><td><span class="badge badge-progress">IN PROGRESS</span></td><td><a href="investigate.html" class="btn btn-primary btn-sm">Investigate</a></td></tr>
-        </tbody>
-      </table>
+    </div>
+
+    <!-- UPDATE DETAILS -->
+    <div class="form-section">
+      <div class="form-section-title"><span class="section-icon">📝</span> Update Details</div>
+      <div class="form-group">
+        <label class="form-label">Update Type <span class="required">*</span></label>
+        <select class="form-select" id="updateType">
+          <option value="">— Select type —</option>
+          <option>Investigation Finding</option>
+          <option>Witness Statement Received</option>
+          <option>Evidence Added</option>
+          <option>Hearing Conducted</option>
+          <option>Site Visit Completed</option>
+          <option>Status Change</option>
+          <option>General Progress Update</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Update Title <span class="required">*</span></label>
+        <input type="text" class="form-input" placeholder="Brief title for this update..." id="updateTitle">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Detailed Description <span class="required">*</span></label>
+        <textarea class="form-textarea" id="updateDesc" placeholder="Describe the update, findings, or actions taken in detail..." style="min-height:160px"></textarea>
+        <div class="form-hint">This entry will be added to the investigation timeline. Be thorough and factual.</div>
+      </div>
+    </div>
+
+    <!-- STATUS -->
+    <div class="form-section">
+      <div class="form-section-title"><span class="section-icon">🔄</span> Update Case Status</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Current Status</label>
+          <input type="text" class="form-input" value="IN PROGRESS" readonly style="background:var(--bg)">
+        </div>
+        <div class="form-group">
+          <label class="form-label">New Status (optional)</label>
+          <select class="form-select" id="newStatus">
+            <option value="">Keep current status</option>
+            <option>UNDER REVIEW</option><option>IN PROGRESS</option>
+            <option>PENDING INFO</option><option>RESOLVED</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- EVIDENCE -->
+    <div class="form-section">
+      <div class="form-section-title"><span class="section-icon">📎</span> Attach Evidence (Optional)</div>
+      <div class="upload-zone" onclick="document.getElementById('evidenceFile').click()">
+        <div class="upload-zone-icon">📁</div>
+        <p>Click to upload or drag & drop</p>
+        <small>PDF, Images, Videos, Audio (Max 10MB per file)</small>
+        <input type="file" id="evidenceFile" style="display:none" multiple onchange="showToast('Evidence attached!','success')">
+      </div>
+    </div>
+
+    <!-- NOTIFY -->
+    <div class="form-section">
+      <div class="form-section-title"><span class="section-icon">🔔</span> Notify Complainant</div>
+      <div style="display:flex;align-items:center;gap:14px;padding:16px;background:var(--bg);border-radius:12px;border:1px solid var(--border)">
+        <label style="position:relative;width:50px;height:26px;cursor:pointer;flex-shrink:0">
+          <input type="checkbox" id="notifyToggle" style="display:none" checked onchange="toggleNotify()">
+          <div id="notifySlider" style="position:absolute;inset:0;background:var(--primary);border-radius:13px;transition:background 0.3s"></div>
+          <div id="notifyThumb" style="position:absolute;width:20px;height:20px;background:white;border-radius:50%;top:3px;left:27px;transition:left 0.3s;box-shadow:0 2px 4px rgba(0,0,0,0.2)"></div>
+        </label>
+        <div>
+          <div style="font-size:13px;font-weight:600">Send notification to complainant</div>
+          <div style="font-size:12px;color:var(--text-light)">Complainant will receive a status update notification (identity protected).</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <a href="my-cases.html" class="btn btn-outline">Cancel</a>
+      <button class="btn btn-outline" onclick="saveDraft()">💾 Save Draft</button>
+      <button class="btn btn-primary" onclick="submitUpdate()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        Submit Update
+      </button>
     </div>
   </div>
 
-  <!-- SIDEBAR WIDGETS -->
-  <div style="display:flex;flex-direction:column;gap:22px;">
-    <!-- PENDING ACTIONS -->
-    <div class="card" style="animation:fadeInUp 0.5s ease 0.25s both">
-      <div class="card-header"><div class="card-title">⚠️ Pending Actions</div></div>
-      <div class="card-body" style="padding:0">
-        <div style="padding:0 24px">
-          <div class="overview-item">
-            <span class="overview-label">🔴 Overdue reports</span>
-            <span class="overview-value" style="color:var(--danger)">2</span>
-          </div>
-          <div class="overview-item">
-            <span class="overview-label">📅 Hearings this week</span>
-            <span class="overview-value">3</span>
-          </div>
-          <div class="overview-item">
-            <span class="overview-label">📝 Updates needed</span>
-            <span class="overview-value" style="color:var(--warning)">4</span>
-          </div>
-          <div class="overview-item">
-            <span class="overview-label">🗂️ Evidence to review</span>
-            <span class="overview-value">6</span>
-          </div>
-        </div>
-        <div style="padding:16px 24px;border-top:1px solid var(--border)">
-          <a href="schedule.html" class="btn btn-primary" style="width:100%;justify-content:center">View Schedule</a>
-        </div>
-      </div>
-    </div>
-
-    <!-- PERFORMANCE -->
-    <div class="card" style="animation:fadeInUp 0.5s ease 0.3s both">
-      <div class="card-header"><div class="card-title">📈 My Performance</div></div>
+  <!-- SIDEBAR -->
+  <div style="display:flex;flex-direction:column;gap:22px">
+    <div class="card" style="animation:fadeInUp 0.5s ease 0.15s both">
+      <div class="card-header"><div class="card-title">📍 Recent Timeline</div></div>
       <div class="card-body">
-        <div style="margin-bottom:16px">
-          <div style="display:flex;justify-content:space-between;margin-bottom:6px">
-            <span style="font-size:13px;color:var(--text-light)">Resolution Rate</span>
-            <span style="font-size:13px;font-weight:700">78%</span>
+        <div class="timeline">
+          <div class="timeline-item done">
+            <div class="timeline-time">Jan 18 · 11:30 AM</div>
+            <div class="timeline-card"><h4>Witnesses Identified</h4><p>Two witnesses identified, interviews to be scheduled.</p></div>
           </div>
-          <div class="progress-bar"><div class="progress-fill success" style="width:78%"></div></div>
-        </div>
-        <div style="margin-bottom:16px">
-          <div style="display:flex;justify-content:space-between;margin-bottom:6px">
-            <span style="font-size:13px;color:var(--text-light)">On-Time Closure</span>
-            <span style="font-size:13px;font-weight:700">65%</span>
+          <div class="timeline-item done">
+            <div class="timeline-time">Jan 17 · 02:00 PM</div>
+            <div class="timeline-card"><h4>Evidence Reviewed</h4><p>3 evidence files reviewed, CCTV footage requested.</p></div>
           </div>
-          <div class="progress-bar"><div class="progress-fill warning" style="width:65%"></div></div>
-        </div>
-        <div>
-          <div style="display:flex;justify-content:space-between;margin-bottom:6px">
-            <span style="font-size:13px;color:var(--text-light)">Avg. Resolution Days</span>
-            <span style="font-size:13px;font-weight:700">12 days</span>
+          <div class="timeline-item done">
+            <div class="timeline-time">Jan 16 · 10:00 AM</div>
+            <div class="timeline-card"><h4>Case Assigned</h4><p>Assigned to investigator Rajan Arora.</p></div>
           </div>
-          <div class="progress-bar"><div class="progress-fill" style="width:50%"></div></div>
         </div>
       </div>
     </div>
-
-    <!-- QUICK ACTIONS -->
-    <div class="card" style="animation:fadeInUp 0.5s ease 0.35s both">
-      <div class="card-header"><div class="card-title">⚡ Quick Actions</div></div>
-      <div class="card-body" style="display:flex;flex-direction:column;gap:10px;padding:16px 24px;">
-        <a href="add-update.html" class="btn btn-primary" style="justify-content:center">➕ Add Case Update</a>
-        <a href="evidence.html" class="btn btn-outline" style="justify-content:center">📁 Upload Evidence</a>
-        <a href="schedule.html" class="btn btn-outline" style="justify-content:center">📅 Schedule Hearing</a>
-        <a href="close-case.html" class="btn btn-outline" style="justify-content:center;color:var(--success);border-color:var(--success)">✅ Close a Case</a>
+    <div class="card" style="animation:fadeInUp 0.5s ease 0.2s both">
+      <div class="card-header"><div class="card-title">💡 Update Tips</div></div>
+      <div class="card-body">
+        <div style="display:flex;flex-direction:column;gap:10px;font-size:13px;color:var(--text-light)">
+          <div>✅ Be specific with dates, times, and locations</div>
+          <div>✅ Include objective facts, avoid assumptions</div>
+          <div>✅ Reference witness/evidence file numbers</div>
+          <div>✅ Note any pending actions or follow-ups</div>
+          <div>✅ Use professional language throughout</div>
+        </div>
       </div>
     </div>
   </div>
@@ -323,6 +325,22 @@
 
 <script src="authority-shared.js"></script>
 <script>
+
+function toggleNotify() {
+    const on = document.getElementById("notifyToggle").checked;
+    document.getElementById("notifySlider").style.background = on ? "var(--primary)" : "var(--border)";
+    document.getElementById("notifyThumb").style.left = on ? "27px" : "3px";
+}
+function loadCaseInfo() { showToast("Case information loaded.", "info"); }
+function saveDraft() { showToast("Draft saved successfully.", "success"); }
+function submitUpdate() {
+    const type = document.getElementById("updateType").value;
+    const title = document.getElementById("updateTitle").value;
+    const desc = document.getElementById("updateDesc").value;
+    if (!type || !title || !desc) { showToast("Please fill all required fields.", "error"); return; }
+    showToast("Update submitted to timeline successfully!", "success");
+    setTimeout(() => window.location.href = "investigate.html", 1800);
+}
 
 </script>
 </body>

@@ -246,7 +246,7 @@ opacity:1;
 <div class="subtitle">Register for your SafeReport account</div>
 
 <div class="role-options">
-<div class="role-card active" onclick="selectRole(this,'User')">
+<div class="role-card active" onclick="selectRole(this,'user')">
 <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
 <circle cx="12" cy="7" r="4"/>
 <path d="M5.5 21a6.5 6.5 0 0 1 13 0"/>
@@ -254,14 +254,14 @@ opacity:1;
 <span class="role-label">User</span>
 </div>
 
-<div class="role-card" onclick="selectRole(this,'Admin')">
+<div class="role-card" onclick="selectRole(this,'admin')">
 <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
 <path d="M12 2L4 7v5c0 5 3.5 8 8 10 4.5-2 8-5 8-10V7l-8-5z"/>
 </svg>
 <span class="role-label">Admin</span>
 </div>
 
-<div class="role-card" onclick="selectRole(this,'Authority')">
+<div class="role-card" onclick="selectRole(this,'authority')">
 <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
 <path d="M12 2L4 7v5c0 5 3.5 8 8 10 4.5-2 8-5 8-10V7l-8-5z"/>
 <path d="M9 12l2 2 4-4"/>
@@ -333,53 +333,64 @@ Already have an account? <a href="login.html">Login here</a>
 <div class="toast" id="toast"></div>
 
 <script>
-let selectedRole="User";
+let selectedRole = "user"; // default role (lowercase)
 
-function selectRole(el,role){
-document.querySelectorAll(".role-card").forEach(card=>card.classList.remove("active"));
-el.classList.add("active");
-selectedRole=role;
+/* ================= ROLE SELECTION ================= */
+function selectRole(el, role){
+    document.querySelectorAll(".role-card").forEach(card =>
+        card.classList.remove("active")
+    );
+    el.classList.add("active");
+    selectedRole = role.toLowerCase(); // ensure lowercase
 }
 
+/* ================= PASSWORD TOGGLE ================= */
 function togglePassword(){
-const input=document.getElementById("password");
-input.type=input.type==="password"?"text":"password";
+    const input = document.getElementById("password");
+    input.type = input.type === "password" ? "text" : "password";
 }
 
 function toggleConfirmPassword(){
-const input=document.getElementById("confirmPassword");
-input.type=input.type==="password"?"text":"password";
+    const input = document.getElementById("confirmPassword");
+    input.type = input.type === "password" ? "text" : "password";
 }
 
+/* ================= PASSWORD CHECKLIST ================= */
 function showChecklist(){
-document.getElementById("passwordFeedback").classList.add("active");
+    document.getElementById("passwordFeedback").classList.add("active");
 }
 
 function checkRules(e){
-const pwd=document.getElementById("password").value;
+    const pwd = document.getElementById("password").value;
 
-document.getElementById("ruleLength").classList.toggle("valid",pwd.length>=6);
-document.getElementById("ruleUpper").classList.toggle("valid",/[A-Z]/.test(pwd));
-document.getElementById("ruleNumber").classList.toggle("valid",/[0-9]/.test(pwd));
-document.getElementById("ruleSpecial").classList.toggle("valid",/[^A-Za-z0-9]/.test(pwd));
+    document.getElementById("ruleLength")
+        .classList.toggle("valid", pwd.length >= 6);
+    document.getElementById("ruleUpper")
+        .classList.toggle("valid", /[A-Z]/.test(pwd));
+    document.getElementById("ruleNumber")
+        .classList.toggle("valid", /[0-9]/.test(pwd));
+    document.getElementById("ruleSpecial")
+        .classList.toggle("valid", /[^A-Za-z0-9]/.test(pwd));
 
-if(e.getModifierState && e.getModifierState("CapsLock")){
-document.getElementById("capsWarning").style.display="block";
-}else{
-document.getElementById("capsWarning").style.display="none";
+    if(e.getModifierState && e.getModifierState("CapsLock")){
+        document.getElementById("capsWarning").style.display = "block";
+    } else {
+        document.getElementById("capsWarning").style.display = "none";
+    }
 }
-}
 
+/* ================= TOAST ================= */
 function showToast(message){
-const toast=document.getElementById("toast");
-toast.innerText=message;
-toast.classList.add("show");
-setTimeout(()=>toast.classList.remove("show"),3000);
+    const toast = document.getElementById("toast");
+    toast.innerText = message;
+    toast.classList.add("show");
+    setTimeout(()=>toast.classList.remove("show"), 3000);
 }
 
 /* ================= REGISTER USER STORAGE ================= */
+document.getElementById("registerForm")
+.addEventListener("submit", function(e){
 
-document.getElementById("registerForm").addEventListener("submit", function(e){
     e.preventDefault();
 
     const fullname = document.getElementById("fullname").value.trim();
@@ -393,6 +404,11 @@ document.getElementById("registerForm").addEventListener("submit", function(e){
         return;
     }
 
+    if(!email.includes("@")){
+        showToast("Enter valid email");
+        return;
+    }
+
     if(password !== confirmPassword){
         showToast("Passwords do not match");
         return;
@@ -400,7 +416,9 @@ document.getElementById("registerForm").addEventListener("submit", function(e){
 
     let users = JSON.parse(localStorage.getItem("users")) || [];
 
-    const userExists = users.find(user => user.email === email);
+    const userExists = users.find(user => 
+        user.email.toLowerCase() === email.toLowerCase()
+    );
 
     if(userExists){
         showToast("User already registered");
@@ -412,7 +430,7 @@ document.getElementById("registerForm").addEventListener("submit", function(e){
         email,
         phone,
         password,
-        role: selectedRole
+        role: selectedRole   // user / admin / authority
     };
 
     users.push(newUser);
@@ -422,10 +440,8 @@ document.getElementById("registerForm").addEventListener("submit", function(e){
 
     setTimeout(()=>{
         window.location.href = "login.html";
-    },1500);
+    }, 1500);
 });
-
 </script>
-
 </body>
 </html>

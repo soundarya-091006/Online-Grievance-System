@@ -51,6 +51,30 @@
             padding: 0 30px;
             z-index: 1000;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+            gap: 20px;
+        }
+        
+        .hamburger-btn {
+            display: flex;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .hamburger-btn:hover {
+            background: var(--bg);
+        }
+        
+        .hamburger-btn svg {
+            width: 24px;
+            height: 24px;
+            stroke: var(--text);
+            stroke-width: 2;
         }
         
         .logo-section {
@@ -166,11 +190,59 @@
             border: 1px solid var(--border);
             cursor: pointer;
             transition: all 0.3s ease;
+            position: relative;
         }
         
         .user-menu:hover {
             background: var(--bg);
             transform: translateY(-2px);
+        }
+        
+        /* User Menu Dropdown */
+        .user-menu-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            min-width: 200px;
+            margin-top: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+            display: none;
+            z-index: 2000;
+            overflow: hidden;
+        }
+        
+        .user-menu-dropdown.active {
+            display: block;
+        }
+        
+        .user-menu-dropdown a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 18px;
+            color: var(--text);
+            text-decoration: none;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .user-menu-dropdown a:last-child {
+            border-bottom: none;
+        }
+        
+        .user-menu-dropdown a:hover {
+            background: var(--bg);
+            padding-left: 22px;
+        }
+        
+        .user-menu-dropdown svg {
+            width: 18px;
+            height: 18px;
+            stroke: var(--text-light);
         }
         
         .user-avatar {
@@ -202,18 +274,76 @@
             color: var(--text-light);
         }
         
-        /* Sidebar */
+        /* Sidebar (Hidden - Hamburger Menu Instead) */
         .sidebar {
-            position: fixed;
+            display: none;
+        }
+        
+        /* Hamburger Menu Dropdown */
+        .hamburger-menu {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .hamburger-menu-dropdown {
+            position: absolute;
+            top: 100%;
             left: 0;
-            top: 70px;
-            bottom: 0;
-            width: 260px;
             background: var(--white);
-            border-right: 1px solid var(--border);
-            padding: 30px 0;
-            overflow-y: auto;
-            z-index: 999;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            min-width: 220px;
+            margin-top: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+            display: none;
+            z-index: 2000;
+            overflow: hidden;
+        }
+        
+        .hamburger-menu-dropdown.active {
+            display: block;
+        }
+        
+        .hamburger-menu-dropdown .sidebar-menu {
+            list-style: none;
+            padding: 8px 0;
+        }
+        
+        .hamburger-menu-dropdown .menu-item {
+            margin: 0;
+            border-radius: 0;
+        }
+        
+        .hamburger-menu-dropdown .menu-link {
+            padding: 14px 20px;
+            border-radius: 0;
+            color: var(--text);
+            font-size: 14px;
+            margin: 0;
+            position: relative;
+            background: var(--white);
+        }
+        
+        .hamburger-menu-dropdown .menu-link::before {
+            width: 3px;
+            left: 0;
+        }
+        
+        .hamburger-menu-dropdown .menu-link:hover {
+            background: var(--bg);
+            transform: none;
+            padding-left: 22px;
+        }
+        
+        .hamburger-menu-dropdown .menu-link.active {
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--primary);
+        }
+        
+        .hamburger-menu-dropdown .menu-badge {
+            display: none;
         }
         
         .sidebar-menu {
@@ -285,9 +415,9 @@
             border-radius: 10px;
         }
         
-        /* Main Content */
+        /* Main Content - No sidebar margin */
         .main-content {
-            margin-left: 260px;
+            margin-left: 0;
             margin-top: 70px;
             padding: 30px;
             min-height: calc(100vh - 70px);
@@ -436,7 +566,7 @@
         
         .actions-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(2, 1fr);
             gap: 20px;
         }
         
@@ -491,7 +621,8 @@
             background: var(--white);
             border-radius: 20px;
             border: 1px solid var(--border);
-            overflow: hidden;
+            overflow: visible;
+            position: relative;
         }
         
         .table-header {
@@ -643,23 +774,98 @@
             .actions-grid {
                 grid-template-columns: 1fr;
             }
+            
+            .topbar-right {
+                gap: 15px;
+            }
+            
+            .search-box input {
+                width: 200px;
+            }
         }
         
         @media (max-width: 768px) {
-            .sidebar {
-                transform: translateX(-100%);
+            .logo-section {
+                gap: 8px;
             }
             
-            .main-content {
-                margin-left: 0;
+            .logo-text {
+                font-size: 15px;
             }
             
             .stats-grid {
                 grid-template-columns: 1fr;
             }
             
+            .topbar {
+                padding: 0 15px;
+                gap: 10px;
+            }
+            
+            .hamburger-menu {
+                gap: 12px;
+            }
+            
+            .topbar-right {
+                gap: 8px;
+            }
+            
             .search-box input {
-                width: 200px;
+                width: 130px;
+                font-size: 13px;
+            }
+            
+            .hamburger-menu-dropdown {
+                min-width: 180px;
+            }
+            
+            #filterPanel {
+                min-width: 180px !important;
+                padding: 12px !important;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .topbar {
+                padding: 0 10px;
+            }
+            
+            .hamburger-menu {
+                gap: 10px;
+            }
+            
+            .logo-icon {
+                width: 40px;
+                height: 40px;
+            }
+            
+            .logo-icon svg {
+                width: 20px;
+                height: 20px;
+            }
+            
+            .logo-text {
+                display: none;
+            }
+            
+            .search-box input {
+                width: 100px;
+                padding: 8px 12px 8px 35px;
+            }
+            
+            .hamburger-menu-dropdown {
+                min-width: 160px;
+            }
+            
+            .hamburger-menu-dropdown .menu-link {
+                padding: 12px 16px;
+                font-size: 13px;
+            }
+            
+            #filterPanel {
+                    right: 10px;
+                    left: 10px;
+                    width: auto;
             }
         }
     </style>
@@ -667,25 +873,89 @@
 <body>
     <!-- Topbar -->
     <div class="topbar">
-        <div class="logo-section">
-            <div class="logo-icon">
-                <svg viewBox="0 0 24 24" fill="none">
-                    <defs>
-                        <linearGradient id="shieldGrad" x1="0" y1="0" x2="1" y2="1">
-                            <stop offset="0%" stop-color="#6366f1"/>
-                            <stop offset="100%" stop-color="#8b5cf6"/>
-                        </linearGradient>
-                    </defs>
-                    <path d="M12 2L4 5V11C4 16 7.5 20 12 22C16.5 20 20 16 20 11V5L12 2Z"
-                        fill="url(#shieldGrad)"/>
-                    <path d="M9.5 12.5L11 14L14.5 10.5"
-                        stroke="white"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"/>
+        <div class="hamburger-menu">
+            <button class="hamburger-btn" onclick="toggleMenu()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <line x1="3" y1="6" x2="21" y2="6"/>
+                    <line x1="3" y1="12" x2="21" y2="12"/>
+                    <line x1="3" y1="18" x2="21" y2="18"/>
                 </svg>
+            </button>
+            
+            <div class="logo-section">
+                <div class="logo-icon">
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <defs>
+                            <linearGradient id="shieldGrad" x1="0" y1="0" x2="1" y2="1">
+                                <stop offset="0%" stop-color="#6366f1"/>
+                                <stop offset="100%" stop-color="#8b5cf6"/>
+                            </linearGradient>
+                        </defs>
+                        <path d="M12 2L4 5V11C4 16 7.5 20 12 22C16.5 20 20 16 20 11V5L12 2Z"
+                            fill="url(#shieldGrad)"/>
+                        <path d="M9.5 12.5L11 14L14.5 10.5"
+                            stroke="white"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <span class="logo-text">SafeReport</span>
             </div>
-            <span class="logo-text">SafeReport</span>
+            
+            <div id="hamburgerDropdown" class="hamburger-menu-dropdown">
+                <ul class="sidebar-menu">
+                    <li class="menu-item">
+                        <a href="#" class="menu-link active" onclick="closeMenu()">
+                            <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <rect x="3" y="3" width="7" height="7"/>
+                                <rect x="14" y="3" width="7" height="7"/>
+                                <rect x="14" y="14" width="7" height="7"/>
+                                <rect x="3" y="14" width="7" height="7"/>
+                            </svg>
+                            Dashboard
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="submit-complaint.html" class="menu-link" onclick="closeMenu()">
+                            <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <circle cx="12" cy="12" r="10"/>
+                                <line x1="12" y1="8" x2="12" y2="12"/>
+                                <line x1="12" y1="16" x2="12.01" y2="16"/>
+                            </svg>
+                            Submit Complaint
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="my-complaint.html" class="menu-link" onclick="closeMenu()">
+                            <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                <polyline points="14 2 14 8 20 8"/>
+                            </svg>
+                            My Complaints
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="#" class="menu-link" onclick="closeMenu()">
+                            <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                                <circle cx="12" cy="7" r="4"/>
+                            </svg>
+                            My Profile
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="login.html" class="menu-link" onclick="logoutUser()">
+                            <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                                <polyline points="16 17 21 12 16 7"/>
+                                <line x1="21" y1="12" x2="9" y2="12"/>
+                            </svg>
+                            Logout
+                        </a>
+                    </li>
+                </ul>
+            </div>
         </div>
         
         <div class="topbar-right">
@@ -705,7 +975,7 @@
                 <span class="notification-badge">3</span>
             </div>
             
-            <div class="user-menu">
+            <div class="user-menu" onclick="toggleUserMenu()">
                 <div class="user-avatar">JD</div>
                 <div class="user-info">
                     <div class="user-name">Jane Doe</div>
@@ -714,88 +984,33 @@
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <polyline points="6 9 12 15 18 9"/>
                 </svg>
+                
+                <div id="userMenuDropdown" class="user-menu-dropdown">
+                    <a href="#" onclick="event.preventDefault();">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                            <circle cx="12" cy="7" r="4"/>
+                        </svg>
+                        My Profile
+                    </a>
+                    <a href="login.html" onclick="logoutUser()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                            <polyline points="16 17 21 12 16 7"/>
+                            <line x1="21" y1="12" x2="9" y2="12"/>
+                        </svg>
+                        Logout
+                    </a>
+                </div>
             </div>
         </div>
-    </div>
-
-    <!-- Sidebar -->
-    <div class="sidebar">
-        <ul class="sidebar-menu">
-            <li class="menu-item">
-                <a href="#" class="menu-link active">
-                    <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <rect x="3" y="3" width="7" height="7"/>
-                        <rect x="14" y="3" width="7" height="7"/>
-                        <rect x="14" y="14" width="7" height="7"/>
-                        <rect x="3" y="14" width="7" height="7"/>
-                    </svg>
-                    Dashboard
-                </a>
-            </li>
-            <li class="menu-item">
-                <a href="submit-complaint.html" class="menu-link">
-                    <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <circle cx="12" cy="12" r="10"/>
-                        <line x1="12" y1="8" x2="12" y2="12"/>
-                        <line x1="12" y1="16" x2="12.01" y2="16"/>
-                    </svg>
-                    Submit Complaint
-                </a>
-            </li>
-            <li class="menu-item">
-                <a href="#" class="menu-link">
-                    <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                        <polyline points="14 2 14 8 20 8"/>
-                    </svg>
-                    My Complaints
-                </a>
-            </li>
-            <li class="menu-item">
-                <a href="user-tracking.html" class="menu-link">
-                    <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
-                    </svg>
-                    Track Status
-                </a>
-            </li>
-            <li class="menu-item">
-                <a href="#" class="menu-link">
-                    <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
-                        <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
-                    </svg>
-                    Notifications
-                    <span class="menu-badge">3</span>
-                </a>
-            </li>
-            <li class="menu-item">
-                <a href="#" class="menu-link">
-                    <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                        <circle cx="12" cy="7" r="4"/>
-                    </svg>
-                    My Profile
-                </a>
-            </li>
-            <li class="menu-item">
-                <a href="#" class="menu-link">
-                    <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <circle cx="12" cy="12" r="10"/>
-                        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
-                        <line x1="12" y1="17" x2="12.01" y2="17"/>
-                    </svg>
-                    Help & Support
-                </a>
-            </li>
-        </ul>
     </div>
 
     <!-- Main Content -->
     <div class="main-content">
         <!-- Page Header -->
         <div class="page-header">
-            <h1 class="page-title">Welcome back, Jane! 👋</h1>
+            <h1 class="page-title">Welcome, <span id="welcomeName">User</span>! 👋</h1>
             <p class="page-subtitle">Here's what's happening with your complaints today</p>
         </div>
 
@@ -845,24 +1060,16 @@
                 <div class="action-card">
                     <div class="action-icon">➕</div>
                     <div class="action-content">
-                        <a href="submit-complaint.html" class="menu-link">New Complaint</a>
-                        <p>Submit a new complaint</p>
+                        <a href="submit-complaint.html" class="menu-link">Submit Complaint</a>
+                        <p>File a new complaint</p>
                     </div>
                 </div>
                 
                 <div class="action-card">
-                    <div class="action-icon">📍</div>
+                    <div class="action-icon">📄</div>
                     <div class="action-content">
-                        <a href="user-tracking.html" class="menu-link">Track Complaint</a>
-                        <p>View status updates</p>
-                    </div>
-                </div>
-                
-                <div class="action-card">
-                    <div class="action-icon">📎</div>
-                    <div class="action-content">
-                        <h3>Upload Evidence</h3>
-                        <p>Add supporting documents</p>
+                        <a href="my-complaint.html" class="menu-link">My Complaints</a>
+                        <p>View all your complaints</p>
                     </div>
                 </div>
             </div>
@@ -874,47 +1081,55 @@
             <div class="table-card">
                 <div class="table-header">
                     <div class="table-title">Your Complaints</div>
-                    <div style="position: relative;">
-    <button class="filter-btn" onclick="toggleFilter()">
-        <span>Filter</span>
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: inline; vertical-align: middle; margin-left: 5px;">
-            <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>
-        </svg>
-    </button>
+                    <div style="position: relative; display: inline-block;">
+                        <button class="filter-btn" onclick="toggleFilter()">
+                            <span>Filter</span>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: inline; vertical-align: middle; margin-left: 5px;">
+                                <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>
+                            </svg>
+                        </button>
 
-    <div id="filterPanel" style="
-        position:absolute;
-        right:0;
-        top:45px;
-        width:220px;
-        background:white;
-        border:1px solid var(--border);
-        border-radius:14px;
-        padding:18px;
-        box-shadow:0 15px 35px rgba(0,0,0,0.08);
-        display:none;
-        z-index:100;
-    ">
-        <label style="font-size:13px;font-weight:600;">Status</label>
-        <select id="statusFilter" style="width:100%;margin:8px 0 15px;padding:8px;border:1px solid var(--border);border-radius:8px;">
-            <option value="">All</option>
-            <option value="NEW">NEW</option>
-            <option value="IN PROGRESS">IN PROGRESS</option>
-            <option value="RESOLVED">RESOLVED</option>
-        </select>
+                        <div id="filterPanel" style="
+            position:absolute;
+            right:0;
+            top:100%;
+            min-width:220px;
+            background:white;
+            border:1px solid var(--border);
+            border-radius:14px;
+            padding:18px;
+            box-shadow:0 15px 35px rgba(0,0,0,0.08);
+            display:none;
+            z-index:2001;
+            margin-top:8px;
+            box-sizing:border-box;
+        ">
+                            <div style="margin-bottom:15px;">
+                                <label style="font-size:13px;font-weight:600;display:block;margin-bottom:8px;">Status</label>
+                                <select id="statusFilter" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:8px;box-sizing:border-box;">
+                                    <option value="">All</option>
+                                    <option value="NEW">NEW</option>
+                                    <option value="IN PROGRESS">IN PROGRESS</option>
+                                    <option value="RESOLVED">RESOLVED</option>
+                                </select>
+                            </div>
 
-        <label style="font-size:13px;font-weight:600;">Priority</label>
-        <select id="priorityFilter" style="width:100%;margin:8px 0 15px;padding:8px;border:1px solid var(--border);border-radius:8px;">
-            <option value="">All</option>
-            <option value="HIGH">HIGH</option>
-            <option value="MEDIUM">MEDIUM</option>
-            <option value="LOW">LOW</option>
-        </select>
+                            <div style="margin-bottom:15px;">
+                                <label style="font-size:13px;font-weight:600;display:block;margin-bottom:8px;">Priority</label>
+                                <select id="priorityFilter" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:8px;box-sizing:border-box;">
+                                    <option value="">All</option>
+                                    <option value="HIGH">HIGH</option>
+                                    <option value="MEDIUM">MEDIUM</option>
+                                    <option value="LOW">LOW</option>
+                                </select>
+                            </div>
 
-        <button onclick="applyFilter()" class="filter-btn" style="width:100%;margin-bottom:8px;">Apply</button>
-        <button onclick="resetFilter()" class="filter-btn" style="width:100%;">Reset</button>
-    </div>
-</div>
+                            <div style="display:flex;gap:8px;">
+                                <button onclick="applyFilter()" class="filter-btn" style="flex:1;padding:10px;border:1px solid var(--border);border-radius:8px;background:white;cursor:pointer;">Apply</button>
+                                <button onclick="resetFilter()" class="filter-btn" style="flex:1;padding:10px;border:1px solid var(--border);border-radius:8px;background:white;cursor:pointer;">Reset</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <table>
                     <thead>
@@ -1040,6 +1255,7 @@ window.addEventListener("load", function(){
 
         document.querySelector(".user-name").innerText = currentUser.fullname;
         document.querySelector(".user-role").innerText = currentUser.role;
+        document.getElementById("welcomeName").innerText = currentUser.fullname.split(" ")[0];
 
         const initials = currentUser.fullname
             .split(" ")
@@ -1088,6 +1304,196 @@ window.addEventListener("load", function(){
 
     table.appendChild(tbody);
 });
+
+/* ================= AUTO UPDATE DASHBOARD COUNTS ================= */
+
+function updateDashboardStats() {
+
+    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+    const complaints = JSON.parse(localStorage.getItem("complaints")) || [];
+
+    if (!currentUser) return;
+
+    const userComplaints = complaints.filter(c => 
+        c.userEmail === currentUser.email
+    );
+
+    const total = userComplaints.length;
+
+    const pending = userComplaints.filter(c => 
+        c.status === "NEW" || c.status === "UNDER_REVIEW"
+    ).length;
+
+    const inProgress = userComplaints.filter(c => 
+        c.status === "IN_PROGRESS" || c.status === "IN PROGRESS"
+    ).length;
+
+    const resolved = userComplaints.filter(c => 
+        c.status === "RESOLVED"
+    ).length;
+
+    // Update stat numbers
+    const statNumbers = document.querySelectorAll(".stat-number");
+
+    if (statNumbers.length >= 4) {
+        statNumbers[0].innerText = total;
+        statNumbers[1].innerText = pending;
+        statNumbers[2].innerText = inProgress;
+        statNumbers[3].innerText = resolved;
+    }
+}
+
+
+/* ================= AUTO REFRESH TABLE ================= */
+
+function refreshComplaintTable() {
+
+    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+    const complaints = JSON.parse(localStorage.getItem("complaints")) || [];
+
+    if (!currentUser) return;
+
+    const userComplaints = complaints.filter(c => 
+        c.userEmail === currentUser.email
+    );
+
+    const table = document.querySelector("table");
+
+    // Remove old tbody if exists
+    const oldTbody = table.querySelector("tbody");
+    if (oldTbody) oldTbody.remove();
+
+    const tbody = document.createElement("tbody");
+
+    userComplaints.forEach(c => {
+
+        const row = document.createElement("tr");
+
+        // Status class dynamic
+        let statusClass = "status-new";
+        if (c.status === "IN_PROGRESS" || c.status === "IN PROGRESS")
+            statusClass = "status-progress";
+        if (c.status === "RESOLVED")
+            statusClass = "status-resolved";
+
+        row.innerHTML = `
+            <td class="complaint-id">#${c.id}</td>
+            <td>${c.subject}</td>
+            <td>${c.category}</td>
+            <td>${c.date}</td>
+            <td><span class="status-badge ${statusClass}">${c.status}</span></td>
+            <td class="priority-${c.priority.toLowerCase()}">${c.priority}</td>
+            <td><button class="action-btn">View</button></td>
+        `;
+
+        tbody.appendChild(row);
+    });
+
+    table.appendChild(tbody);
+}
+
+
+/* ================= RUN ON PAGE LOAD ================= */
+
+window.addEventListener("load", function () {
+    updateDashboardStats();
+    refreshComplaintTable();
+});
+
+
+/* ================= AUTO REFRESH WHEN PAGE RE-OPENS ================= */
+
+window.addEventListener("focus", function () {
+    updateDashboardStats();
+    refreshComplaintTable();
+});
+
+/* ================= LISTEN FOR COMPLAINT SUBMISSION ================= */
+
+window.addEventListener("complaintsUpdated", function (event) {
+    console.log("Complaint submitted. Refreshing dashboard...");
+    updateDashboardStats();
+    refreshComplaintTable();
+});
+
+/* ================= REAL-TIME AUTO REFRESH (NO RELOAD) ================= */
+
+// Detect localStorage changes from other pages
+window.addEventListener("storage", function (event) {
+
+    if (event.key === "complaints") {
+        console.log("Complaints updated. Refreshing dashboard...");
+        updateDashboardStats();
+        refreshComplaintTable();
+    }
+
+});
+
+
+/* ================= AUTO REFRESH EVEN IN SAME TAB ================= */
+
+// This handles case where complaint is submitted
+// and user comes back using navigation (without reload)
+
+document.addEventListener("visibilitychange", function () {
+    if (!document.hidden) {
+        updateDashboardStats();
+        refreshComplaintTable();
+    }
+});
+
+
+/* ================= OPTIONAL: SMART AUTO POLLING (ULTRA REAL-TIME) ================= */
+
+// If you want dashboard to auto-check every 3 seconds
+// (works even if no storage event triggered)
+
+setInterval(function () {
+    updateDashboardStats();
+    refreshComplaintTable();
+}, 3000);
+
+/* ================= HAMBURGER MENU TOGGLE ================= */
+
+function toggleMenu() {
+    const dropdown = document.getElementById("hamburgerDropdown");
+    dropdown.classList.toggle("active");
+}
+
+function closeMenu() {
+    const dropdown = document.getElementById("hamburgerDropdown");
+    dropdown.classList.remove("active");
+}
+
+// Close menu when clicking outside
+document.addEventListener("click", function(event) {
+    const hamburgerMenu = document.querySelector(".hamburger-menu");
+    const dropdown = document.getElementById("hamburgerDropdown");
+    const userMenu = document.querySelector(".user-menu");
+    const userMenuDropdown = document.getElementById("userMenuDropdown");
+    
+    if (!hamburgerMenu.contains(event.target)) {
+        dropdown.classList.remove("active");
+    }
+    
+    if (!userMenu.contains(event.target)) {
+        userMenuDropdown.classList.remove("active");
+    }
+});
+
+/* ================= USER MENU TOGGLE ================= */
+
+function toggleUserMenu() {
+    const dropdown = document.getElementById("userMenuDropdown");
+    dropdown.classList.toggle("active");
+}
+
+/* ================= LOGOUT FUNCTION ================= */
+
+function logoutUser() {
+    localStorage.removeItem("currentUser");
+    window.location.href = "login.html";
+}
 
     </script>
 </body>

@@ -47,7 +47,7 @@
             border-bottom: 1px solid var(--border);
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            justify-content: flex-start;
             padding: 0 30px;
             z-index: 1000;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
@@ -83,25 +83,108 @@
             background-clip: text;
         }
         
-        .back-btn {
+        /* Hamburger Menu */
+        .hamburger-menu {
             display: flex;
             align-items: center;
-            gap: 8px;
-            padding: 10px 20px;
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            background: var(--white);
-            color: var(--text);
-            font-size: 14px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
+            gap: 20px;
+            position: relative;
         }
         
-        .back-btn:hover {
+        .hamburger-btn {
+            display: flex;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .hamburger-btn:hover {
             background: var(--bg);
-            transform: translateX(-3px);
+        }
+        
+        .hamburger-btn svg {
+            width: 24px;
+            height: 24px;
+            stroke: var(--text);
+            stroke-width: 2;
+        }
+        
+        .hamburger-menu-dropdown {
+            position: fixed;
+            top: 70px;
+            left: 0;
+            background: var(--white);
+            border-right: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            border-bottom-right-radius: 12px;
+            width: 260px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            z-index: 999;
+        }
+        
+        .hamburger-menu-dropdown.active {
+            max-height: 600px;
+            padding: 15px 0;
+        }
+        
+        .hamburger-menu-dropdown .sidebar-menu {
+            list-style: none;
+        }
+        
+        .hamburger-menu-dropdown .menu-item {
+            margin: 5px 15px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+        
+        .hamburger-menu-dropdown .menu-link {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 14px 18px;
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 500;
+            border-radius: 12px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+        
+        .hamburger-menu-dropdown .menu-link::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 0 4px 4px 0;
+            transform: scaleY(0);
+            transition: transform 0.3s ease;
+        }
+        
+        .hamburger-menu-dropdown .menu-link:hover {
+            color: var(--primary);
+            background: rgba(99, 102, 241, 0.05);
+            transform: translateX(5px);
+        }
+        
+        .hamburger-menu-dropdown .menu-link.active {
+            color: var(--primary);
+            background: rgba(99, 102, 241, 0.1);
+            font-weight: 600;
+        }
+        
+        .hamburger-menu-dropdown .menu-link.active::before {
+            transform: scaleY(1);
         }
         
         /* Sidebar */
@@ -179,11 +262,14 @@
         
         /* Main Content */
         .main-content {
-            margin-left: 260px;
-            margin-top: 70px;
+            margin: 70px auto 0;
             padding: 40px;
             min-height: calc(100vh - 70px);
-            max-width: 1200px;
+            width: 100%;
+            max-width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
         
         /* Progress Steps */
@@ -192,6 +278,8 @@
             justify-content: center;
             margin-bottom: 50px;
             animation: fadeInUp 0.6s ease;
+            width: 100%;
+            max-width: 900px;
         }
         
         .step {
@@ -261,6 +349,8 @@
             gap: 25px;
             animation: fadeInUp 0.6s ease 0.2s both;
             transition: all 0.4s ease;
+            width: 100%;
+            max-width: 900px;
         }
         
         .anonymous-banner:hover {
@@ -348,6 +438,8 @@
             padding: 40px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
             animation: fadeInUp 0.6s ease 0.3s both;
+            width: 100%;
+            max-width: 900px;
         }
         
         .form-section {
@@ -712,12 +804,7 @@
         }
         
         @media (max-width: 768px) {
-            .sidebar {
-                transform: translateX(-100%);
-            }
-            
             .main-content {
-                margin-left: 0;
                 padding: 25px 20px;
             }
             
@@ -740,78 +827,71 @@
 <body>
     <!-- Topbar -->
     <div class="topbar">
-        <div class="logo-section">
-            <div class="logo-icon">
-                <svg viewBox="0 0 24 24" fill="none">
-                    <defs>
-                        <linearGradient id="shieldGrad" x1="0" y1="0" x2="1" y2="1">
-                            <stop offset="0%" stop-color="#6366f1"/>
-                            <stop offset="100%" stop-color="#8b5cf6"/>
-                        </linearGradient>
-                    </defs>
-                    <path d="M12 2L4 5V11C4 16 7.5 20 12 22C16.5 20 20 16 20 11V5L12 2Z"
-                        fill="url(#shieldGrad)"/>
-                    <path d="M9.5 12.5L11 14L14.5 10.5"
-                        stroke="white"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"/>
+        <div class="hamburger-menu">
+            <button class="hamburger-btn" onclick="toggleMenu()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <line x1="3" y1="6" x2="21" y2="6"/>
+                    <line x1="3" y1="12" x2="21" y2="12"/>
+                    <line x1="3" y1="18" x2="21" y2="18"/>
                 </svg>
+            </button>
+            
+            <div class="logo-section">
+                <div class="logo-icon">
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <defs>
+                            <linearGradient id="shieldGrad" x1="0" y1="0" x2="1" y2="1">
+                                <stop offset="0%" stop-color="#6366f1"/>
+                                <stop offset="100%" stop-color="#8b5cf6"/>
+                            </linearGradient>
+                        </defs>
+                        <path d="M12 2L4 5V11C4 16 7.5 20 12 22C16.5 20 20 16 20 11V5L12 2Z"
+                            fill="url(#shieldGrad)"/>
+                        <path d="M9.5 12.5L11 14L14.5 10.5"
+                            stroke="white"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <span class="logo-text">SafeReport</span>
             </div>
-            <span class="logo-text">SafeReport</span>
+            
+            <div id="hamburgerDropdown" class="hamburger-menu-dropdown">
+                <ul class="sidebar-menu">
+                    <li class="menu-item">
+                        <a href="user-dashboard.html" class="menu-link" onclick="closeMenu()">
+                            <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <rect x="3" y="3" width="7" height="7"/>
+                                <rect x="14" y="3" width="7" height="7"/>
+                                <rect x="14" y="14" width="7" height="7"/>
+                                <rect x="3" y="14" width="7" height="7"/>
+                            </svg>
+                            Dashboard
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="submit-complaint.html" class="menu-link active" onclick="closeMenu()">
+                            <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <circle cx="12" cy="12" r="10"/>
+                                <line x1="12" y1="8" x2="12" y2="12"/>
+                                <line x1="12" y1="16" x2="12.01" y2="16"/>
+                            </svg>
+                            Submit Complaint
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="my-complaint.html" class="menu-link" onclick="closeMenu()">
+                            <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                <polyline points="14 2 14 8 20 8"/>
+                            </svg>
+                            My Complaints
+                        </a>
+                    </li>
+                </ul>
+            </div>
         </div>
-        
-        <a href="user-dashboard.html" class="back-btn">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <line x1="19" y1="12" x2="5" y2="12"/>
-                <polyline points="12 19 5 12 12 5"/>
-            </svg>
-            Back to Dashboard
-        </a>
-    </div>
-
-    <!-- Sidebar -->
-    <div class="sidebar">
-        <ul class="sidebar-menu">
-            <li class="menu-item">
-                <a href="user-dashboard.html" class="menu-link">
-                    <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <rect x="3" y="3" width="7" height="7"/>
-                        <rect x="14" y="3" width="7" height="7"/>
-                        <rect x="14" y="14" width="7" height="7"/>
-                        <rect x="3" y="14" width="7" height="7"/>
-                    </svg>
-                    Dashboard
-                </a>
-            </li>
-            <li class="menu-item">
-                <a href="#" class="menu-link active">
-                    <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <circle cx="12" cy="12" r="10"/>
-                        <line x1="12" y1="8" x2="12" y2="12"/>
-                        <line x1="12" y1="16" x2="12.01" y2="16"/>
-                    </svg>
-                    Submit Complaint
-                </a>
-            </li>
-            <li class="menu-item">
-                <a href="#" class="menu-link">
-                    <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                        <polyline points="14 2 14 8 20 8"/>
-                    </svg>
-                    My Complaints
-                </a>
-            </li>
-            <li class="menu-item">
-                <a href="#" class="menu-link">
-                    <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
-                    </svg>
-                    Track Status
-                </a>
-            </li>
-        </ul>
     </div>
 
     <!-- Main Content -->
@@ -850,147 +930,192 @@
         <!-- Form Card -->
         <div class="form-card">
             <form id="complaintForm">
-                <!-- Basic Information -->
-                <div class="form-section">
-                    <div class="section-title">
-                        <span class="section-icon">📋</span>
-                        Basic Information
-                    </div>
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label class="form-label">
-                                Complaint Category
-                                <span class="required">*</span>
-                            </label>
-                            <select class="form-select" required>
-                                <option value="">Select category</option>
-                                <option value="sexual">Sexual Harassment</option>
-                                <option value="verbal">Verbal Abuse</option>
-                                <option value="physical">Physical Assault</option>
-                                <option value="stalking">Stalking</option>
-                                <option value="discrimination">Discrimination</option>
-                                <option value="other">Other</option>
-                            </select>
+                <!-- STEP 1: Basic Information & Incident Details -->
+                <div class="form-step" id="step1" style="display: block;">
+                    <!-- Basic Information -->
+                    <div class="form-section">
+                        <div class="section-title">
+                            <span class="section-icon">📋</span>
+                            Basic Information
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">
+                                    Complaint Category
+                                    <span class="required">*</span>
+                                </label>
+                                <select class="form-select category-select" required>
+                                    <option value="">Select category</option>
+                                    <option value="sexual">Sexual Harassment</option>
+                                    <option value="verbal">Verbal Abuse</option>
+                                    <option value="physical">Physical Assault</option>
+                                    <option value="stalking">Stalking</option>
+                                    <option value="discrimination">Discrimination</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">
+                                    Priority Level
+                                    <span class="required">*</span>
+                                </label>
+                                <select class="form-select priority-select" required>
+                                    <option value="">Select priority</option>
+                                    <option value="low">Low</option>
+                                    <option value="medium">Medium</option>
+                                    <option value="high">High</option>
+                                    <option value="critical">Critical</option>
+                                </select>
+                            </div>
                         </div>
                         
                         <div class="form-group">
                             <label class="form-label">
-                                Priority Level
+                                Subject
                                 <span class="required">*</span>
                             </label>
-                            <select class="form-select" required>
-                                <option value="">Select priority</option>
-                                <option value="low">Low</option>
-                                <option value="medium">Medium</option>
-                                <option value="high">High</option>
-                                <option value="critical">Critical</option>
-                            </select>
+                            <input type="text" class="form-input subject-input" placeholder="Brief description of the incident" required>
+                            <div class="form-hint">Provide a concise summary (50-100 characters)</div>
                         </div>
                     </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">
-                            Subject
-                            <span class="required">*</span>
-                        </label>
-                        <input type="text" class="form-input" placeholder="Brief description of the incident" required>
-                        <div class="form-hint">Provide a concise summary (50-100 characters)</div>
-                    </div>
-                </div>
 
-                <!-- Incident Details -->
-                <div class="form-section">
-                    <div class="section-title">
-                        <span class="section-icon">📝</span>
-                        Incident Details
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">
-                            Detailed Description
-                            <span class="required">*</span>
-                        </label>
-                        <textarea class="form-textarea" placeholder="Please provide a detailed account of what happened..." required></textarea>
-                        <div class="form-hint">Include when, where, what happened, and any witnesses</div>
-                    </div>
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label class="form-label">
-                                Location
-                                <span class="required">*</span>
-                            </label>
-                            <input type="text" class="form-input" placeholder="Where did this occur?" required>
+                    <!-- Incident Details -->
+                    <div class="form-section">
+                        <div class="section-title">
+                            <span class="section-icon">📝</span>
+                            Incident Details
                         </div>
                         
                         <div class="form-group">
                             <label class="form-label">
-                                Date of Incident
+                                Detailed Description
                                 <span class="required">*</span>
                             </label>
-                            <input type="date" class="form-input" required>
+                            <textarea class="form-textarea description-input" placeholder="Please provide a detailed account of what happened..." required></textarea>
+                            <div class="form-hint">Include when, where, what happened, and any witnesses</div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">
+                                    Location
+                                    <span class="required">*</span>
+                                </label>
+                                <input type="text" class="form-input location-input" placeholder="Where did this occur?" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">
+                                    Date of Incident
+                                    <span class="required">*</span>
+                                </label>
+                                <input type="date" class="form-input date-input" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Time of Incident (Optional)</label>
+                            <input type="time" class="form-input time-input">
                         </div>
                     </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">Time of Incident (Optional)</label>
-                        <input type="time" class="form-input">
+
+                    <!-- Step 1 Actions -->
+                    <div class="form-actions">
+                        <a href="user-dashboard.html" class="btn btn-secondary">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="19" y1="12" x2="5" y2="12"/>
+                                <polyline points="12 19 5 12 12 5"/>
+                            </svg>
+                            Back
+                        </a>
+                        <button type="button" class="btn btn-primary" onclick="goToStep(2)">
+                            Next
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="5" y1="12" x2="19" y2="12"/>
+                                <polyline points="12 5 19 12 12 19"/>
+                            </svg>
+                        </button>
                     </div>
                 </div>
 
-                <!-- Evidence Upload -->
-                <div class="form-section">
-                    <div class="section-title">
-                        <span class="section-icon">📎</span>
-                        Evidence & Attachments
+                <!-- STEP 2: Evidence & Attachments (Optional) -->
+                <div class="form-step" id="step2" style="display: none;">
+                    <div class="form-section">
+                        <div class="section-title">
+                            <span class="section-icon">📎</span>
+                            Upload Evidence (Optional)
+                        </div>
+                        <p style="font-size: 14px; color: var(--text-light); margin-bottom: 25px;">
+                            Attach supporting documents, images, videos, or audio files. This is optional and can be skipped.
+                        </p>
+                        
+                        <div class="upload-area" id="uploadArea">
+                            <div class="upload-icon">📁</div>
+                            <div class="upload-text">Click to upload or drag and drop</div>
+                            <div class="upload-hint">PDF, Images, Videos, Audio (Max 10MB per file)</div>
+                            <input type="file" id="fileInput" multiple accept=".pdf,.jpg,.jpeg,.png,.mp4,.mp3">
+                        </div>
+                        
+                        <div class="uploaded-files" id="uploadedFiles"></div>
                     </div>
-                    
-                    <div class="upload-area" id="uploadArea">
-                        <div class="upload-icon">📁</div>
-                        <div class="upload-text">Click to upload or drag and drop</div>
-                        <div class="upload-hint">PDF, Images, Videos, Audio (Max 10MB per file)</div>
-                        <input type="file" id="fileInput" multiple accept=".pdf,.jpg,.jpeg,.png,.mp4,.mp3">
+
+                    <!-- Step 2 Actions -->
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" onclick="goToStep(1)">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="19" y1="12" x2="5" y2="12"/>
+                                <polyline points="12 19 5 12 12 5"/>
+                            </svg>
+                            Back
+                        </button>
+                        <button type="button" class="btn btn-secondary" onclick="goToStep(3)">
+                            Skip
+                        </button>
+                        <button type="button" class="btn btn-primary" onclick="goToStep(3)">
+                            Next
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="5" y1="12" x2="19" y2="12"/>
+                                <polyline points="12 5 19 12 12 19"/>
+                            </svg>
+                        </button>
                     </div>
-                    
-                    <div class="uploaded-files" id="uploadedFiles"></div>
                 </div>
 
-                <!-- Additional Information -->
-                <div class="form-section">
-                    <div class="section-title">
-                        <span class="section-icon">ℹ️</span>
-                        Additional Information
+                <!-- STEP 3: Review & Submit -->
+                <div class="form-step" id="step3" style="display: none;">
+                    <div class="form-section">
+                        <div class="section-title">
+                            <span class="section-icon">✓</span>
+                            Review Your Complaint
+                        </div>
+                        <p style="font-size: 14px; color: var(--text-light); margin-bottom: 25px;">
+                            Please review your information before submitting.
+                        </p>
                     </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">Witnesses (Optional)</label>
-                        <textarea class="form-textarea" placeholder="Names and contact information of any witnesses" style="min-height: 100px;"></textarea>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">Additional Notes (Optional)</label>
-                        <textarea class="form-textarea" placeholder="Any other relevant information" style="min-height: 100px;"></textarea>
-                    </div>
-                </div>
 
-                <!-- Form Actions -->
-                <div class="form-actions">
-                    <button type="button" class="btn btn-secondary">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
-                            <polyline points="17 21 17 13 7 13 7 21"/>
-                            <polyline points="7 3 7 8 15 8"/>
-                        </svg>
-                        Save Draft
-                    </button>
-                    <button type="submit" class="btn btn-primary">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <polyline points="9 11 12 14 22 4"/>
-                            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
-                        </svg>
-                        Submit Complaint
-                    </button>
+                    <div id="reviewContent" style="background: var(--bg); border-radius: 12px; padding: 25px; margin-bottom: 25px;">
+                        <!-- Review content will be populated by JavaScript -->
+                    </div>
+
+                    <!-- Step 3 Actions -->
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" onclick="goToStep(2)">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="19" y1="12" x2="5" y2="12"/>
+                                <polyline points="12 19 5 12 12 5"/>
+                            </svg>
+                            Back
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="9 11 12 14 22 4"/>
+                                <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+                            </svg>
+                            Submit Complaint
+                        </button>
+                    </div>
                 </div>
             </form>
         </div>
@@ -1010,122 +1135,361 @@
     </div>
 
     <script>
+        let currentStep = 1;
+        let uploadedFiles = [];
+
+        // Initialize progress steps on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            updateProgressSteps(1);
+        });
+
+        // Calculate target resolution date based on priority
+        function calculateTargetDate(priority) {
+            const date = new Date();
+            switch(priority.toLowerCase()) {
+                case 'urgent':
+                    date.setDate(date.getDate() + 7);
+                    break;
+                case 'high':
+                    date.setDate(date.getDate() + 14);
+                    break;
+                case 'medium':
+                    date.setDate(date.getDate() + 30);
+                    break;
+                case 'low':
+                    date.setDate(date.getDate() + 45);
+                    break;
+                default:
+                    date.setDate(date.getDate() + 30);
+            }
+            return date.toISOString();
+        }
+
+        // Get form values
+        function getFormData() {
+            return {
+                category: document.querySelector('.category-select').value,
+                priority: document.querySelector('.priority-select').value,
+                subject: document.querySelector('.subject-input').value,
+                description: document.querySelector('.description-input').value,
+                location: document.querySelector('.location-input').value,
+                date: document.querySelector('.date-input').value,
+                time: document.querySelector('.time-input').value,
+                files: uploadedFiles
+            };
+        }
+
+        // Validate Step 1
+        function validateStep1() {
+            const category = document.querySelector('.category-select').value;
+            const priority = document.querySelector('.priority-select').value;
+            const subject = document.querySelector('.subject-input').value;
+            const description = document.querySelector('.description-input').value;
+            const location = document.querySelector('.location-input').value;
+            const date = document.querySelector('.date-input').value;
+
+            if (!category || !priority || !subject || !description || !location || !date) {
+                alert('Please fill in all required fields');
+                return false;
+            }
+            if (subject.length < 10) {
+                alert('Subject must be at least 10 characters');
+                return false;
+            }
+            return true;
+        }
+
+        // Go to specific step
+        function goToStep(step) {
+            // Validate current step before moving
+            if (currentStep === 1 && step > 1) {
+                if (!validateStep1()) return;
+            }
+
+            // Hide all steps
+            document.getElementById('step1').style.display = 'none';
+            document.getElementById('step2').style.display = 'none';
+            document.getElementById('step3').style.display = 'none';
+
+            // Show target step
+            currentStep = step;
+            document.getElementById(`step${step}`).style.display = 'block';
+
+            // Update progress indicator
+            updateProgressSteps(step);
+
+            // If going to step 3, generate review
+            if (step === 3) {
+                generateReview();
+            }
+
+            // Scroll to top of form
+            document.querySelector('.form-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        // Update progress steps UI
+        function updateProgressSteps(currentStepNum) {
+            const stepElements = document.querySelectorAll('.progress-steps .step');
+            stepElements.forEach((stepEl, index) => {
+                const stepNum = index + 1;
+                // Remove all classes
+                stepEl.classList.remove('active', 'completed');
+                
+                // Add appropriate class
+                if (stepNum === currentStepNum) {
+                    stepEl.classList.add('active');
+                } else if (stepNum < currentStepNum) {
+                    stepEl.classList.add('completed');
+                }
+            });
+        }
+
+        // Generate review content
+        function generateReview() {
+            const data = getFormData();
+            const reviewContent = document.getElementById('reviewContent');
+
+            let html = `
+                <div style="margin-bottom: 20px;">
+                    <h4 style="color: var(--primary); margin-bottom: 10px; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px;">Basic Information</h4>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <div>
+                            <p style="font-size: 12px; color: var(--text-light); margin-bottom: 5px;">Category</p>
+                            <p style="font-weight: 600; color: var(--text-dark);">${data.category}</p>
+                        </div>
+                        <div>
+                            <p style="font-size: 12px; color: var(--text-light); margin-bottom: 5px;">Priority Level</p>
+                            <p style="font-weight: 600; color: var(--text-dark);">${data.priority}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 20px; padding: 15px; background: var(--bg-light); border-radius: 8px;">
+                    <h4 style="color: var(--primary); margin-bottom: 10px; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px;">Subject</h4>
+                    <p style="color: var(--text-dark);">${data.subject}</p>
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <h4 style="color: var(--primary); margin-bottom: 10px; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px;">Incident Details</h4>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                        <div>
+                            <p style="font-size: 12px; color: var(--text-light); margin-bottom: 5px;">Location</p>
+                            <p style="font-weight: 600; color: var(--text-dark);">${data.location}</p>
+                        </div>
+                        <div>
+                            <p style="font-size: 12px; color: var(--text-light); margin-bottom: 5px;">Date</p>
+                            <p style="font-weight: 600; color: var(--text-dark);">${new Date(data.date).toLocaleDateString()}</p>
+                        </div>
+                    </div>
+                    ${data.time ? `<div style="margin-bottom: 15px;">
+                        <p style="font-size: 12px; color: var(--text-light); margin-bottom: 5px;">Time</p>
+                        <p style="font-weight: 600; color: var(--text-dark);">${data.time}</p>
+                    </div>` : ''}
+                </div>
+
+                <div style="margin-bottom: 20px; padding: 15px; background: var(--bg-light); border-radius: 8px;">
+                    <h4 style="color: var(--primary); margin-bottom: 10px; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px;">Description</h4>
+                    <p style="color: var(--text-dark); line-height: 1.6; white-space: pre-wrap;">${data.description}</p>
+                </div>
+            `;
+
+            if (data.files.length > 0) {
+                html += `
+                    <div style="margin-bottom: 20px;">
+                        <h4 style="color: var(--primary); margin-bottom: 10px; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px;">Evidence Files (${data.files.length})</h4>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px;">
+                            ${data.files.map(file => `
+                                <div style="padding: 10px; background: var(--bg-light); border-radius: 8px; text-align: center;">
+                                    <div style="font-size: 24px; margin-bottom: 5px;">📎</div>
+                                    <p style="font-size: 11px; color: var(--text-light); word-break: break-all;">${file.name}</p>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            reviewContent.innerHTML = html;
+        }
+
         // File Upload Handling
         const uploadArea = document.getElementById('uploadArea');
         const fileInput = document.getElementById('fileInput');
-        const uploadedFiles = document.getElementById('uploadedFiles');
-        let files = [];
-
-        uploadArea.addEventListener('click', () => fileInput.click());
 
         uploadArea.addEventListener('dragover', (e) => {
             e.preventDefault();
-            uploadArea.classList.add('dragover');
+            uploadArea.style.borderColor = 'var(--primary)';
+            uploadArea.style.backgroundColor = 'rgba(59, 130, 246, 0.05)';
         });
 
         uploadArea.addEventListener('dragleave', () => {
-            uploadArea.classList.remove('dragover');
+            uploadArea.style.borderColor = 'var(--border)';
+            uploadArea.style.backgroundColor = 'transparent';
         });
 
         uploadArea.addEventListener('drop', (e) => {
             e.preventDefault();
-            uploadArea.classList.remove('dragover');
+            uploadArea.style.borderColor = 'var(--border)';
+            uploadArea.style.backgroundColor = 'transparent';
             handleFiles(e.dataTransfer.files);
         });
+
+        uploadArea.addEventListener('click', () => fileInput.click());
 
         fileInput.addEventListener('change', (e) => {
             handleFiles(e.target.files);
         });
 
-        function handleFiles(newFiles) {
-            Array.from(newFiles).forEach(file => {
+        function handleFiles(files) {
+            for (let file of files) {
                 if (file.size > 10 * 1024 * 1024) {
-                    alert('File size must be less than 10MB');
-                    return;
+                    alert(`File "${file.name}" exceeds 10MB limit`);
+                    continue;
                 }
-                files.push(file);
-                displayFile(file);
+                
+                const allowedTypes = ['application/pdf', 'image/jpeg', 'image/png', 'video/mp4', 'audio/mpeg'];
+                if (!allowedTypes.includes(file.type)) {
+                    alert(`File "${file.name}" is not allowed. Please upload PDF, Images, Videos, or Audio files`);
+                    continue;
+                }
+
+                uploadedFiles.push(file);
+            }
+            displayUploadedFiles();
+        }
+
+        function displayUploadedFiles() {
+            const container = document.getElementById('uploadedFiles');
+            if (uploadedFiles.length === 0) {
+                container.innerHTML = '';
+                return;
+            }
+
+            container.innerHTML = '<div style="margin-top: 20px;"><h4 style="margin-bottom: 15px; color: var(--text-dark);">Uploaded Files</h4>' +
+                uploadedFiles.map((file, index) => `
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: var(--bg-light); border-radius: 8px; margin-bottom: 10px;">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <span style="font-size: 20px;">📎</span>
+                            <div>
+                                <p style="font-weight: 600; color: var(--text-dark); word-break: break-all;">${file.name}</p>
+                                <p style="font-size: 12px; color: var(--text-light);">${(file.size / 1024).toFixed(2)} KB</p>
+                            </div>
+                        </div>
+                        <button type="button" onclick="removeFile(${index})" style="background: none; border: none; color: var(--error); cursor: pointer; padding: 8px; display: flex; align-items: center; justify-content: center;">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"/>
+                                <line x1="15" y1="9" x2="9" y2="15"/>
+                                <line x1="9" y1="9" x2="15" y2="15"/>
+                            </svg>
+                        </button>
+                    </div>
+                `).join('') + '</div>';
+        }
+
+        function removeFile(index) {
+            uploadedFiles.splice(index, 1);
+            displayUploadedFiles();
+        }
+
+        // Form Submission
+        document.getElementById('complaintForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            if (!validateStep1()) return;
+
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            if (!currentUser) {
+                alert('Please login first');
+                window.location.href = 'login.html';
+                return;
+            }
+
+            const formData = getFormData();
+            
+            const complaint = {
+                id: Date.now(),
+                userEmail: currentUser.email,
+                category: formData.category,
+                priority: formData.priority,
+                subject: formData.subject,
+                description: formData.description,
+                location: formData.location,
+                date: formData.date,
+                time: formData.time,
+                status: 'NEW',
+                createdAt: new Date().toISOString(),
+                fileCount: uploadedFiles.length,
+                files: uploadedFiles.map(f => ({
+                    name: f.name,
+                    size: f.size,
+                    type: f.type,
+                    data: f.data
+                })),
+                statusHistory: [
+                    {
+                        status: 'NEW',
+                        timestamp: new Date().toISOString(),
+                        description: 'Complaint submitted successfully',
+                        assignedTo: null,
+                        notes: null
+                    }
+                ],
+                assignedAuthority: null,
+                targetResolutionDate: calculateTargetDate(formData.priority),
+                trackingUpdates: []
+            };
+
+            // Get existing complaints
+            let complaints = JSON.parse(localStorage.getItem('complaints')) || [];
+            complaints.push(complaint);
+            
+            // Save to localStorage
+            localStorage.setItem('complaints', JSON.stringify(complaints));
+            
+            // Trigger storage event to update other tabs
+            const storageEvent = new StorageEvent('storage', {
+                key: 'complaints',
+                newValue: JSON.stringify(complaints),
+                oldValue: null,
+                storageArea: localStorage,
+                url: window.location.href
+            });
+            window.dispatchEvent(storageEvent);
+            
+            // Trigger custom event to update same tab
+            const customEvent = new CustomEvent('complaintsUpdated', { detail: complaint });
+            window.dispatchEvent(customEvent);
+            
+            // Show success modal
+            showSuccessModal();
+
+            // Clear form
+            uploadedFiles = [];
+            document.getElementById('complaintForm').reset();
+            currentStep = 1;
+            document.getElementById('step1').style.display = 'block';
+            document.getElementById('step2').style.display = 'none';
+            document.getElementById('step3').style.display = 'none';
+        });
+
+        function showSuccessModal() {
+            const modal = document.getElementById('successModal');
+            if (modal) {
+                modal.style.display = 'flex';
+                setTimeout(() => {
+                    window.location.href = 'user-dashboard.html';
+                }, 3000);
+            }
+        }
+
+        // Close modal on button click
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        if (closeModalBtn) {
+            closeModalBtn.addEventListener('click', () => {
+                document.getElementById('successModal').style.display = 'none';
+                window.location.href = 'user-dashboard.html';
             });
         }
-
-        function displayFile(file) {
-            const fileItem = document.createElement('div');
-            fileItem.className = 'file-item';
-            fileItem.innerHTML = `
-                <div class="file-icon">📄</div>
-                <div class="file-info">
-                    <div class="file-name">${file.name}</div>
-                    <div class="file-size">${(file.size / 1024).toFixed(1)} KB</div>
-                </div>
-                <button class="file-remove" onclick="removeFile(this, '${file.name}')">×</button>
-            `;
-            uploadedFiles.appendChild(fileItem);
-        }
-
-        function removeFile(button, fileName) {
-            files = files.filter(f => f.name !== fileName);
-            button.closest('.file-item').remove();
-        }
-
-        /* ================= STORE COMPLAINT ================= */
-
-document.getElementById('complaintForm').addEventListener('submit', (e) => {
-    e.preventDefault();
-
-    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-
-    if(!currentUser){
-        alert("Session expired. Please login again.");
-        window.location.href = "login.html";
-        return;
-    }
-
-    // Get form values
-    const category = document.querySelectorAll(".form-select")[0].value;
-    const priority = document.querySelectorAll(".form-select")[1].value;
-    const subject = document.querySelectorAll(".form-input")[0].value;
-    const description = document.querySelectorAll(".form-textarea")[0].value;
-    const location = document.querySelectorAll(".form-input")[1].value;
-    const date = document.querySelectorAll(".form-input")[2].value;
-    const time = document.querySelectorAll(".form-input")[3].value;
-    const anonymous = document.getElementById("anonymousToggle").checked;
-
-    if(!category || !priority || !subject || !description || !location || !date){
-        alert("Please fill all required fields");
-        return;
-    }
-
-    let complaints = JSON.parse(localStorage.getItem("complaints")) || [];
-
-    const complaintId = "C" + Date.now();
-
-    const newComplaint = {
-        id: complaintId,
-        category,
-        priority,
-        subject,
-        description,
-        location,
-        date,
-        time,
-        anonymous,
-        status: "NEW",
-        createdAt: new Date().toLocaleString(),
-        userEmail: currentUser.email,
-        attachments: files.map(f => f.name)
-    };
-
-    complaints.push(newComplaint);
-
-    localStorage.setItem("complaints", JSON.stringify(complaints));
-
-    // Show complaint ID in modal
-    document.querySelector(".complaint-id").innerText = "Complaint ID: #" + complaintId;
-
-    // Show success modal
-    document.getElementById('successModal').classList.add('active');
-});
-        
 
         // Smooth animations on scroll
         const observerOptions = {
@@ -1144,6 +1508,28 @@ document.getElementById('complaintForm').addEventListener('submit', (e) => {
         
         document.querySelectorAll('.form-card, .anonymous-banner').forEach(el => {
             observer.observe(el);
+        });
+
+        /* ================= HAMBURGER MENU TOGGLE ================= */
+
+        function toggleMenu() {
+            const dropdown = document.getElementById("hamburgerDropdown");
+            dropdown.classList.toggle("active");
+        }
+
+        function closeMenu() {
+            const dropdown = document.getElementById("hamburgerDropdown");
+            dropdown.classList.remove("active");
+        }
+
+        // Close menu when clicking outside
+        document.addEventListener("click", function(event) {
+            const hamburgerMenu = document.querySelector(".hamburger-menu");
+            const dropdown = document.getElementById("hamburgerDropdown");
+            
+            if (!hamburgerMenu.contains(event.target)) {
+                dropdown.classList.remove("active");
+            }
         });
     </script>
 </body>

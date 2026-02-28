@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SafeReport | Notifications Manager</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #8b5cf6;
+            --accent: #ec4899;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #3b82f6;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+            --bg: #f8fafc;
+            --white: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        .topbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+            z-index: 1000;
+        }
+
+        .logo-text {
+            font-size: 20px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .admin-badge {
+            background: linear-gradient(135deg, var(--danger), var(--accent));
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 70px;
+            width: 280px;
+            height: calc(100vh - 70px);
+            background: var(--white);
+            border-right: 1px solid var(--border);
+            overflow-y: auto;
+            z-index: 500;
+            padding: 20px 0;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 20px;
+            color: var(--text-light);
+            text-decoration: none;
+            transition: all 0.3s;
+            border-left: 3px solid transparent;
+        }
+
+        .sidebar-menu a:hover,
+        .sidebar-menu a.active {
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--primary);
+            border-left-color: var(--primary);
+            font-weight: 600;
+        }
+
+        .main-content {
+            margin-left: 280px;
+            margin-top: 70px;
+            padding: 30px;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .page-title {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--text);
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 6px;
+            border: none;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .tab {
+            padding: 12px 20px;
+            border: none;
+            background: none;
+            color: var(--text-light);
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+            margin-bottom: -2px;
+        }
+
+        .tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .card {
+            background: var(--white);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .template-list {
+            display: grid;
+            gap: 15px;
+        }
+
+        .template-item {
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .template-info {
+            flex: 1;
+        }
+
+        .template-name {
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 4px;
+        }
+
+        .template-description {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .template-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn-small {
+            padding: 6px 12px;
+            border: 1px solid var(--border);
+            background: var(--white);
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--primary);
+            transition: all 0.3s;
+        }
+
+        .action-btn-small:hover {
+            background: var(--bg);
+            border-color: var(--primary);
+        }
+
+        .logout-btn {
+            background: var(--danger);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 250px;
+                padding: 20px;
+            }
+
+            .template-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .template-actions {
+                margin-top: 12px;
+                width: 100%;
+            }
+
+            .action-btn-small {
+                flex: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="topbar">
+        <div style="display: flex; align-items: center;">
+            <div class="logo-text">SafeReport</div>
+            <span class="admin-badge">ADMIN</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 20px;">
+            <span id="userEmail" style="font-size: 14px; color: var(--text-light);"></span>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+    </div>
+
+    <div class="sidebar">
+        <ul class="sidebar-menu">
+            <li><a href="../admin-dashboard.html">Dashboard</a></li>
+            <li><a href="all-complaints.html">All Complaints</a></li>
+            <li><a href="pending-review.html">Pending Review</a></li>
+            <li><a href="assigned-cases.html">Assigned Cases</a></li>
+            <li><a href="user-management.html">User Management</a></li>
+            <li><a href="authority-management.html">Authorities</a></li>
+            <li><a href="reports.html">Reports</a></li>
+            <li><a href="audit-logs.html">Audit Logs</a></li>
+            <li><a href="notifications.html" class="active">Notifications</a></li>
+            <li><a href="settings.html">Settings</a></li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        <div class="page-header">
+            <h1 class="page-title">Notifications Manager</h1>
+            <button class="btn" onclick="newBroadcast()">+ New Broadcast</button>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('broadcast')">Broadcast Messages</button>
+            <button class="tab" onclick="switchTab('email')">Email Templates</button>
+            <button class="tab" onclick="switchTab('sms')">SMS Templates</button>
+            <button class="tab" onclick="switchTab('scheduled')">Scheduled Notifications</button>
+        </div>
+
+        <!-- Broadcast Messages Tab -->
+        <div id="broadcast" class="tab-content active">
+            <div class="card">
+                <div class="card-title">Broadcast Messages</div>
+                <div class="form-group">
+                    <label class="form-label">Message Title</label>
+                    <input type="text" class="form-control" placeholder="Enter notification title">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Message Content</label>
+                    <textarea class="form-control" placeholder="Enter message content..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Recipient Group</label>
+                    <select class="form-control">
+                        <option>All Users</option>
+                        <option>Authorities</option>
+                        <option>Admins</option>
+                        <option>Custom Selection</option>
+                    </select>
+                </div>
+                <button class="btn" onclick="sendBroadcast()">Send Broadcast</button>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Recent Broadcasts</div>
+                <div class="template-list" id="broadcastList">
+                    <div style="text-align: center; padding: 30px; color: var(--text-light);">No broadcasts sent yet</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Email Templates Tab -->
+        <div id="email" class="tab-content">
+            <div class="card">
+                <div class="card-title">Email Templates</div>
+                <div class="template-list">
+                    <div class="template-item">
+                        <div class="template-info">
+                            <div class="template-name">Complaint Confirmation</div>
+                            <div class="template-description">Email sent when user submits a complaint</div>
+                        </div>
+                        <div class="template-actions">
+                            <button class="action-btn-small" onclick="editTemplate('email-confirmation')">Edit</button>
+                            <button class="action-btn-small" onclick="previewTemplate('email-confirmation')">Preview</button>
+                        </div>
+                    </div>
+                    <div class="template-item">
+                        <div class="template-info">
+                            <div class="template-name">Status Update</div>
+                            <div class="template-description">Email sent when complaint status changes</div>
+                        </div>
+                        <div class="template-actions">
+                            <button class="action-btn-small" onclick="editTemplate('email-status')">Edit</button>
+                            <button class="action-btn-small" onclick="previewTemplate('email-status')">Preview</button>
+                        </div>
+                    </div>
+                    <div class="template-item">
+                        <div class="template-info">
+                            <div class="template-name">Resolution Notification</div>
+                            <div class="template-description">Email sent when complaint is resolved</div>
+                        </div>
+                        <div class="template-actions">
+                            <button class="action-btn-small" onclick="editTemplate('email-resolved')">Edit</button>
+                            <button class="action-btn-small" onclick="previewTemplate('email-resolved')">Preview</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SMS Templates Tab -->
+        <div id="sms" class="tab-content">
+            <div class="card">
+                <div class="card-title">SMS Templates</div>
+                <div class="template-list">
+                    <div class="template-item">
+                        <div class="template-info">
+                            <div class="template-name">Complaint Received</div>
+                            <div class="template-description">SMS confirmation after submission</div>
+                        </div>
+                        <div class="template-actions">
+                            <button class="action-btn-small" onclick="editTemplate('sms-received')">Edit</button>
+                            <button class="action-btn-small" onclick="previewTemplate('sms-received')">Preview</button>
+                        </div>
+                    </div>
+                    <div class="template-item">
+                        <div class="template-info">
+                            <div class="template-name">Status Update SMS</div>
+                            <div class="template-description">SMS for status changes</div>
+                        </div>
+                        <div class="template-actions">
+                            <button class="action-btn-small" onclick="editTemplate('sms-status')">Edit</button>
+                            <button class="action-btn-small" onclick="previewTemplate('sms-status')">Preview</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scheduled Notifications Tab -->
+        <div id="scheduled" class="tab-content">
+            <div class="card">
+                <div class="card-title">Schedule New Notification</div>
+                <div class="form-group">
+                    <label class="form-label">Notification Type</label>
+                    <select class="form-control">
+                        <option>Email</option>
+                        <option>SMS</option>
+                        <option>In-App</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Schedule Date & Time</label>
+                    <input type="datetime-local" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Message</label>
+                    <textarea class="form-control" placeholder="Enter message..."></textarea>
+                </div>
+                <button class="btn" onclick="scheduleNotification()">Schedule</button>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Scheduled Notifications</div>
+                <div style="text-align: center; padding: 30px; color: var(--text-light);">No scheduled notifications</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function checkAdminAccess() {
+            const currentUser = JSON.parse(localStorage.getItem("currentUser")) || {};
+            if (currentUser.role !== "admin") {
+                window.location.href = "../login.html";
+            }
+            document.getElementById("userEmail").innerText = currentUser.email || "Admin";
+        }
+
+        function switchTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function newBroadcast() {
+            alert("Create broadcast notification feature");
+        }
+
+        function sendBroadcast() {
+            alert("Broadcast sent successfully!");
+        }
+
+        function editTemplate(templateId) {
+            alert("Edit template: " + templateId);
+        }
+
+        function previewTemplate(templateId) {
+            alert("Preview template: " + templateId);
+        }
+
+        function scheduleNotification() {
+            alert("Notification scheduled successfully!");
+        }
+
+        function logout() {
+            localStorage.removeItem("currentUser");
+            window.location.href = "../login.html";
+        }
+
+        window.addEventListener("DOMContentLoaded", () => {
+            checkAdminAccess();
+        });
+    </script>
+</body>
+</html>

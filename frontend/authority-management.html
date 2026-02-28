@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SafeReport | Authority Management</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #8b5cf6;
+            --accent: #ec4899;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #3b82f6;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+            --bg: #f8fafc;
+            --white: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        .topbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+            z-index: 1000;
+        }
+
+        .logo-text {
+            font-size: 20px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .admin-badge {
+            background: linear-gradient(135deg, var(--danger), var(--accent));
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 70px;
+            width: 280px;
+            height: calc(100vh - 70px);
+            background: var(--white);
+            border-right: 1px solid var(--border);
+            overflow-y: auto;
+            z-index: 500;
+            padding: 20px 0;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 20px;
+            color: var(--text-light);
+            text-decoration: none;
+            transition: all 0.3s;
+            border-left: 3px solid transparent;
+        }
+
+        .sidebar-menu a:hover,
+        .sidebar-menu a.active {
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--primary);
+            border-left-color: var(--primary);
+            font-weight: 600;
+        }
+
+        .main-content {
+            margin-left: 280px;
+            margin-top: 70px;
+            padding: 30px;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .page-title {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--text);
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 6px;
+            border: none;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .authority-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+        }
+
+        .authority-card {
+            background: var(--white);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            padding: 20px;
+            transition: all 0.3s;
+        }
+
+        .authority-card:hover {
+            box-shadow: 0 8px 24px rgba(99, 102, 241, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .auth-name {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 10px;
+        }
+
+        .auth-info {
+            font-size: 13px;
+            color: var(--text-light);
+            margin-bottom: 12px;
+            line-height: 1.6;
+        }
+
+        .auth-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            padding: 12px 0;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            margin: 12px 0;
+        }
+
+        .auth-stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: var(--text-light);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid var(--border);
+            background: var(--white);
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--primary);
+            transition: all 0.3s;
+        }
+
+        .action-btn:hover {
+            background: var(--bg);
+            border-color: var(--primary);
+        }
+
+        .logout-btn {
+            background: var(--danger);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 250px;
+                padding: 20px;
+            }
+
+            .authority-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="topbar">
+        <div style="display: flex; align-items: center;">
+            <div class="logo-text">SafeReport</div>
+            <span class="admin-badge">ADMIN</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 20px;">
+            <span id="userEmail" style="font-size: 14px; color: var(--text-light);"></span>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+    </div>
+
+    <div class="sidebar">
+        <ul class="sidebar-menu">
+            <li><a href="../admin-dashboard.html">Dashboard</a></li>
+            <li><a href="all-complaints.html">All Complaints</a></li>
+            <li><a href="pending-review.html">Pending Review</a></li>
+            <li><a href="assigned-cases.html">Assigned Cases</a></li>
+            <li><a href="user-management.html">User Management</a></li>
+            <li><a href="authority-management.html" class="active">Authorities</a></li>
+            <li><a href="reports.html">Reports</a></li>
+            <li><a href="audit-logs.html">Audit Logs</a></li>
+            <li><a href="notifications.html">Notifications</a></li>
+            <li><a href="settings.html">Settings</a></li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        <div class="page-header">
+            <h1 class="page-title">Authority Management</h1>
+            <button class="btn" onclick="addAuthority()">+ Add Authority</button>
+        </div>
+
+        <div class="authority-grid" id="authorityGrid"></div>
+    </div>
+
+    <script>
+        function checkAdminAccess() {
+            const currentUser = JSON.parse(localStorage.getItem("currentUser")) || {};
+            if (currentUser.role !== "admin") {
+                window.location.href = "../login.html";
+            }
+            document.getElementById("userEmail").innerText = currentUser.email || "Admin";
+        }
+
+        function loadAuthorities() {
+            const authorities = JSON.parse(localStorage.getItem("authorities")) || [];
+            const complaints = JSON.parse(localStorage.getItem("complaints")) || [];
+            const grid = document.getElementById("authorityGrid");
+
+            if (authorities.length === 0) {
+                grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-light);">No authorities found</div>`;
+                return;
+            }
+
+            grid.innerHTML = authorities.map(authority => {
+                const assigned = complaints.filter(c => c.assignedTo === authority.id && c.status !== "RESOLVED").length;
+                const resolved = complaints.filter(c => c.assignedTo === authority.id && c.status === "RESOLVED").length;
+
+                return `
+                    <div class="authority-card">
+                        <div class="auth-name">${authority.name}</div>
+                        <div class="auth-info">
+                            <div><strong>Department:</strong> ${authority.department || 'N/A'}</div>
+                            <div><strong>Email:</strong> ${authority.email || 'N/A'}</div>
+                        </div>
+                        <div class="auth-stats">
+                            <div class="auth-stat">
+                                <div class="stat-number">${assigned}</div>
+                                <div class="stat-label">Active Cases</div>
+                            </div>
+                            <div class="auth-stat">
+                                <div class="stat-number">${resolved}</div>
+                                <div class="stat-label">Resolved</div>
+                            </div>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="action-btn" onclick="editAuthority('${authority.id}')">Edit</button>
+                            <button class="action-btn" onclick="deleteAuthority('${authority.id}')" style="color: var(--danger);">Delete</button>
+                        </div>
+                    </div>
+                `;
+            }).join("");
+        }
+
+        function addAuthority() {
+            window.location.href = "add-authority.html";
+        }
+
+        function editAuthority(id) {
+            alert("Edit authority feature coming soon");
+        }
+
+        function deleteAuthority(id) {
+            if (confirm("Are you sure you want to delete this authority?")) {
+                let authorities = JSON.parse(localStorage.getItem("authorities")) || [];
+                authorities = authorities.filter(a => a.id !== id);
+                localStorage.setItem("authorities", JSON.stringify(authorities));
+                loadAuthorities();
+                alert("Authority deleted successfully");
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem("currentUser");
+            window.location.href = "../login.html";
+        }
+
+        window.addEventListener("DOMContentLoaded", () => {
+            checkAdminAccess();
+            loadAuthorities();
+        });
+    </script>
+</body>
+</html>

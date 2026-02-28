@@ -1,0 +1,1454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schedule Manager - SafeReport Authority</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --secondary: #8b5cf6;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --text: #1f2937;
+            --text-light: #64748b;
+            --border: #e5e7eb;
+            --bg: #f9fafb;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* ── SIDEBAR ── */
+        .sidebar {
+            width: 260px;
+            background: white;
+            border-right: 1px solid var(--border);
+            padding: 20px;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 30px;
+            font-weight: 700;
+            font-size: 18px;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .logo svg { width: 28px; height: 28px; flex-shrink: 0; }
+
+        .logo-text { display: flex; flex-direction: column; line-height: 1.1; }
+        .logo-sub  { font-size: 9px; font-weight: 800; letter-spacing: .1em; color: var(--secondary); text-transform: uppercase; }
+
+        .nav-section {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .1em;
+            color: var(--text-light);
+            padding: 14px 4px 4px;
+            opacity: .6;
+        }
+
+        .nav-menu { list-style: none; }
+
+        .nav-item { margin-bottom: 3px; }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 14px;
+            text-decoration: none;
+            color: var(--text-light);
+            border-radius: 10px;
+            transition: .25s;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: rgba(99,102,241,.1);
+            color: var(--primary);
+        }
+
+        .nav-link svg {
+            width: 18px; height: 18px;
+            stroke: currentColor; stroke-width: 2; fill: none;
+            flex-shrink: 0;
+        }
+
+        .nav-badge {
+            margin-left: auto;
+            background: var(--danger);
+            color: white;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 7px;
+            border-radius: 10px;
+        }
+
+        .sidebar-user {
+            margin-top: 24px;
+            padding: 14px;
+            background: rgba(99,102,241,.07);
+            border-radius: 12px;
+            border: 1px solid rgba(99,102,241,.12);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sidebar-avatar {
+            width: 36px; height: 36px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-weight: 800; font-size: 13px; flex-shrink: 0;
+        }
+
+        .sidebar-name { font-size: 13px; font-weight: 700; }
+        .sidebar-role { font-size: 11px; color: var(--text-light); }
+
+        /* ── MAIN ── */
+        .main-content {
+            flex: 1;
+            margin-left: 260px;
+            padding: 30px;
+        }
+
+        /* ── HEADER ── */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 28px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .page-title { font-size: 28px; font-weight: 700; margin-bottom: 4px; }
+        .page-sub   { font-size: 14px; color: var(--text-light); }
+
+        .header-actions { display: flex; gap: 10px; }
+
+        /* ── ALERT ── */
+        .alert {
+            display: flex; align-items: flex-start; gap: 12px;
+            padding: 14px 18px;
+            border-radius: 12px; border: 1px solid;
+            margin-bottom: 22px;
+            font-size: 13.5px;
+        }
+        .alert svg { flex-shrink: 0; width: 18px; height: 18px; margin-top: 1px; }
+        .alert-warning { background: rgba(245,158,11,.07); border-color: rgba(245,158,11,.3); color: #92400e; }
+
+        /* ── STATS ── */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 20px;
+            transition: .3s;
+        }
+        .stat-card:hover { transform: translateY(-3px); box-shadow: 0 10px 28px rgba(0,0,0,.07); }
+
+        .stat-icon {
+            width: 42px; height: 42px;
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 20px;
+            margin-bottom: 12px;
+        }
+
+        .stat-number { font-size: 30px; font-weight: 800; line-height: 1; margin-bottom: 4px; }
+        .stat-label  { font-size: 12px; color: var(--text-light); font-weight: 500; }
+
+        /* ── TWO COL ── */
+        .two-col {
+            display: grid;
+            grid-template-columns: 380px 1fr;
+            gap: 22px;
+            margin-bottom: 26px;
+        }
+
+        /* ── CALENDAR ── */
+        .calendar-section {
+            background: white;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+        }
+
+        .cal-nav {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .cal-month { font-size: 15px; font-weight: 700; }
+
+        .cal-btn {
+            width: 30px; height: 30px;
+            border: 1px solid var(--border);
+            background: white; border-radius: 7px;
+            cursor: pointer; font-size: 15px;
+            display: flex; align-items: center; justify-content: center;
+            transition: .2s;
+        }
+        .cal-btn:hover { border-color: var(--primary); color: var(--primary); }
+
+        .cal-grid { padding: 14px 18px 18px; }
+
+        .calendar-header {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+            margin-bottom: 6px;
+        }
+        .calendar-day-name {
+            text-align: center;
+            font-weight: 700;
+            color: var(--text-light);
+            padding: 6px 0;
+            font-size: 10px;
+            text-transform: uppercase;
+        }
+
+        .calendar-days {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+        }
+
+        .calendar-day {
+            aspect-ratio: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 1.5px solid transparent;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 12.5px;
+            font-weight: 600;
+            transition: .2s;
+            background: white;
+            color: var(--text);
+            position: relative;
+            gap: 2px;
+        }
+        .calendar-day:hover { background: rgba(99,102,241,.07); border-color: var(--primary); color: var(--primary); }
+        .calendar-day.today { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; }
+        .calendar-day.other-month { color: #cbd5e1; }
+        .calendar-day.selected { border-color: var(--primary); background: rgba(99,102,241,.08); color: var(--primary); }
+        .calendar-day.today.selected { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; }
+
+        .cal-dots { display: flex; gap: 2px; justify-content: center; }
+        .cal-dot  { width: 4px; height: 4px; border-radius: 50%; }
+
+        .cal-legend {
+            display: flex; gap: 14px;
+            padding: 0 18px 14px;
+            flex-wrap: wrap;
+        }
+        .legend-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--text-light); }
+        .legend-dot  { width: 7px; height: 7px; border-radius: 50%; }
+
+        /* ── SIDE PANELS ── */
+        .side-panels { display: flex; flex-direction: column; gap: 20px; }
+
+        .card {
+            background: white;
+            border-radius: 14px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+        }
+
+        .card-header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .card-title    { font-size: 15px; font-weight: 700; }
+        .card-subtitle { font-size: 12px; color: var(--text-light); margin-top: 2px; }
+        .card-body     { padding: 16px 20px; }
+
+        /* ── TODAY EVENTS ── */
+        .today-event {
+            padding: 12px;
+            border-left: 3px solid;
+            border-radius: 0 8px 8px 0;
+            background: var(--bg);
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: .2s;
+        }
+        .today-event:hover { transform: translateX(3px); }
+        .today-event:last-child { margin-bottom: 0; }
+        .today-event-time  { font-size: 10px; font-weight: 700; color: var(--text-light); margin-bottom: 3px; text-transform: uppercase; letter-spacing: .04em; }
+        .today-event-title { font-size: 13px; font-weight: 700; margin-bottom: 2px; }
+        .today-event-sub   { font-size: 11.5px; color: var(--text-light); }
+
+        /* ── REMINDERS ── */
+        .reminder-item {
+            display: flex; align-items: center; gap: 10px;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        .reminder-item:last-child { border-bottom: none; }
+        .reminder-icon { font-size: 16px; width: 24px; text-align: center; flex-shrink: 0; }
+        .reminder-info { flex: 1; min-width: 0; }
+        .reminder-title { font-size: 12.5px; font-weight: 600; }
+        .reminder-due   { font-size: 11px; color: var(--text-light); margin-top: 1px; }
+        .prio-tag {
+            font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 5px;
+        }
+        .prio-high   { background: rgba(239,68,68,.1); color: var(--danger); }
+        .prio-medium { background: rgba(245,158,11,.1); color: var(--warning); }
+        .prio-low    { background: rgba(16,185,129,.1); color: var(--success); }
+
+        /* ── FILTER BAR ── */
+        .filter-bar {
+            display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+            padding: 12px 16px;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            margin-bottom: 18px;
+        }
+
+        .filter-chip {
+            padding: 6px 14px;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            background: white;
+            color: var(--text-light);
+            font-size: 12.5px; font-weight: 600; font-family: inherit;
+            cursor: pointer; transition: .2s;
+        }
+        .filter-chip:hover, .filter-chip.active {
+            background: rgba(99,102,241,.08);
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .filter-select {
+            padding: 6px 26px 6px 10px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 12.5px; font-family: inherit;
+            color: var(--text); background: white;
+            cursor: pointer; outline: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 7px center;
+        }
+        .filter-select:focus { border-color: var(--primary); }
+
+        /* ── SECTION HEADER ── */
+        .section-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 16px;
+        }
+        .section-title { font-size: 18px; font-weight: 700; }
+
+        /* ── EVENT CARDS ── */
+        .schedule-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 18px;
+        }
+
+        .event-card {
+            background: white;
+            border-radius: 14px;
+            border: 1px solid var(--border);
+            padding: 20px;
+            transition: .3s;
+            position: relative;
+            overflow: hidden;
+        }
+        .event-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+        }
+        .event-card.type-hearing::before   { background: var(--success); }
+        .event-card.type-interview::before { background: #3b82f6; }
+        .event-card.type-sitevisit::before { background: var(--warning); }
+        .event-card.type-mediation::before { background: var(--secondary); }
+        .event-card.type-review::before    { background: var(--primary); }
+        .event-card.overdue { border-color: rgba(239,68,68,.4); }
+        .event-card.overdue::before { background: var(--danger); }
+
+        .event-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 14px 35px rgba(0,0,0,.09);
+            border-color: rgba(99,102,241,.3);
+        }
+
+        .event-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+
+        .event-type-badge {
+            display: inline-flex; align-items: center; gap: 5px;
+            padding: 5px 10px;
+            border-radius: 7px;
+            font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em;
+        }
+        .badge-hearing   { background: rgba(16,185,129,.1); color: var(--success); }
+        .badge-interview { background: rgba(59,130,246,.1); color: #3b82f6; }
+        .badge-sitevisit { background: rgba(245,158,11,.1); color: var(--warning); }
+        .badge-mediation { background: rgba(139,92,246,.1); color: var(--secondary); }
+        .badge-review    { background: rgba(99,102,241,.1); color: var(--primary); }
+        .badge-overdue   { background: rgba(239,68,68,.1); color: var(--danger); }
+        .badge-completed { background: rgba(16,185,129,.1); color: var(--success); }
+
+        .overdue-pill {
+            font-size: 10px; font-weight: 700; color: var(--danger);
+            background: rgba(239,68,68,.08); padding: 3px 7px; border-radius: 5px;
+        }
+        .done-pill {
+            font-size: 10px; font-weight: 700; color: var(--success);
+            background: rgba(16,185,129,.08); padding: 3px 7px; border-radius: 5px;
+        }
+
+        .event-title {
+            font-weight: 700; font-size: 14.5px;
+            margin-bottom: 12px; line-height: 1.3;
+        }
+
+        .event-detail {
+            display: flex; align-items: center; gap: 8px;
+            font-size: 12.5px; color: var(--text-light); margin-bottom: 6px;
+        }
+        .event-detail svg {
+            width: 13px; height: 13px;
+            stroke: currentColor; stroke-width: 2; fill: none; flex-shrink: 0;
+        }
+
+        .event-case-tag {
+            display: inline-block; margin-top: 6px;
+            padding: 3px 8px;
+            background: rgba(99,102,241,.08); color: var(--primary);
+            border-radius: 5px; font-size: 11px; font-weight: 700;
+        }
+
+        .event-actions {
+            display: flex; gap: 6px;
+            margin-top: 14px; padding-top: 14px;
+            border-top: 1px solid var(--border);
+        }
+
+        .event-action-btn {
+            flex: 1; padding: 7px;
+            border: 1px solid var(--border);
+            background: white; border-radius: 7px;
+            cursor: pointer; font-size: 11.5px; font-weight: 600;
+            font-family: inherit; color: var(--text-light); transition: .2s;
+        }
+        .event-action-btn:hover { background: rgba(99,102,241,.07); border-color: var(--primary); color: var(--primary); }
+        .event-action-btn.del:hover { background: rgba(239,68,68,.07); border-color: var(--danger); color: var(--danger); }
+
+        /* ── BUTTONS ── */
+        .btn {
+            display: inline-flex; align-items: center; gap: 7px;
+            padding: 10px 20px;
+            border: none; border-radius: 10px;
+            cursor: pointer; font-weight: 600; font-size: 14px;
+            font-family: inherit; transition: .3s;
+            text-decoration: none; white-space: nowrap;
+        }
+        .btn svg { width: 15px; height: 15px; stroke: currentColor; stroke-width: 2; fill: none; }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            box-shadow: 0 4px 15px rgba(99,102,241,.3);
+        }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(99,102,241,.4); }
+
+        .btn-outline {
+            background: white; color: var(--text);
+            border: 1.5px solid var(--border);
+        }
+        .btn-outline:hover { border-color: var(--primary); color: var(--primary); }
+
+        .btn-sm { padding: 7px 14px; font-size: 12px; border-radius: 8px; }
+        .btn-xs { padding: 4px 9px; font-size: 11px; border-radius: 6px; }
+
+        /* ── EMPTY STATE ── */
+        .empty-state {
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            padding: 60px 20px; text-align: center;
+        }
+        .empty-icon { font-size: 48px; margin-bottom: 14px; }
+        .empty-state h3 { font-size: 17px; font-weight: 700; margin-bottom: 7px; }
+        .empty-state p  { font-size: 13px; color: var(--text-light); max-width: 320px; line-height: 1.6; }
+
+        /* ── MODAL ── */
+        .modal-overlay {
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,.5);
+            backdrop-filter: blur(5px);
+            display: none; align-items: center; justify-content: center;
+            z-index: 5000; padding: 20px;
+        }
+        .modal-overlay.active { display: flex; }
+
+        .modal {
+            background: white;
+            border-radius: 20px; padding: 28px;
+            width: 100%; max-width: 500px;
+            max-height: 90vh; overflow-y: auto;
+            animation: popIn .3s cubic-bezier(.175,.885,.32,1.275);
+        }
+        @keyframes popIn {
+            from { opacity: 0; transform: scale(.88); }
+            to   { opacity: 1; transform: scale(1); }
+        }
+
+        .modal-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 22px;
+        }
+        .modal-title { font-size: 18px; font-weight: 800; }
+        .modal-close {
+            width: 30px; height: 30px; border-radius: 7px;
+            border: 1px solid var(--border); background: white;
+            cursor: pointer; font-size: 17px; color: var(--text-light);
+            display: flex; align-items: center; justify-content: center; transition: .2s;
+        }
+        .modal-close:hover { background: var(--bg); }
+
+        .modal-footer { display: flex; gap: 10px; justify-content: flex-end; margin-top: 22px; }
+
+        /* ── FORMS ── */
+        .form-group { margin-bottom: 16px; }
+        .form-label {
+            display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px;
+        }
+        .req { color: var(--danger); }
+        .form-input, .form-select-full, .form-textarea {
+            width: 100%; padding: 10px 13px;
+            border: 1.5px solid var(--border); border-radius: 9px;
+            font-size: 14px; font-family: inherit; color: var(--text);
+            background: white; transition: .2s; outline: none;
+        }
+        .form-input:focus, .form-select-full:focus, .form-textarea:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99,102,241,.1);
+        }
+        .form-textarea { min-height: 85px; resize: vertical; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+        /* ── TOAST ── */
+        .toast {
+            position: fixed; bottom: 24px; right: 24px;
+            background: var(--text); color: white;
+            padding: 12px 18px; border-radius: 12px;
+            font-size: 13.5px; font-weight: 500;
+            display: flex; align-items: center; gap: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,.2);
+            transform: translateY(100px); opacity: 0;
+            transition: all .4s cubic-bezier(.175,.885,.32,1.275);
+            z-index: 9999;
+        }
+        .toast.show { transform: translateY(0); opacity: 1; }
+        .toast.success { background: var(--success); }
+        .toast.error   { background: var(--danger); }
+        .toast.warning { background: var(--warning); }
+        .toast.info    { background: #3b82f6; }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 1100px) {
+            .two-col { grid-template-columns: 1fr; }
+            .stats-row { grid-template-columns: repeat(2,1fr); }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 64px; padding: 12px 8px;
+            }
+            .sidebar .nav-link span, .sidebar .logo-text,
+            .sidebar .nav-section, .sidebar .nav-badge,
+            .sidebar .sidebar-name, .sidebar .sidebar-role { display: none; }
+            .sidebar .logo { justify-content: center; }
+            .sidebar .nav-link { justify-content: center; padding: 10px; }
+            .sidebar .sidebar-user { justify-content: center; }
+            .main-content { margin-left: 64px; padding: 20px 16px; }
+            .page-title { font-size: 22px; }
+            .schedule-grid { grid-template-columns: 1fr; }
+            .form-row { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 480px) {
+            .sidebar { width: 54px; }
+            .main-content { margin-left: 54px; padding: 14px 12px; }
+            .stats-row { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <!-- ════════════ SIDEBAR ════════════ -->
+    <aside class="sidebar">
+        <a href="dashboard.html" class="logo">
+            <svg viewBox="0 0 24 24" fill="none">
+                <defs>
+                    <linearGradient id="lg" x1="0" y1="0" x2="1" y2="1">
+                        <stop offset="0%" stop-color="#6366f1"/>
+                        <stop offset="100%" stop-color="#8b5cf6"/>
+                    </linearGradient>
+                </defs>
+                <path d="M12 2L4 5V11C4 16 7.5 20 12 22C16.5 20 20 16 20 11V5L12 2Z" fill="url(#lg)"/>
+                <path d="M9.5 12.5L11 14L14.5 10.5" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <div class="logo-text">
+                <span>SafeReport</span>
+                <span class="logo-sub">Authority</span>
+            </div>
+        </a>
+
+        <div class="nav-section">Overview</div>
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a href="dashboard.html" class="nav-link">
+                    <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+        </ul>
+
+        <div class="nav-section">Cases</div>
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a href="my-cases.html" class="nav-link">
+                    <svg viewBox="0 0 24 24"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg>
+                    <span>My Cases</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="new-assignments.html" class="nav-link">
+                    <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                    <span>New Assignments</span>
+                    <span class="nav-badge">5</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="active-cases.html" class="nav-link">
+                    <svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                    <span>Active Investigations</span>
+                    <span class="nav-badge">3</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="investigate.html" class="nav-link">
+                    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+                    <span>Investigation Panel</span>
+                </a>
+            </li>
+        </ul>
+
+        <div class="nav-section">Actions</div>
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a href="add-update.html" class="nav-link">
+                    <svg viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+                    <span>Add Update</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="close-case.html" class="nav-link">
+                    <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                    <span>Close Case</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="closed-cases.html" class="nav-link">
+                    <svg viewBox="0 0 24 24"><path d="M5 8h14M5 8a2 2 0 1 0 0-4h14a2 2 0 1 0 0 4M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8"/></svg>
+                    <span>Closed Cases</span>
+                </a>
+            </li>
+        </ul>
+
+        <div class="nav-section">Tools</div>
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a href="evidence.html" class="nav-link">
+                    <svg viewBox="0 0 24 24"><path d="M3 7v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2H9l-2-2H5a2 2 0 0 0-2 2z"/></svg>
+                    <span>Evidence Manager</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="generate-report.html" class="nav-link">
+                    <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                    <span>Generate Report</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="schedule.html" class="nav-link active">
+                    <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                    <span>Schedule Manager</span>
+                </a>
+            </li>
+        </ul>
+
+        <div class="nav-section">Account</div>
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a href="profile.html" class="nav-link">
+                    <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    <span>My Profile</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="login.html" class="nav-link" style="color:var(--danger)" onclick="localStorage.removeItem('authUser')">
+                    <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                    <span>Sign Out</span>
+                </a>
+            </li>
+        </ul>
+
+        <div class="sidebar-user">
+            <div class="sidebar-avatar">RA</div>
+            <div>
+                <div class="sidebar-name">Rajan Arora</div>
+                <div class="sidebar-role">Sr. Investigator</div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- ════════════ MAIN ════════════ -->
+    <main class="main-content">
+
+        <!-- PAGE HEADER -->
+        <div class="page-header">
+            <div>
+                <div style="font-size:12px;color:var(--text-light);margin-bottom:6px">
+                    <a href="dashboard.html" style="color:var(--text-light);text-decoration:none">Dashboard</a> › Schedule Manager
+                </div>
+                <h1 class="page-title">Schedule Manager 📅</h1>
+                <p class="page-sub">Manage hearings, interviews, site visits and reminders for all your cases.</p>
+            </div>
+            <div class="header-actions">
+                <button class="btn btn-outline" onclick="exportCSV()">
+                    <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    Export
+                </button>
+                <button class="btn btn-primary" onclick="openModal('addEventModal')">
+                    <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    Schedule Event
+                </button>
+            </div>
+        </div>
+
+        <!-- OVERDUE ALERT -->
+        <div class="alert alert-warning" id="overdueAlert">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+            </svg>
+            <div><b>1 overdue event!</b> The witness interview for case #C1029 was scheduled on Jan 17 and not completed. Please reschedule or log it as done.</div>
+        </div>
+
+        <!-- STATS -->
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-icon" style="background:rgba(99,102,241,.1)">📅</div>
+                <div class="stat-number" id="sTotal">7</div>
+                <div class="stat-label">Total Events</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background:rgba(245,158,11,.1)">⚡</div>
+                <div class="stat-number" id="sUpcoming">5</div>
+                <div class="stat-label">Upcoming</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background:rgba(16,185,129,.1)">✅</div>
+                <div class="stat-number" id="sCompleted">1</div>
+                <div class="stat-label">Completed</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background:rgba(239,68,68,.1)">⏰</div>
+                <div class="stat-number" id="sOverdue">1</div>
+                <div class="stat-label">Overdue</div>
+            </div>
+        </div>
+
+        <!-- CALENDAR + SIDE PANELS -->
+        <div class="two-col">
+
+            <!-- CALENDAR -->
+            <div class="calendar-section">
+                <div class="cal-nav">
+                    <button class="cal-btn" onclick="prevMonth()">‹</button>
+                    <span class="cal-month" id="calTitle">January 2025</span>
+                    <button class="cal-btn" onclick="nextMonth()">›</button>
+                </div>
+                <div class="cal-grid">
+                    <div class="calendar-header">
+                        <div class="calendar-day-name">Mon</div>
+                        <div class="calendar-day-name">Tue</div>
+                        <div class="calendar-day-name">Wed</div>
+                        <div class="calendar-day-name">Thu</div>
+                        <div class="calendar-day-name">Fri</div>
+                        <div class="calendar-day-name">Sat</div>
+                        <div class="calendar-day-name">Sun</div>
+                    </div>
+                    <div class="calendar-days" id="calDays"></div>
+                </div>
+                <div class="cal-legend">
+                    <div class="legend-item"><div class="legend-dot" style="background:var(--primary)"></div>Today</div>
+                    <div class="legend-item"><div class="legend-dot" style="background:var(--success)"></div>Hearing</div>
+                    <div class="legend-item"><div class="legend-dot" style="background:#3b82f6"></div>Interview</div>
+                    <div class="legend-item"><div class="legend-dot" style="background:var(--warning)"></div>Site Visit</div>
+                    <div class="legend-item"><div class="legend-dot" style="background:var(--danger)"></div>Overdue</div>
+                </div>
+            </div>
+
+            <!-- SIDE PANELS -->
+            <div class="side-panels">
+
+                <!-- TODAY -->
+                <div class="card">
+                    <div class="card-header">
+                        <div>
+                            <div class="card-title">📋 Today's Events</div>
+                            <div class="card-subtitle" id="todayDateLabel"></div>
+                        </div>
+                        <button class="btn btn-primary btn-sm" onclick="openModal('addEventModal')">+ Add</button>
+                    </div>
+                    <div class="card-body" id="todayPanel">
+                        <div style="text-align:center;color:var(--text-light);font-size:13px;padding:16px 0">
+                            Select a date on the calendar.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- REMINDERS -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">⏰ Reminders</div>
+                        <button class="btn btn-outline btn-sm" onclick="openModal('addReminderModal')">+ Add</button>
+                    </div>
+                    <div class="card-body" style="padding:0 20px" id="reminderPanel"></div>
+                </div>
+
+                <!-- MONTHLY BREAKDOWN -->
+                <div class="card">
+                    <div class="card-header"><div class="card-title">📊 This Month</div></div>
+                    <div class="card-body" style="padding:0 20px" id="monthBreakdown"></div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ALL EVENTS -->
+        <div class="section-header">
+            <h2 class="section-title">All Scheduled Events</h2>
+            <span style="font-size:13px;color:var(--text-light)">Showing <b id="evCount">7</b> events</span>
+        </div>
+
+        <div class="filter-bar">
+            <button class="filter-chip active" onclick="setFilter('all',this)">All</button>
+            <button class="filter-chip" onclick="setFilter('hearing',this)">⚖️ Hearings</button>
+            <button class="filter-chip" onclick="setFilter('interview',this)">👥 Interviews</button>
+            <button class="filter-chip" onclick="setFilter('sitevisit',this)">🏢 Site Visits</button>
+            <button class="filter-chip" onclick="setFilter('mediation',this)">🤝 Mediation</button>
+            <button class="filter-chip" onclick="setFilter('overdue',this)">🔴 Overdue</button>
+            <select class="filter-select" id="caseFilter" onchange="renderGrid()">
+                <option value="">All Cases</option>
+                <option>#C1042</option>
+                <option>#C1039</option>
+                <option>#C1036</option>
+                <option>#C1029</option>
+            </select>
+            <select class="filter-select" id="sortSelect" onchange="renderGrid()">
+                <option value="date-asc">Date ↑</option>
+                <option value="date-desc">Date ↓</option>
+                <option value="type">By Type</option>
+            </select>
+        </div>
+
+        <div class="schedule-grid" id="eventsGrid"></div>
+
+        <div class="empty-state" id="emptyState" style="display:none">
+            <div class="empty-icon">📭</div>
+            <h3>No Events Found</h3>
+            <p>No events match this filter. Try a different filter or schedule a new event.</p>
+        </div>
+
+    </main>
+</div>
+
+<!-- ════════ ADD EVENT MODAL ════════ -->
+<div class="modal-overlay" id="addEventModal">
+    <div class="modal">
+        <div class="modal-header">
+            <h3 class="modal-title">📅 Schedule New Event</h3>
+            <button class="modal-close" onclick="closeModal('addEventModal')">✕</button>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Event Type <span class="req">*</span></label>
+            <select class="form-select-full" id="inType">
+                <option value="">— Select type —</option>
+                <option value="hearing">⚖️ Formal Hearing</option>
+                <option value="interview">👥 Witness Interview</option>
+                <option value="sitevisit">🏢 Site Visit</option>
+                <option value="mediation">🤝 Mediation Session</option>
+                <option value="review">📋 Case Review Meeting</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label class="form-label">Title <span class="req">*</span></label>
+            <input type="text" class="form-input" id="inTitle" placeholder="e.g. Witness Interview – Witness 1">
+        </div>
+        <div class="form-group">
+            <label class="form-label">Related Case</label>
+            <select class="form-select-full" id="inCase">
+                <option value="">— None —</option>
+                <option>#C1042</option>
+                <option>#C1039</option>
+                <option>#C1036</option>
+                <option>#C1029</option>
+            </select>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label class="form-label">Date <span class="req">*</span></label>
+                <input type="date" class="form-input" id="inDate">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Time <span class="req">*</span></label>
+                <input type="time" class="form-input" id="inTime">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="form-label">Duration</label>
+            <select class="form-select-full" id="inDuration">
+                <option>30 minutes</option>
+                <option selected>1 hour</option>
+                <option>1.5 hours</option>
+                <option>2 hours</option>
+                <option>Half day</option>
+                <option>Full day</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label class="form-label">Location</label>
+            <input type="text" class="form-input" id="inLocation" placeholder="e.g. Conference Room B">
+        </div>
+        <div class="form-group">
+            <label class="form-label">Notes</label>
+            <textarea class="form-textarea" id="inNotes" placeholder="Preparation notes or additional details..."></textarea>
+        </div>
+
+        <div class="modal-footer">
+            <button class="btn btn-outline" onclick="closeModal('addEventModal')">Cancel</button>
+            <button class="btn btn-primary" onclick="addEvent()">✅ Schedule Event</button>
+        </div>
+    </div>
+</div>
+
+<!-- ════════ ADD REMINDER MODAL ════════ -->
+<div class="modal-overlay" id="addReminderModal">
+    <div class="modal" style="max-width:400px">
+        <div class="modal-header">
+            <h3 class="modal-title">⏰ Add Reminder</h3>
+            <button class="modal-close" onclick="closeModal('addReminderModal')">✕</button>
+        </div>
+        <div class="form-group">
+            <label class="form-label">Reminder <span class="req">*</span></label>
+            <input type="text" class="form-input" id="rTitle" placeholder="e.g. Submit case report for #C1042">
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label class="form-label">Due Date <span class="req">*</span></label>
+                <input type="date" class="form-input" id="rDate">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Priority</label>
+                <select class="form-select-full" id="rPriority">
+                    <option value="high">🔴 High</option>
+                    <option value="medium" selected>🟡 Medium</option>
+                    <option value="low">🟢 Low</option>
+                </select>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-outline" onclick="closeModal('addReminderModal')">Cancel</button>
+            <button class="btn btn-primary" onclick="addReminder()">Add Reminder</button>
+        </div>
+    </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"><span id="toastIcon">✓</span><span id="toastMsg"></span></div>
+
+<!-- ════════════ JAVASCRIPT ════════════ -->
+<script>
+/* ── DATA ── */
+const TYPE = {
+    hearing:   { label:'Formal Hearing',      emoji:'⚖️', color:'var(--success)', badgeCls:'badge-hearing'   },
+    interview: { label:'Witness Interview',   emoji:'👥', color:'#3b82f6',        badgeCls:'badge-interview' },
+    sitevisit: { label:'Site Visit',          emoji:'🏢', color:'var(--warning)', badgeCls:'badge-sitevisit' },
+    mediation: { label:'Mediation Session',   emoji:'🤝', color:'var(--secondary)',badgeCls:'badge-mediation' },
+    review:    { label:'Case Review Meeting', emoji:'📋', color:'var(--primary)', badgeCls:'badge-review'    },
+};
+
+let events = [
+    { id:1, type:'interview', title:'Witness Interview – Witness 1',    caseId:'#C1042', date:'2025-01-20', time:'10:00', duration:'1 hour',    location:'Hearing Room 2',     notes:'First of two scheduled interviews.', status:'upcoming', overdue:false },
+    { id:2, type:'interview', title:'Witness Interview – Witness 2',    caseId:'#C1042', date:'2025-01-22', time:'14:00', duration:'1 hour',    location:'Hearing Room 2',     notes:'Prepare question list.',             status:'upcoming', overdue:false },
+    { id:3, type:'hearing',   title:'Formal Hearing – Case #C1042',     caseId:'#C1042', date:'2025-01-24', time:'10:00', duration:'2 hours',   location:'Conference Hall A',  notes:'Both parties present.',              status:'upcoming', overdue:false },
+    { id:4, type:'sitevisit', title:'Site Visit – Tech Park Perungudi', caseId:'#C1039', date:'2025-01-27', time:'09:00', duration:'Half day',  location:'Tech Park, Chennai', notes:'CCTV access arranged.',              status:'upcoming', overdue:false },
+    { id:5, type:'mediation', title:'Mediation Session – Case #C1036',  caseId:'#C1036', date:'2025-01-29', time:'11:00', duration:'1.5 hours', location:'Room 3B',            notes:'Both parties agreed to attend.',     status:'upcoming', overdue:false },
+    { id:6, type:'interview', title:'Witness Interview – Case #C1029',  caseId:'#C1029', date:'2025-01-17', time:'09:30', duration:'1 hour',    location:'Hearing Room 1',     notes:'OVERDUE – reschedule required.',     status:'overdue',  overdue:true  },
+    { id:7, type:'hearing',   title:'Preliminary Hearing – Case #C1039',caseId:'#C1039', date:'2025-01-10', time:'10:00', duration:'1 hour',    location:'Conference Room B',  notes:'Completed. Minutes filed.',          status:'completed',overdue:false },
+];
+
+let reminders = [
+    { id:1, title:'Overdue: Case #C1029 Update',      due:'2025-01-17', priority:'high'   },
+    { id:2, title:'Hearing Prep Documents – #C1042',  due:'2025-01-23', priority:'medium' },
+    { id:3, title:'Monthly Performance Report Due',   due:'2025-01-31', priority:'medium' },
+    { id:4, title:'Evidence Review – #C1036',         due:'2025-02-02', priority:'low'    },
+];
+
+let activeFilter = 'all';
+let calYear = 2025, calMonth = 0; // Jan 2025
+
+/* ── CALENDAR ── */
+function buildCalendar() {
+    document.getElementById('calTitle').textContent =
+        new Date(calYear, calMonth, 1).toLocaleDateString('en-US', { month:'long', year:'numeric' });
+
+    const firstDay   = new Date(calYear, calMonth, 1).getDay();        // 0=Sun
+    const daysInMonth= new Date(calYear, calMonth+1, 0).getDate();
+    const daysInPrev = new Date(calYear, calMonth,   0).getDate();
+    const offset     = firstDay === 0 ? 6 : firstDay - 1;              // Monday-based
+
+    const eventMap = {};
+    events.forEach(e => {
+        const d = new Date(e.date);
+        if (d.getFullYear()===calYear && d.getMonth()===calMonth) {
+            const k = d.getDate();
+            if (!eventMap[k]) eventMap[k] = [];
+            eventMap[k].push(e);
+        }
+    });
+
+    const today = new Date();
+    const grid  = document.getElementById('calDays');
+    grid.innerHTML = '';
+
+    // prev month blanks
+    for (let i = offset-1; i >= 0; i--) {
+        const el = document.createElement('div');
+        el.className = 'calendar-day other-month';
+        el.textContent = daysInPrev - i;
+        grid.appendChild(el);
+    }
+
+    // current month
+    for (let day = 1; day <= daysInMonth; day++) {
+        const el = document.createElement('div');
+        el.className = 'calendar-day';
+
+        const isToday = today.getFullYear()===calYear && today.getMonth()===calMonth && today.getDate()===day;
+        if (isToday) el.classList.add('today');
+
+        el.innerHTML = `<span>${day}</span>`;
+
+        if (eventMap[day]) {
+            const wrap = document.createElement('div');
+            wrap.className = 'cal-dots';
+            eventMap[day].slice(0,3).forEach(ev => {
+                const dot = document.createElement('div');
+                dot.className = 'cal-dot';
+                dot.style.background = ev.overdue ? 'var(--danger)' : (TYPE[ev.type]?.color || 'var(--primary)');
+                wrap.appendChild(dot);
+            });
+            el.appendChild(wrap);
+        }
+
+        el.addEventListener('click', () => selectDay(day));
+        grid.appendChild(el);
+    }
+
+    // next month blanks
+    const total    = offset + daysInMonth;
+    const trailing = (7 - total%7) % 7;
+    for (let i = 1; i <= trailing; i++) {
+        const el = document.createElement('div');
+        el.className = 'calendar-day other-month';
+        el.textContent = i;
+        grid.appendChild(el);
+    }
+}
+
+function selectDay(day) {
+    document.querySelectorAll('#calDays .calendar-day:not(.other-month)').forEach((el, i) => {
+        el.classList.toggle('selected', i+1 === day);
+    });
+    const dateStr = `${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+    const dayEvs  = events.filter(e => e.date === dateStr);
+    renderTodayPanel(dateStr, dayEvs);
+}
+
+function prevMonth() { calMonth--; if (calMonth<0){ calMonth=11; calYear--; } buildCalendar(); clearTodayPanel(); }
+function nextMonth() { calMonth++; if (calMonth>11){ calMonth=0;  calYear++; } buildCalendar(); clearTodayPanel(); }
+
+function clearTodayPanel() {
+    document.getElementById('todayPanel').innerHTML =
+        '<div style="text-align:center;color:var(--text-light);font-size:13px;padding:16px 0">Select a date on the calendar.</div>';
+    document.getElementById('todayDateLabel').textContent = '';
+}
+
+function renderTodayPanel(dateStr, dayEvs) {
+    const lbl = new Date(dateStr+'T00:00:00').toLocaleDateString('en-US',{ weekday:'long', month:'long', day:'numeric', year:'numeric' });
+    document.getElementById('todayDateLabel').textContent = lbl;
+
+    const panel = document.getElementById('todayPanel');
+    if (!dayEvs.length) {
+        panel.innerHTML = '<div style="text-align:center;color:var(--text-light);font-size:13px;padding:20px 0">No events on this day.</div>';
+        return;
+    }
+    const sorted = [...dayEvs].sort((a,b)=>a.time.localeCompare(b.time));
+    panel.innerHTML = sorted.map(ev => {
+        const m = TYPE[ev.type] || {};
+        const bc = ev.overdue ? 'var(--danger)' : m.color || 'var(--primary)';
+        return `<div class="today-event" style="border-color:${bc}" onclick="viewEventModal(${ev.id})">
+            <div class="today-event-time">${fmtTime(ev.time)} · ${ev.duration}</div>
+            <div class="today-event-title">${m.emoji||''} ${ev.title}</div>
+            <div class="today-event-sub">${ev.location||'—'}${ev.caseId?' · <b>'+ev.caseId+'</b>':''}</div>
+        </div>`;
+    }).join('');
+}
+
+/* ── EVENTS GRID ── */
+function renderGrid() {
+    const caseF = document.getElementById('caseFilter').value;
+    const sortV = document.getElementById('sortSelect').value;
+
+    let filtered = events.filter(e => {
+        if (activeFilter === 'overdue')   return e.overdue;
+        if (activeFilter === 'completed') return e.status === 'completed';
+        if (activeFilter === 'all')       return true;
+        return e.type === activeFilter;
+    });
+    if (caseF) filtered = filtered.filter(e => e.caseId && e.caseId.includes(caseF.split(' ')[0]));
+
+    filtered.sort((a,b) => {
+        if (sortV==='date-asc')  return (a.date+a.time).localeCompare(b.date+b.time);
+        if (sortV==='date-desc') return (b.date+b.time).localeCompare(a.date+a.time);
+        return a.type.localeCompare(b.type);
+    });
+
+    document.getElementById('evCount').textContent = filtered.length;
+    const grid = document.getElementById('eventsGrid');
+    const empty = document.getElementById('emptyState');
+
+    if (!filtered.length) { grid.innerHTML=''; empty.style.display='flex'; return; }
+    empty.style.display = 'none';
+
+    grid.innerHTML = filtered.map(ev => {
+        const m = TYPE[ev.type] || { emoji:'📋', badgeCls:'badge-review', label: ev.type };
+        const isDone = ev.status==='completed';
+        const badgeCls = ev.overdue ? 'badge-overdue' : m.badgeCls;
+        const badgeTxt = ev.overdue ? 'OVERDUE' : m.label.toUpperCase();
+        return `<div class="event-card type-${ev.type}${ev.overdue?' overdue':''}">
+            <div class="event-top">
+                <span class="event-type-badge ${badgeCls}">${m.emoji} ${badgeTxt}</span>
+                ${ev.overdue ? '<span class="overdue-pill">⏰ Overdue</span>' : ''}
+                ${isDone    ? '<span class="done-pill">✅ Done</span>' : ''}
+            </div>
+            <div class="event-title">${ev.title}</div>
+            <div class="event-detail">
+                <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                ${fmtDate(ev.date)} · ${fmtTime(ev.time)}
+            </div>
+            <div class="event-detail">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                ${ev.duration}
+            </div>
+            ${ev.location ? `<div class="event-detail">
+                <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                ${ev.location}
+            </div>` : ''}
+            ${ev.caseId ? `<span class="event-case-tag">${ev.caseId}</span>` : ''}
+            <div class="event-actions">
+                <button class="event-action-btn" onclick="viewEventModal(${ev.id})">👁 View</button>
+                ${!isDone ? `<button class="event-action-btn" onclick="markDone(${ev.id})">✅ Done</button>` : ''}
+                <button class="event-action-btn" onclick="reschedule(${ev.id})">📅 Reschedule</button>
+                <button class="event-action-btn del" onclick="removeEvent(${ev.id})">🗑 Delete</button>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+function setFilter(f, btn) {
+    activeFilter = f;
+    document.querySelectorAll('.filter-chip').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+    renderGrid();
+}
+
+/* ── ADD EVENT ── */
+function addEvent() {
+    const type = document.getElementById('inType').value;
+    const title= document.getElementById('inTitle').value.trim();
+    const date = document.getElementById('inDate').value;
+    const time = document.getElementById('inTime').value;
+    if (!type)  { showToast('Select an event type.','error'); return; }
+    if (!title) { showToast('Enter a title.','error'); return; }
+    if (!date)  { showToast('Pick a date.','error'); return; }
+    if (!time)  { showToast('Pick a time.','error'); return; }
+
+    events.unshift({
+        id: Date.now(), type, title,
+        caseId:   document.getElementById('inCase').value.split(' ')[0] || '',
+        date, time,
+        duration: document.getElementById('inDuration').value,
+        location: document.getElementById('inLocation').value.trim(),
+        notes:    document.getElementById('inNotes').value.trim(),
+        status: 'upcoming', overdue: false,
+    });
+
+    ['inType','inTitle','inCase','inDate','inTime','inLocation','inNotes'].forEach(id => { document.getElementById(id).value=''; });
+    document.getElementById('inDuration').value = '1 hour';
+
+    closeModal('addEventModal');
+    buildCalendar(); renderGrid(); updateStats();
+    showToast('Event scheduled!','success');
+}
+
+/* ── MARK DONE ── */
+function markDone(id) {
+    const ev = events.find(e=>e.id===id);
+    if (!ev) return;
+    ev.status='completed'; ev.overdue=false;
+    buildCalendar(); renderGrid(); updateStats();
+    showToast('Marked as completed! ✅','success');
+}
+
+/* ── RESCHEDULE ── */
+function reschedule(id) {
+    const ev = events.find(e=>e.id===id);
+    if (!ev) return;
+    document.getElementById('inType').value     = ev.type;
+    document.getElementById('inTitle').value    = ev.title;
+    document.getElementById('inLocation').value = ev.location;
+    document.getElementById('inNotes').value    = ev.notes;
+    document.getElementById('inDate').value     = '';
+    document.getElementById('inTime').value     = '';
+    removeEvent(id, true);
+    openModal('addEventModal');
+    showToast('Edit the date & time to reschedule.','info');
+}
+
+/* ── DELETE ── */
+function removeEvent(id, silent) {
+    events = events.filter(e=>e.id!==id);
+    buildCalendar(); renderGrid(); updateStats();
+    if (!silent) showToast('Event deleted.','warning');
+}
+
+/* ── VIEW MODAL (simple) ── */
+function viewEventModal(id) {
+    const ev = events.find(e=>e.id===id);
+    if (!ev) return;
+    const m = TYPE[ev.type] || { emoji:'📋', label: ev.type };
+    const info = [
+        ['Type',     m.label],
+        ['Date',     fmtDate(ev.date)],
+        ['Time',     fmtTime(ev.time)],
+        ['Duration', ev.duration],
+        ['Location', ev.location || '—'],
+        ['Case',     ev.caseId  || '—'],
+        ['Status',   ev.overdue ? '⏰ Overdue' : ev.status],
+    ];
+    const html = `<div style="background:var(--bg);border-radius:10px;padding:16px;font-size:15px;font-weight:700;margin-bottom:16px">${ev.title}</div>
+        <table style="width:100%;border-collapse:collapse;font-size:13.5px">
+            ${info.map(([k,v])=>`<tr><td style="padding:7px 0;color:var(--text-light);font-weight:600;width:90px">${k}</td><td style="padding:7px 0;font-weight:600">${v}</td></tr>`).join('')}
+        </table>
+        ${ev.notes ? `<div style="margin-top:14px;background:rgba(99,102,241,.05);border-radius:8px;padding:12px;border:1px solid rgba(99,102,241,.12);font-size:13px;line-height:1.6">${ev.notes}</div>` : ''}
+        <div style="display:flex;gap:8px;margin-top:18px">
+            ${ev.status!=='completed'?`<button class="btn btn-primary btn-sm" onclick="markDone(${id});closeModal('viewModal')">✅ Mark Done</button>`:''}
+            <button class="btn btn-outline btn-sm" onclick="reschedule(${id});closeModal('viewModal')">📅 Reschedule</button>
+            <button class="btn btn-outline btn-sm" style="color:var(--danger);border-color:rgba(239,68,68,.3)" onclick="removeEvent(${id});closeModal('viewModal')">🗑 Delete</button>
+        </div>`;
+
+    // reuse a simple dynamic modal
+    let m2 = document.getElementById('viewModal');
+    if (!m2) {
+        m2 = document.createElement('div');
+        m2.className = 'modal-overlay';
+        m2.id = 'viewModal';
+        m2.innerHTML = `<div class="modal"><div class="modal-header"><h3 class="modal-title" id="viewModalTitle"></h3><button class="modal-close" onclick="closeModal('viewModal')">✕</button></div><div id="viewModalBody"></div></div>`;
+        document.body.appendChild(m2);
+        m2.addEventListener('click', e => { if(e.target===m2) closeModal('viewModal'); });
+    }
+    document.getElementById('viewModalTitle').textContent = `${m.emoji} Event Details`;
+    document.getElementById('viewModalBody').innerHTML = html;
+    openModal('viewModal');
+}
+
+/* ── REMINDERS ── */
+function addReminder() {
+    const title = document.getElementById('rTitle').value.trim();
+    const due   = document.getElementById('rDate').value;
+    if (!title) { showToast('Enter a reminder.','error'); return; }
+    if (!due)   { showToast('Pick a due date.','error'); return; }
+    reminders.push({ id: Date.now(), title, due, priority: document.getElementById('rPriority').value });
+    document.getElementById('rTitle').value='';
+    document.getElementById('rDate').value='';
+    closeModal('addReminderModal');
+    renderReminders();
+    showToast('Reminder added!','success');
+}
+
+function removeReminder(id) {
+    reminders = reminders.filter(r=>r.id!==id);
+    renderReminders();
+    showToast('Reminder removed.','warning');
+}
+
+function renderReminders() {
+    const panel = document.getElementById('reminderPanel');
+    if (!reminders.length) {
+        panel.innerHTML='<p style="text-align:center;color:var(--text-light);font-size:13px;padding:16px 0">No reminders.</p>';
+        return;
+    }
+    panel.innerHTML = reminders.map(r => {
+        const prioCls  = { high:'prio-high', medium:'prio-medium', low:'prio-low' }[r.priority]||'prio-medium';
+        const prioEmoji= { high:'🔴', medium:'🟡', low:'🟢' }[r.priority]||'🟡';
+        const isOvd    = r.due && new Date(r.due) < new Date();
+        return `<div class="reminder-item">
+            <span class="reminder-icon">${prioEmoji}</span>
+            <div class="reminder-info">
+                <div class="reminder-title">${r.title}</div>
+                <div class="reminder-due" style="${isOvd?'color:var(--danger)':''}">Due: ${fmtDate(r.due)}${isOvd?' ⚠':''}
+                </div>
+            </div>
+            <span class="prio-tag ${prioCls}">${r.priority.toUpperCase()}</span>
+            <button class="btn btn-xs btn-outline" style="color:var(--danger);border-color:rgba(239,68,68,.3)" onclick="removeReminder(${r.id})">✕</button>
+        </div>`;
+    }).join('');
+}
+
+/* ── MONTHLY BREAKDOWN ── */
+function renderMonthBreakdown() {
+    const counts = { hearing:0, interview:0, sitevisit:0, mediation:0, review:0 };
+    events.forEach(e => { if(counts[e.type]!==undefined) counts[e.type]++; });
+    const rows = [
+        ['⚖️ Hearings', counts.hearing],
+        ['👥 Interviews', counts.interview],
+        ['🏢 Site Visits', counts.sitevisit],
+        ['🤝 Mediation', counts.mediation],
+        ['📋 Reviews', counts.review],
+    ];
+    document.getElementById('monthBreakdown').innerHTML = rows.map(([l,v])=>
+        `<div style="display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border)">
+            <span style="font-size:13px;color:var(--text-light)">${l}</span>
+            <span style="font-weight:700">${v}</span>
+        </div>`
+    ).join('');
+}
+
+/* ── STATS ── */
+function updateStats() {
+    document.getElementById('sTotal').textContent     = events.length;
+    document.getElementById('sUpcoming').textContent  = events.filter(e=>e.status==='upcoming'&&!e.overdue).length;
+    document.getElementById('sCompleted').textContent = events.filter(e=>e.status==='completed').length;
+    document.getElementById('sOverdue').textContent   = events.filter(e=>e.overdue).length;
+    renderMonthBreakdown();
+}
+
+/* ── EXPORT ── */
+function exportCSV() {
+    const hdr = ['Title','Type','Case','Date','Time','Duration','Location','Status','Notes'];
+    const rows = events.map(e=>[e.title,e.type,e.caseId,e.date,e.time,e.duration,e.location,e.status,e.notes]);
+    const csv  = [hdr,...rows].map(r=>r.map(c=>`"${(c||'').replace(/"/g,'""')}"`).join(',')).join('\n');
+    const a    = document.createElement('a');
+    a.href     = 'data:text/csv;charset=utf-8,'+encodeURIComponent(csv);
+    a.download = 'schedule.csv';
+    a.click();
+    showToast('Exported as CSV!','success');
+}
+
+/* ── MODAL HELPERS ── */
+function openModal(id)  { document.getElementById(id).classList.add('active'); }
+function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+document.querySelectorAll('.modal-overlay').forEach(m=>{
+    m.addEventListener('click', e=>{ if(e.target===m) m.classList.remove('active'); });
+});
+document.addEventListener('keydown', e=>{ if(e.key==='Escape') document.querySelectorAll('.modal-overlay.active').forEach(m=>m.classList.remove('active')); });
+
+/* ── TOAST ── */
+function showToast(msg, type='success') {
+    const t = document.getElementById('toast');
+    const icons = { success:'✓', error:'✕', warning:'⚠', info:'ℹ' };
+    document.getElementById('toastIcon').textContent = icons[type]||'✓';
+    document.getElementById('toastMsg').textContent  = msg;
+    t.className = 'toast '+type+' show';
+    clearTimeout(t._t);
+    t._t = setTimeout(()=>t.classList.remove('show'), 3200);
+}
+
+/* ── UTILS ── */
+function fmtDate(s) {
+    if (!s) return '—';
+    return new Date(s+'T00:00:00').toLocaleDateString('en-US',{ month:'short', day:'numeric', year:'numeric' });
+}
+function fmtTime(t) {
+    if (!t) return '';
+    const [h,m] = t.split(':').map(Number);
+    return `${h%12||12}:${String(m).padStart(2,'0')} ${h>=12?'PM':'AM'}`;
+}
+
+/* ── INIT ── */
+document.addEventListener('DOMContentLoaded', ()=>{
+    document.getElementById('inDate').value = new Date().toISOString().slice(0,10);
+    buildCalendar();
+    renderGrid();
+    renderReminders();
+    renderMonthBreakdown();
+    updateStats();
+});
+</script>
+</body>
+</html>

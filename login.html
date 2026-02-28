@@ -431,17 +431,15 @@ document.getElementById("loginForm").addEventListener("submit", function(e) {
 
     if (email === "admin@test.com" && pwd === "Admin@123" && selectedRole === "admin") {
       validUser = { email: "admin@test.com", role: "admin" };
-    } /* ---- Check Registered Users (User & Authority) ---- */
-else {
-  const users = JSON.parse(localStorage.getItem("users")) || [];
-
-  validUser = users.find(user =>
-  user.email.toLowerCase() === email.toLowerCase() &&
-  user.password === pwd &&
-  user.role &&
-  user.role.toLowerCase() === selectedRole.toLowerCase()
-);
-}
+    } else {
+      /* Check registered users from localStorage */
+      const users = JSON.parse(localStorage.getItem("users")) || [];
+      validUser = users.find(user =>
+        user.email === email &&
+        user.password === pwd &&
+        user.role === selectedRole
+      );
+    }
 
     if (validUser) {
       validUser.role = validUser.role.toLowerCase();

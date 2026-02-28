@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SafeReport Authority | Dashboard</title>
+<title>SafeReport Authority | Active Investigations</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="authority-shared.css">
 <style>
@@ -49,7 +49,7 @@
       </div>
       <div class="nav-section-label">OVERVIEW</div><ul class="sidebar-menu">
             <li class="menu-item">
-              <a href="dashboard.html" class="menu-link active" onclick="closeMenu()">
+              <a href="dashboard.html" class="menu-link" onclick="closeMenu()">
                 <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 3h7v7H3V3zm11 0h7v7h-7V3zm0 11h7v7h-7v-7zm-11 0h7v7H3v-7z" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 Dashboard
               </a>
@@ -67,7 +67,7 @@
               </a>
             </li>
             <li class="menu-item">
-              <a href="active-cases.html" class="menu-link" onclick="closeMenu()">
+              <a href="active-cases.html" class="menu-link active" onclick="closeMenu()">
                 <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 Active Investigations<span class="menu-badge">3</span>
               </a>
@@ -165,155 +165,151 @@
 <div class="page-header">
   <div class="page-header-top">
     <div>
-      <h1 class="page-title">Authority Dashboard 📊</h1>
-      <p class="page-subtitle">Welcome back — here is your investigative overview for today.</p>
+      <div class="breadcrumb"><a href="dashboard.html">Dashboard</a> <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg> Active Investigations</div>
+      <h1 class="page-title">Active Investigations ⚡</h1>
+      <p class="page-subtitle">8 cases currently under active investigation — track progress and flag overdue items.</p>
     </div>
     <div class="page-actions">
-      <a href="new-assignments.html" class="btn btn-outline">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-        5 New Assignments
-      </a>
-      <a href="generate-report.html" class="btn btn-primary">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-        Generate Report
-      </a>
+      <a href="add-update.html" class="btn btn-outline">➕ Quick Update</a>
+      <a href="generate-report.html" class="btn btn-primary">📄 Generate Report</a>
     </div>
   </div>
 </div>
 
-<!-- STATS -->
-<div class="stats-grid">
-  <div class="stat-card" style="animation-delay:0.05s">
-    <div class="stat-header">
-      <div class="stat-icon" style="background:linear-gradient(135deg,rgba(99,102,241,0.12),rgba(139,92,246,0.12))">📋</div>
-      <span class="stat-trend trend-up">↑ 3 this week</span>
-    </div>
-    <div class="stat-number">24</div>
-    <div class="stat-label">Total Assigned Cases</div>
-  </div>
-  <div class="stat-card" style="animation-delay:0.1s">
-    <div class="stat-header">
-      <div class="stat-icon" style="background:linear-gradient(135deg,rgba(245,158,11,0.12),rgba(251,191,36,0.12))">⚡</div>
-      <span class="stat-trend trend-up">↑ 2 new</span>
-    </div>
-    <div class="stat-number">8</div>
-    <div class="stat-label">Active Investigations</div>
-  </div>
-  <div class="stat-card" style="animation-delay:0.15s">
-    <div class="stat-header">
-      <div class="stat-icon" style="background:linear-gradient(135deg,rgba(239,68,68,0.12),rgba(220,38,38,0.12))">🔔</div>
-      <span class="stat-trend trend-down">Needs attention</span>
-    </div>
-    <div class="stat-number">5</div>
-    <div class="stat-label">Pending Assignments</div>
-  </div>
-  <div class="stat-card" style="animation-delay:0.2s">
-    <div class="stat-header">
-      <div class="stat-icon" style="background:linear-gradient(135deg,rgba(16,185,129,0.12),rgba(5,150,105,0.12))">✅</div>
-      <span class="stat-trend trend-up">↑ 25% rate</span>
-    </div>
-    <div class="stat-number">11</div>
-    <div class="stat-label">Cases Resolved</div>
-  </div>
+<div class="alert alert-danger">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+  <div><b>2 cases are overdue!</b> Cases #C1029 and #C1033 have exceeded their target resolution dates. Immediate action required.</div>
 </div>
 
-<div class="grid-21" style="gap:22px">
-  <!-- RECENT CASES -->
-  <div>
-    <div class="table-wrap" style="animation:fadeInUp 0.5s ease 0.2s both">
-      <div class="card-header" style="padding:20px 24px">
+<div class="filters-bar" style="animation:fadeInUp 0.4s ease 0.1s both">
+  <div class="search-filter">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+    <input type="text" placeholder="Search cases...">
+  </div>
+  <button class="filter-chip active">All (8)</button>
+  <button class="filter-chip">🔴 Overdue (2)</button>
+  <button class="filter-chip">🟠 Critical (3)</button>
+  <button class="filter-chip">🟡 On Track (6)</button>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:18px;animation:fadeInUp 0.5s ease 0.15s both">
+
+  <!-- OVERDUE CARD -->
+  <div class="case-card" style="border-left:4px solid var(--danger)">
+    <div class="case-card-header">
+      <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+        <div class="case-id-badge" style="background:var(--danger)">#C1029</div>
         <div>
-          <div class="card-title">Recent Cases</div>
-          <div class="card-subtitle">Your latest assigned investigations</div>
+          <div style="font-size:11px;color:var(--danger);font-weight:700">⏰ OVERDUE by 3 days</div>
+          <div style="font-size:13px;font-weight:600">Physical Assault</div>
         </div>
-        <a href="my-cases.html" class="btn btn-outline btn-sm">View All</a>
       </div>
-      <table>
-        <thead>
-          <tr>
-            <th>Case ID</th><th>Subject</th><th>Category</th><th>Priority</th><th>Status</th><th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr><td><b style="color:var(--primary)">#C1042</b></td><td>Workplace Harassment</td><td>Sexual Harassment</td><td><span class="badge badge-urgent">HIGH</span></td><td><span class="badge badge-progress">IN PROGRESS</span></td><td><a href="investigate.html" class="btn btn-primary btn-sm">Investigate</a></td></tr>
-          <tr><td><b style="color:var(--primary)">#C1039</b></td><td>Verbal Abuse at Office</td><td>Verbal Abuse</td><td><span class="badge badge-medium">MEDIUM</span></td><td><span class="badge badge-pending">UNDER REVIEW</span></td><td><a href="investigate.html" class="btn btn-primary btn-sm">Investigate</a></td></tr>
-          <tr><td><b style="color:var(--primary)">#C1036</b></td><td>Stalking Complaint</td><td>Stalking</td><td><span class="badge badge-urgent">HIGH</span></td><td><span class="badge badge-new">NEW</span></td><td><a href="investigate.html" class="btn btn-primary btn-sm">Investigate</a></td></tr>
-          <tr><td><b style="color:var(--primary)">#C1031</b></td><td>Discrimination Case</td><td>Discrimination</td><td><span class="badge badge-low">LOW</span></td><td><span class="badge badge-resolved">RESOLVED</span></td><td><a href="investigate.html" class="btn btn-outline btn-sm">View</a></td></tr>
-          <tr><td><b style="color:var(--primary)">#C1029</b></td><td>Physical Assault Report</td><td>Physical Assault</td><td><span class="badge badge-urgent">CRITICAL</span></td><td><span class="badge badge-progress">IN PROGRESS</span></td><td><a href="investigate.html" class="btn btn-primary btn-sm">Investigate</a></td></tr>
-        </tbody>
-      </table>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <span class="badge badge-urgent">CRITICAL</span>
+        <span class="badge badge-progress">IN PROGRESS</span>
+      </div>
+    </div>
+    <div class="case-card-body">
+      <div class="case-title">Physical Assault — Reported by Anonymous</div>
+      <div style="margin:12px 0">
+        <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+          <span style="font-size:12px;color:var(--text-light)">Investigation Progress</span>
+          <span style="font-size:12px;font-weight:700;color:var(--danger)">45%</span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill danger" style="width:45%"></div></div>
+      </div>
+      <div class="case-meta">
+        <div class="case-meta-item">📅 Target: Jan 17, 2025</div>
+        <div class="case-meta-item">🔄 Last Update: Jan 16</div>
+        <div class="case-meta-item">📎 5 evidence files</div>
+      </div>
+    </div>
+    <div class="case-card-footer">
+      <span style="font-size:12px;color:var(--danger);font-weight:600">⚠ Escalation required if not updated today</span>
+      <div class="case-actions">
+        <a href="investigate.html" class="btn btn-primary btn-sm">Investigate</a>
+        <a href="add-update.html" class="btn btn-warning btn-sm" style="color:white">Quick Update</a>
+      </div>
     </div>
   </div>
 
-  <!-- SIDEBAR WIDGETS -->
-  <div style="display:flex;flex-direction:column;gap:22px;">
-    <!-- PENDING ACTIONS -->
-    <div class="card" style="animation:fadeInUp 0.5s ease 0.25s both">
-      <div class="card-header"><div class="card-title">⚠️ Pending Actions</div></div>
-      <div class="card-body" style="padding:0">
-        <div style="padding:0 24px">
-          <div class="overview-item">
-            <span class="overview-label">🔴 Overdue reports</span>
-            <span class="overview-value" style="color:var(--danger)">2</span>
-          </div>
-          <div class="overview-item">
-            <span class="overview-label">📅 Hearings this week</span>
-            <span class="overview-value">3</span>
-          </div>
-          <div class="overview-item">
-            <span class="overview-label">📝 Updates needed</span>
-            <span class="overview-value" style="color:var(--warning)">4</span>
-          </div>
-          <div class="overview-item">
-            <span class="overview-label">🗂️ Evidence to review</span>
-            <span class="overview-value">6</span>
-          </div>
-        </div>
-        <div style="padding:16px 24px;border-top:1px solid var(--border)">
-          <a href="schedule.html" class="btn btn-primary" style="width:100%;justify-content:center">View Schedule</a>
-        </div>
-      </div>
-    </div>
-
-    <!-- PERFORMANCE -->
-    <div class="card" style="animation:fadeInUp 0.5s ease 0.3s both">
-      <div class="card-header"><div class="card-title">📈 My Performance</div></div>
-      <div class="card-body">
-        <div style="margin-bottom:16px">
-          <div style="display:flex;justify-content:space-between;margin-bottom:6px">
-            <span style="font-size:13px;color:var(--text-light)">Resolution Rate</span>
-            <span style="font-size:13px;font-weight:700">78%</span>
-          </div>
-          <div class="progress-bar"><div class="progress-fill success" style="width:78%"></div></div>
-        </div>
-        <div style="margin-bottom:16px">
-          <div style="display:flex;justify-content:space-between;margin-bottom:6px">
-            <span style="font-size:13px;color:var(--text-light)">On-Time Closure</span>
-            <span style="font-size:13px;font-weight:700">65%</span>
-          </div>
-          <div class="progress-bar"><div class="progress-fill warning" style="width:65%"></div></div>
-        </div>
+  <!-- NORMAL ACTIVE CARD -->
+  <div class="case-card">
+    <div class="case-card-header">
+      <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+        <div class="case-id-badge">#C1042</div>
         <div>
-          <div style="display:flex;justify-content:space-between;margin-bottom:6px">
-            <span style="font-size:13px;color:var(--text-light)">Avg. Resolution Days</span>
-            <span style="font-size:13px;font-weight:700">12 days</span>
-          </div>
-          <div class="progress-bar"><div class="progress-fill" style="width:50%"></div></div>
+          <div style="font-size:11px;color:var(--success);font-weight:700">✅ On Track</div>
+          <div style="font-size:13px;font-weight:600">Sexual Harassment</div>
         </div>
       </div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <span class="badge badge-urgent">HIGH</span>
+        <span class="badge badge-progress">IN PROGRESS</span>
+      </div>
     </div>
-
-    <!-- QUICK ACTIONS -->
-    <div class="card" style="animation:fadeInUp 0.5s ease 0.35s both">
-      <div class="card-header"><div class="card-title">⚡ Quick Actions</div></div>
-      <div class="card-body" style="display:flex;flex-direction:column;gap:10px;padding:16px 24px;">
-        <a href="add-update.html" class="btn btn-primary" style="justify-content:center">➕ Add Case Update</a>
-        <a href="evidence.html" class="btn btn-outline" style="justify-content:center">📁 Upload Evidence</a>
-        <a href="schedule.html" class="btn btn-outline" style="justify-content:center">📅 Schedule Hearing</a>
-        <a href="close-case.html" class="btn btn-outline" style="justify-content:center;color:var(--success);border-color:var(--success)">✅ Close a Case</a>
+    <div class="case-card-body">
+      <div class="case-title">Workplace Harassment — Tech Park</div>
+      <div style="margin:12px 0">
+        <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+          <span style="font-size:12px;color:var(--text-light)">Investigation Progress</span>
+          <span style="font-size:12px;font-weight:700;color:var(--success)">70%</span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill success" style="width:70%"></div></div>
+      </div>
+      <div class="case-meta">
+        <div class="case-meta-item">📅 Target: Jan 30, 2025</div>
+        <div class="case-meta-item">🔄 Last Update: Jan 20</div>
+        <div class="case-meta-item">👥 2 witnesses interviewed</div>
+      </div>
+    </div>
+    <div class="case-card-footer">
+      <span style="font-size:12px;color:var(--success);font-weight:600">Next: Formal hearing on Jan 22</span>
+      <div class="case-actions">
+        <a href="investigate.html" class="btn btn-primary btn-sm">Investigate</a>
+        <a href="add-update.html" class="btn btn-outline btn-sm">Update</a>
       </div>
     </div>
   </div>
+
+  <div class="case-card">
+    <div class="case-card-header">
+      <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+        <div class="case-id-badge">#C1039</div>
+        <div>
+          <div style="font-size:11px;color:var(--warning);font-weight:700">⚡ Needs Attention</div>
+          <div style="font-size:13px;font-weight:600">Verbal Abuse</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <span class="badge badge-medium">MEDIUM</span>
+        <span class="badge badge-pending">UNDER REVIEW</span>
+      </div>
+    </div>
+    <div class="case-card-body">
+      <div class="case-title">Verbal Abuse at Office — Pending Witness Statement</div>
+      <div style="margin:12px 0">
+        <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+          <span style="font-size:12px;color:var(--text-light)">Investigation Progress</span>
+          <span style="font-size:12px;font-weight:700;color:var(--warning)">30%</span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill warning" style="width:30%"></div></div>
+      </div>
+      <div class="case-meta">
+        <div class="case-meta-item">📅 Target: Feb 5, 2025</div>
+        <div class="case-meta-item">🔄 Last Update: Jan 18</div>
+        <div class="case-meta-item">⏳ Awaiting witness statement</div>
+      </div>
+    </div>
+    <div class="case-card-footer">
+      <span style="font-size:12px;color:var(--warning);font-weight:600">Witness follow-up needed</span>
+      <div class="case-actions">
+        <a href="investigate.html" class="btn btn-primary btn-sm">Investigate</a>
+        <a href="add-update.html" class="btn btn-outline btn-sm">Update</a>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 </div>

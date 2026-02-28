@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SafeReport Authority | Dashboard</title>
+<title>SafeReport Authority | Evidence Manager</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="authority-shared.css">
 <style>
@@ -49,7 +49,7 @@
       </div>
       <div class="nav-section-label">OVERVIEW</div><ul class="sidebar-menu">
             <li class="menu-item">
-              <a href="dashboard.html" class="menu-link active" onclick="closeMenu()">
+              <a href="dashboard.html" class="menu-link" onclick="closeMenu()">
                 <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 3h7v7H3V3zm11 0h7v7h-7V3zm0 11h7v7h-7v-7zm-11 0h7v7H3v-7z" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 Dashboard
               </a>
@@ -97,7 +97,7 @@
               </a>
             </li></ul><div class="nav-section-label">TOOLS</div><ul class="sidebar-menu">
             <li class="menu-item">
-              <a href="evidence.html" class="menu-link" onclick="closeMenu()">
+              <a href="evidence.html" class="menu-link active" onclick="closeMenu()">
                 <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 7v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2H9l-2-2H5a2 2 0 0 0-2 2z" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 Evidence Manager
               </a>
@@ -165,154 +165,127 @@
 <div class="page-header">
   <div class="page-header-top">
     <div>
-      <h1 class="page-title">Authority Dashboard 📊</h1>
-      <p class="page-subtitle">Welcome back — here is your investigative overview for today.</p>
+      <div class="breadcrumb"><a href="dashboard.html">Dashboard</a> <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg> Evidence Manager</div>
+      <h1 class="page-title">Evidence Manager 🗂️</h1>
+      <p class="page-subtitle">Manage, review, and maintain chain of custody for all case evidence.</p>
     </div>
     <div class="page-actions">
-      <a href="new-assignments.html" class="btn btn-outline">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-        5 New Assignments
-      </a>
-      <a href="generate-report.html" class="btn btn-primary">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-        Generate Report
-      </a>
+      <button class="btn btn-outline" onclick="document.getElementById('bulkUpload').click()">⬆ Upload Evidence</button>
+      <input type="file" id="bulkUpload" style="display:none" multiple onchange="showToast('Evidence files uploaded!','success')">
     </div>
   </div>
 </div>
 
-<!-- STATS -->
-<div class="stats-grid">
-  <div class="stat-card" style="animation-delay:0.05s">
-    <div class="stat-header">
-      <div class="stat-icon" style="background:linear-gradient(135deg,rgba(99,102,241,0.12),rgba(139,92,246,0.12))">📋</div>
-      <span class="stat-trend trend-up">↑ 3 this week</span>
-    </div>
-    <div class="stat-number">24</div>
-    <div class="stat-label">Total Assigned Cases</div>
+<!-- UPLOAD ZONE -->
+<div class="upload-zone" style="margin-bottom:24px;animation:fadeInUp 0.4s ease both" onclick="document.getElementById('dropUpload').click()">
+  <div class="upload-zone-icon">📁</div>
+  <p>Drag & drop evidence files here or click to upload</p>
+  <small>Images, PDFs, Videos, Audio · Max 50MB per file · All uploads are logged in chain of custody</small>
+  <input type="file" id="dropUpload" style="display:none" multiple onchange="showToast('Files added to evidence log!','success')">
+</div>
+
+<div class="filters-bar" style="animation:fadeInUp 0.5s ease 0.1s both">
+  <div class="search-filter">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+    <input type="text" placeholder="Search evidence files...">
   </div>
-  <div class="stat-card" style="animation-delay:0.1s">
-    <div class="stat-header">
-      <div class="stat-icon" style="background:linear-gradient(135deg,rgba(245,158,11,0.12),rgba(251,191,36,0.12))">⚡</div>
-      <span class="stat-trend trend-up">↑ 2 new</span>
-    </div>
-    <div class="stat-number">8</div>
-    <div class="stat-label">Active Investigations</div>
+  <button class="filter-chip active">All Evidence</button>
+  <button class="filter-chip">📄 Documents</button>
+  <button class="filter-chip">🖼️ Images</button>
+  <button class="filter-chip">🎬 Videos</button>
+  <button class="filter-chip">🎵 Audio</button>
+  <select class="filter-select">
+    <option>All Cases</option><option>#C1042</option><option>#C1039</option><option>#C1036</option>
+  </select>
+</div>
+
+<!-- EVIDENCE TABLE -->
+<div class="table-wrap" style="animation:fadeInUp 0.5s ease 0.15s both;margin-bottom:28px">
+  <table>
+    <thead>
+      <tr><th>File Name</th><th>Case</th><th>Type</th><th>Size</th><th>Uploaded By</th><th>Uploaded On</th><th>Custody Log</th><th>Actions</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><div style="display:flex;align-items:center;gap:10px"><div style="width:36px;height:36px;border-radius:9px;background:linear-gradient(135deg,var(--primary),var(--secondary));display:flex;align-items:center;justify-content:center;color:white;font-size:16px;flex-shrink:0">📄</div><div><div style="font-weight:600">complaint_statement.pdf</div><div style="font-size:11px;color:var(--text-light)">Original complainant document</div></div></div></td>
+        <td><b style="color:var(--primary)">#C1042</b></td><td>Document</td><td>284 KB</td>
+        <td>Complainant</td><td>Jan 16, 2025</td>
+        <td><button class="btn btn-outline btn-sm" onclick="viewCustody('C1042-EV001')">View Log</button></td>
+        <td style="display:flex;gap:6px">
+          <button class="btn btn-primary btn-sm" onclick="showToast('Opening file preview...','info')">View</button>
+          <button class="btn btn-outline btn-sm" onclick="showToast('Downloading file...','success')">⬇</button>
+        </td>
+      </tr>
+      <tr>
+        <td><div style="display:flex;align-items:center;gap:10px"><div style="width:36px;height:36px;border-radius:9px;background:linear-gradient(135deg,var(--success),#059669);display:flex;align-items:center;justify-content:center;color:white;font-size:16px;flex-shrink:0">🖼️</div><div><div style="font-weight:600">cctv_screenshot.jpg</div><div style="font-size:11px;color:var(--text-light)">CCTV frame from building security</div></div></div></td>
+        <td><b style="color:var(--primary)">#C1042</b></td><td>Image</td><td>1.2 MB</td>
+        <td>Rajan Arora</td><td>Jan 17, 2025</td>
+        <td><button class="btn btn-outline btn-sm" onclick="viewCustody('C1042-EV002')">View Log</button></td>
+        <td style="display:flex;gap:6px">
+          <button class="btn btn-primary btn-sm">View</button>
+          <button class="btn btn-outline btn-sm">⬇</button>
+        </td>
+      </tr>
+      <tr>
+        <td><div style="display:flex;align-items:center;gap:10px"><div style="width:36px;height:36px;border-radius:9px;background:linear-gradient(135deg,var(--warning),#d97706);display:flex;align-items:center;justify-content:center;color:white;font-size:16px;flex-shrink:0">📁</div><div><div style="font-weight:600">witness_statement.docx</div><div style="font-size:11px;color:var(--text-light)">Witness 1 signed statement</div></div></div></td>
+        <td><b style="color:var(--primary)">#C1042</b></td><td>Document</td><td>98 KB</td>
+        <td>Rajan Arora</td><td>Jan 18, 2025</td>
+        <td><button class="btn btn-outline btn-sm" onclick="viewCustody('C1042-EV003')">View Log</button></td>
+        <td style="display:flex;gap:6px">
+          <button class="btn btn-primary btn-sm">View</button>
+          <button class="btn btn-outline btn-sm">⬇</button>
+        </td>
+      </tr>
+      <tr>
+        <td><div style="display:flex;align-items:center;gap:10px"><div style="width:36px;height:36px;border-radius:9px;background:linear-gradient(135deg,var(--accent),#db2777);display:flex;align-items:center;justify-content:center;color:white;font-size:16px;flex-shrink:0">🎵</div><div><div style="font-weight:600">audio_recording.mp3</div><div style="font-size:11px;color:var(--text-light)">Complainant audio testimony</div></div></div></td>
+        <td><b style="color:var(--primary)">#C1039</b></td><td>Audio</td><td>4.7 MB</td>
+        <td>Complainant</td><td>Jan 14, 2025</td>
+        <td><button class="btn btn-outline btn-sm" onclick="viewCustody('C1039-EV001')">View Log</button></td>
+        <td style="display:flex;gap:6px">
+          <button class="btn btn-primary btn-sm">View</button>
+          <button class="btn btn-outline btn-sm">⬇</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- CHAIN OF CUSTODY LOG -->
+<div class="card" style="animation:fadeInUp 0.5s ease 0.2s both">
+  <div class="card-header">
+    <div><div class="card-title">🔗 Chain of Custody Log</div><div class="card-subtitle">Full audit trail for all evidence — Evidence ID: C1042-EV001</div></div>
+    <button class="btn btn-outline btn-sm" onclick="showToast('Exporting custody log...','success')">⬇ Export Log</button>
   </div>
-  <div class="stat-card" style="animation-delay:0.15s">
-    <div class="stat-header">
-      <div class="stat-icon" style="background:linear-gradient(135deg,rgba(239,68,68,0.12),rgba(220,38,38,0.12))">🔔</div>
-      <span class="stat-trend trend-down">Needs attention</span>
+  <div class="card-body">
+    <div class="timeline">
+      <div class="timeline-item done">
+        <div class="timeline-time">Jan 16, 2025 · 10:22 AM</div>
+        <div class="timeline-card"><h4>📥 Evidence Received</h4><p>File uploaded by complainant via SafeReport portal. Hash verified: SHA-256 a3f9b2c1...</p></div>
+      </div>
+      <div class="timeline-item done">
+        <div class="timeline-time">Jan 16, 2025 · 11:05 AM</div>
+        <div class="timeline-card"><h4>👁 Accessed by Investigator</h4><p>File accessed by Rajan Arora (Auth ID: AUTH-2841) for initial review. No modifications.</p></div>
+      </div>
+      <div class="timeline-item done">
+        <div class="timeline-time">Jan 17, 2025 · 09:30 AM</div>
+        <div class="timeline-card"><h4>🔗 Linked to Case Timeline</h4><p>Evidence linked to Investigation Timeline Entry #3. Case #C1042.</p></div>
+      </div>
+      <div class="timeline-item active">
+        <div class="timeline-time">Jan 20, 2025 · 02:15 PM</div>
+        <div class="timeline-card" style="border-color:rgba(99,102,241,0.3)"><h4>📤 Shared with Hearing Panel</h4><p>Secure access granted to Hearing Panel members for Jan 24 hearing. Access expires Jan 24, 2025.</p></div>
+      </div>
     </div>
-    <div class="stat-number">5</div>
-    <div class="stat-label">Pending Assignments</div>
-  </div>
-  <div class="stat-card" style="animation-delay:0.2s">
-    <div class="stat-header">
-      <div class="stat-icon" style="background:linear-gradient(135deg,rgba(16,185,129,0.12),rgba(5,150,105,0.12))">✅</div>
-      <span class="stat-trend trend-up">↑ 25% rate</span>
-    </div>
-    <div class="stat-number">11</div>
-    <div class="stat-label">Cases Resolved</div>
   </div>
 </div>
 
-<div class="grid-21" style="gap:22px">
-  <!-- RECENT CASES -->
-  <div>
-    <div class="table-wrap" style="animation:fadeInUp 0.5s ease 0.2s both">
-      <div class="card-header" style="padding:20px 24px">
-        <div>
-          <div class="card-title">Recent Cases</div>
-          <div class="card-subtitle">Your latest assigned investigations</div>
-        </div>
-        <a href="my-cases.html" class="btn btn-outline btn-sm">View All</a>
-      </div>
-      <table>
-        <thead>
-          <tr>
-            <th>Case ID</th><th>Subject</th><th>Category</th><th>Priority</th><th>Status</th><th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr><td><b style="color:var(--primary)">#C1042</b></td><td>Workplace Harassment</td><td>Sexual Harassment</td><td><span class="badge badge-urgent">HIGH</span></td><td><span class="badge badge-progress">IN PROGRESS</span></td><td><a href="investigate.html" class="btn btn-primary btn-sm">Investigate</a></td></tr>
-          <tr><td><b style="color:var(--primary)">#C1039</b></td><td>Verbal Abuse at Office</td><td>Verbal Abuse</td><td><span class="badge badge-medium">MEDIUM</span></td><td><span class="badge badge-pending">UNDER REVIEW</span></td><td><a href="investigate.html" class="btn btn-primary btn-sm">Investigate</a></td></tr>
-          <tr><td><b style="color:var(--primary)">#C1036</b></td><td>Stalking Complaint</td><td>Stalking</td><td><span class="badge badge-urgent">HIGH</span></td><td><span class="badge badge-new">NEW</span></td><td><a href="investigate.html" class="btn btn-primary btn-sm">Investigate</a></td></tr>
-          <tr><td><b style="color:var(--primary)">#C1031</b></td><td>Discrimination Case</td><td>Discrimination</td><td><span class="badge badge-low">LOW</span></td><td><span class="badge badge-resolved">RESOLVED</span></td><td><a href="investigate.html" class="btn btn-outline btn-sm">View</a></td></tr>
-          <tr><td><b style="color:var(--primary)">#C1029</b></td><td>Physical Assault Report</td><td>Physical Assault</td><td><span class="badge badge-urgent">CRITICAL</span></td><td><span class="badge badge-progress">IN PROGRESS</span></td><td><a href="investigate.html" class="btn btn-primary btn-sm">Investigate</a></td></tr>
-        </tbody>
-      </table>
+<!-- CUSTODY MODAL -->
+<div class="modal-overlay" id="custodyModal">
+  <div class="modal modal-lg">
+    <div class="modal-header"><h3 class="modal-title">🔗 Chain of Custody — Evidence Log</h3><button class="modal-close" onclick="closeModal('custodyModal')">✕</button></div>
+    <div id="custodyModalContent" style="font-size:14px;color:var(--text-light);line-height:1.8">
+      Loading custody information...
     </div>
-  </div>
-
-  <!-- SIDEBAR WIDGETS -->
-  <div style="display:flex;flex-direction:column;gap:22px;">
-    <!-- PENDING ACTIONS -->
-    <div class="card" style="animation:fadeInUp 0.5s ease 0.25s both">
-      <div class="card-header"><div class="card-title">⚠️ Pending Actions</div></div>
-      <div class="card-body" style="padding:0">
-        <div style="padding:0 24px">
-          <div class="overview-item">
-            <span class="overview-label">🔴 Overdue reports</span>
-            <span class="overview-value" style="color:var(--danger)">2</span>
-          </div>
-          <div class="overview-item">
-            <span class="overview-label">📅 Hearings this week</span>
-            <span class="overview-value">3</span>
-          </div>
-          <div class="overview-item">
-            <span class="overview-label">📝 Updates needed</span>
-            <span class="overview-value" style="color:var(--warning)">4</span>
-          </div>
-          <div class="overview-item">
-            <span class="overview-label">🗂️ Evidence to review</span>
-            <span class="overview-value">6</span>
-          </div>
-        </div>
-        <div style="padding:16px 24px;border-top:1px solid var(--border)">
-          <a href="schedule.html" class="btn btn-primary" style="width:100%;justify-content:center">View Schedule</a>
-        </div>
-      </div>
-    </div>
-
-    <!-- PERFORMANCE -->
-    <div class="card" style="animation:fadeInUp 0.5s ease 0.3s both">
-      <div class="card-header"><div class="card-title">📈 My Performance</div></div>
-      <div class="card-body">
-        <div style="margin-bottom:16px">
-          <div style="display:flex;justify-content:space-between;margin-bottom:6px">
-            <span style="font-size:13px;color:var(--text-light)">Resolution Rate</span>
-            <span style="font-size:13px;font-weight:700">78%</span>
-          </div>
-          <div class="progress-bar"><div class="progress-fill success" style="width:78%"></div></div>
-        </div>
-        <div style="margin-bottom:16px">
-          <div style="display:flex;justify-content:space-between;margin-bottom:6px">
-            <span style="font-size:13px;color:var(--text-light)">On-Time Closure</span>
-            <span style="font-size:13px;font-weight:700">65%</span>
-          </div>
-          <div class="progress-bar"><div class="progress-fill warning" style="width:65%"></div></div>
-        </div>
-        <div>
-          <div style="display:flex;justify-content:space-between;margin-bottom:6px">
-            <span style="font-size:13px;color:var(--text-light)">Avg. Resolution Days</span>
-            <span style="font-size:13px;font-weight:700">12 days</span>
-          </div>
-          <div class="progress-bar"><div class="progress-fill" style="width:50%"></div></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- QUICK ACTIONS -->
-    <div class="card" style="animation:fadeInUp 0.5s ease 0.35s both">
-      <div class="card-header"><div class="card-title">⚡ Quick Actions</div></div>
-      <div class="card-body" style="display:flex;flex-direction:column;gap:10px;padding:16px 24px;">
-        <a href="add-update.html" class="btn btn-primary" style="justify-content:center">➕ Add Case Update</a>
-        <a href="evidence.html" class="btn btn-outline" style="justify-content:center">📁 Upload Evidence</a>
-        <a href="schedule.html" class="btn btn-outline" style="justify-content:center">📅 Schedule Hearing</a>
-        <a href="close-case.html" class="btn btn-outline" style="justify-content:center;color:var(--success);border-color:var(--success)">✅ Close a Case</a>
-      </div>
-    </div>
+    <div class="modal-footer"><button class="btn btn-outline" onclick="closeModal('custodyModal')">Close</button><button class="btn btn-primary" onclick="showToast('Custody log exported.','success')">Export PDF</button></div>
   </div>
 </div>
 
@@ -323,6 +296,18 @@
 
 <script src="authority-shared.js"></script>
 <script>
+
+function viewCustody(evidenceId) {
+    document.getElementById("custodyModalContent").innerHTML =
+        "<b>Evidence ID:</b> " + evidenceId + "<br>" +
+        "<b>Hash (SHA-256):</b> a3f9b2c1d4e5f6a7b8c9d0e1f2a3b4c5...<br><br>" +
+        "<b>Access Log:</b><br>" +
+        "Jan 16 · 10:22 AM — Uploaded by complainant<br>" +
+        "Jan 16 · 11:05 AM — Reviewed by Rajan Arora<br>" +
+        "Jan 17 · 09:30 AM — Linked to timeline<br>" +
+        "Jan 20 · 02:15 PM — Shared with hearing panel";
+    openModal("custodyModal");
+}
 
 </script>
 </body>

@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SafeReport | Pending Review</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #8b5cf6;
+            --accent: #ec4899;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #3b82f6;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+            --bg: #f8fafc;
+            --white: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        /* Topbar */
+        .topbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+        }
+
+        .logo-text {
+            font-size: 20px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .admin-badge {
+            background: linear-gradient(135deg, var(--danger), var(--accent));
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 70px;
+            width: 280px;
+            height: calc(100vh - 70px);
+            background: var(--white);
+            border-right: 1px solid var(--border);
+            overflow-y: auto;
+            z-index: 500;
+            padding: 20px 0;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 20px;
+            color: var(--text-light);
+            text-decoration: none;
+            transition: all 0.3s;
+            border-left: 3px solid transparent;
+        }
+
+        .sidebar-menu a:hover {
+            background: var(--bg);
+            color: var(--primary);
+            border-left-color: var(--primary);
+        }
+
+        .sidebar-menu a.active {
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--primary);
+            border-left-color: var(--primary);
+            font-weight: 600;
+        }
+
+        .sidebar-menu svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 280px;
+            margin-top: 70px;
+            padding: 30px;
+        }
+
+        .page-header {
+            margin-bottom: 30px;
+        }
+
+        .page-title {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+
+        .page-subtitle {
+            color: var(--text-light);
+            font-size: 14px;
+        }
+
+        /* Queue Cards */
+        .queue-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .queue-card {
+            background: var(--white);
+            border-radius: 12px;
+            border: 2px solid var(--border);
+            padding: 20px;
+            transition: all 0.3s;
+        }
+
+        .queue-card:hover {
+            border-color: var(--primary);
+            box-shadow: 0 8px 24px rgba(99, 102, 241, 0.1);
+        }
+
+        .queue-card.urgent {
+            border-color: var(--danger);
+            background: rgba(239, 68, 68, 0.02);
+        }
+
+        .queue-priority {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .queue-priority.high {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+
+        .queue-priority.medium {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+        }
+
+        .queue-priority.low {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+
+        .queue-id {
+            font-size: 12px;
+            color: var(--text-light);
+            margin-bottom: 8px;
+        }
+
+        .queue-subject {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 12px;
+            line-height: 1.4;
+        }
+
+        .queue-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: var(--text-light);
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .queue-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            background: var(--bg);
+            color: var(--primary);
+            border: 1px solid var(--primary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Batch Processing */
+        .batch-section {
+            background: var(--white);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            margin-top: 30px;
+        }
+
+        .batch-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 15px;
+        }
+
+        .batch-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .logout-btn {
+            background: var(--danger);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .logout-btn:hover {
+            background: #dc2626;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 250px;
+            }
+
+            .main-content {
+                margin-left: 250px;
+                padding: 20px;
+            }
+
+            .queue-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Topbar -->
+    <div class="topbar">
+        <div style="display: flex; align-items: center;">
+            <div class="logo-text">SafeReport</div>
+            <span class="admin-badge">ADMIN</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 20px;">
+            <span id="userEmail" style="font-size: 14px; color: var(--text-light);"></span>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <ul class="sidebar-menu">
+            <li><a href="../admin-dashboard.html" data-page="dashboard">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-3m0 0l7-4 7 4M5 9v10a1 1 0 001 1h12a1 1 0 001-1V9m-9 11l4-4m0 0l4 4m-8 4v-8m8 0v8"/>
+                </svg>
+                Dashboard
+            </a></li>
+            <li><a href="all-complaints.html" data-page="complaints">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+                All Complaints
+            </a></li>
+            <li><a href="pending-review.html" class="active" data-page="pending">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                Pending Review
+            </a></li>
+            <li><a href="assigned-cases.html" data-page="assigned">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.856-1.487M15 6a3 3 0 11-6 0 3 3 0 016 0zM16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
+                </svg>
+                Assigned Cases
+            </a></li>
+            <li><a href="user-management.html" data-page="users">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.856-1.487M15 6a3 3 0 11-6 0 3 3 0 016 0zM16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
+                </svg>
+                User Management
+            </a></li>
+            <li><a href="authority-management.html" data-page="authorities">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/>
+                </svg>
+                Authorities
+            </a></li>
+            <li><a href="reports.html" data-page="reports">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                </svg>
+                Reports
+            </a></li>
+            <li><a href="audit-logs.html" data-page="audit">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                Audit Logs
+            </a></li>
+            <li><a href="notifications.html" data-page="notifications">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 1118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                </svg>
+                Notifications
+            </a></li>
+            <li><a href="settings.html" data-page="settings">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                </svg>
+                Settings
+            </a></li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="page-header">
+            <h1 class="page-title">Pending Review Queue</h1>
+            <p class="page-subtitle">Complaints awaiting verification and assignment</p>
+        </div>
+
+        <!-- Priority Queue -->
+        <div class="queue-container" id="queueContainer">
+            <div style="text-align: center; padding: 40px; grid-column: 1/-1;">
+                <p style="color: var(--text-light);">Loading complaints...</p>
+            </div>
+        </div>
+
+        <!-- Batch Processing -->
+        <div class="batch-section">
+            <div class="batch-title">Batch Processing</div>
+            <div class="batch-actions">
+                <button class="btn btn-primary" onclick="batchApproveAll()">✓ Approve All</button>
+                <button class="btn btn-secondary" onclick="batchAssignToAuthority()">📤 Assign to Authority</button>
+                <button class="btn btn-secondary" onclick="batchPostpone()">⏸️ Postpone</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let pendingComplaints = [];
+
+        function checkAdminAccess() {
+            const currentUser = JSON.parse(localStorage.getItem("currentUser")) || {};
+            if (currentUser.role !== "admin") {
+                window.location.href = "../login.html";
+            }
+            document.getElementById("userEmail").innerText = currentUser.email || "Admin";
+        }
+
+        function loadPendingComplaints() {
+            const complaints = JSON.parse(localStorage.getItem("complaints")) || [];
+            
+            // Filter only NEW complaints
+            pendingComplaints = complaints.filter(c => c.status === "NEW")
+                .sort((a, b) => {
+                    // Sort by priority: Critical > High > Medium > Low
+                    const priorityOrder = { "Critical": 0, "High": 1, "Medium": 2, "Low": 3 };
+                    return (priorityOrder[a.priority] || 4) - (priorityOrder[b.priority] || 4);
+                });
+
+            displayQueue();
+        }
+
+        function displayQueue() {
+            const container = document.getElementById("queueContainer");
+            
+            if (pendingComplaints.length === 0) {
+                container.innerHTML = `<div style="text-align: center; padding: 40px; grid-column: 1/-1;">
+                    <p style="font-size: 18px; color: var(--text); font-weight: 600;">✓ All Caught Up!</p>
+                    <p style="color: var(--text-light); font-size: 14px;">No pending complaints to review</p>
+                </div>`;
+                return;
+            }
+
+            container.innerHTML = pendingComplaints.map(complaint => `
+                <div class="queue-card ${complaint.priority === 'Critical' || complaint.priority === 'High' ? 'urgent' : ''}">
+                    <div class="queue-priority ${complaint.priority.toLowerCase()}">
+                        ${complaint.priority} Priority
+                    </div>
+                    <div class="queue-id">ID #${complaint.id}</div>
+                    <div class="queue-subject">${complaint.subject}</div>
+                    <div class="queue-meta">
+                        <span>${complaint.category}</span>
+                        <span>${complaint.createdAt.split(' ')[0]}</span>
+                    </div>
+                    <div class="queue-actions">
+                        <button class="btn btn-primary" onclick="approveComplaint('${complaint.id}')">Approve</button>
+                        <button class="btn btn-secondary" onclick="reviewComplaint('${complaint.id}')">Review</button>
+                    </div>
+                </div>
+            `).join("");
+        }
+
+        function approveComplaint(complaintId) {
+            const complaints = JSON.parse(localStorage.getItem("complaints")) || [];
+            const index = complaints.findIndex(c => String(c.id) === String(complaintId));
+            
+            if (index !== -1) {
+                complaints[index].status = "UNDER REVIEW";
+                complaints[index].updatedAt = new Date().toLocaleString();
+                localStorage.setItem("complaints", JSON.stringify(complaints));
+                loadPendingComplaints();
+                alert("Complaint approved and moved to Under Review");
+            }
+        }
+
+        function reviewComplaint(complaintId) {
+            window.location.href = `review-complaint.html?id=${complaintId}`;
+        }
+
+        function batchApproveAll() {
+            const complaints = JSON.parse(localStorage.getItem("complaints")) || [];
+            let approvedCount = 0;
+
+            complaints.forEach(complaint => {
+                if (complaint.status === "NEW") {
+                    complaint.status = "UNDER REVIEW";
+                    complaint.updatedAt = new Date().toLocaleString();
+                    approvedCount++;
+                }
+            });
+
+            localStorage.setItem("complaints", JSON.stringify(complaints));
+            alert(`Approved ${approvedCount} complaints`);
+            loadPendingComplaints();
+        }
+
+        function batchAssignToAuthority() {
+            alert("Assign to Authority feature coming soon");
+        }
+
+        function batchPostpone() {
+            alert("Postpone feature coming soon");
+        }
+
+        function logout() {
+            localStorage.removeItem("currentUser");
+            window.location.href = "../login.html";
+        }
+
+        window.addEventListener("DOMContentLoaded", () => {
+            checkAdminAccess();
+            loadPendingComplaints();
+        });
+    </script>
+</body>
+</html>

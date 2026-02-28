@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SafeReport Authority | Dashboard</title>
+<title>SafeReport Authority | Generate Report</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="authority-shared.css">
 <style>
@@ -49,7 +49,7 @@
       </div>
       <div class="nav-section-label">OVERVIEW</div><ul class="sidebar-menu">
             <li class="menu-item">
-              <a href="dashboard.html" class="menu-link active" onclick="closeMenu()">
+              <a href="dashboard.html" class="menu-link" onclick="closeMenu()">
                 <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 3h7v7H3V3zm11 0h7v7h-7V3zm0 11h7v7h-7v-7zm-11 0h7v7H3v-7z" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 Dashboard
               </a>
@@ -103,7 +103,7 @@
               </a>
             </li>
             <li class="menu-item">
-              <a href="generate-report.html" class="menu-link" onclick="closeMenu()">
+              <a href="generate-report.html" class="menu-link active" onclick="closeMenu()">
                 <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 Generate Report
               </a>
@@ -165,152 +165,145 @@
 <div class="page-header">
   <div class="page-header-top">
     <div>
-      <h1 class="page-title">Authority Dashboard 📊</h1>
-      <p class="page-subtitle">Welcome back — here is your investigative overview for today.</p>
-    </div>
-    <div class="page-actions">
-      <a href="new-assignments.html" class="btn btn-outline">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-        5 New Assignments
-      </a>
-      <a href="generate-report.html" class="btn btn-primary">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-        Generate Report
-      </a>
+      <div class="breadcrumb"><a href="dashboard.html">Dashboard</a> <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg> Generate Report</div>
+      <h1 class="page-title">Generate Report 📄</h1>
+      <p class="page-subtitle">Create detailed investigation reports for individual cases or performance summaries.</p>
     </div>
   </div>
 </div>
 
-<!-- STATS -->
-<div class="stats-grid">
-  <div class="stat-card" style="animation-delay:0.05s">
-    <div class="stat-header">
-      <div class="stat-icon" style="background:linear-gradient(135deg,rgba(99,102,241,0.12),rgba(139,92,246,0.12))">📋</div>
-      <span class="stat-trend trend-up">↑ 3 this week</span>
-    </div>
-    <div class="stat-number">24</div>
-    <div class="stat-label">Total Assigned Cases</div>
-  </div>
-  <div class="stat-card" style="animation-delay:0.1s">
-    <div class="stat-header">
-      <div class="stat-icon" style="background:linear-gradient(135deg,rgba(245,158,11,0.12),rgba(251,191,36,0.12))">⚡</div>
-      <span class="stat-trend trend-up">↑ 2 new</span>
-    </div>
-    <div class="stat-number">8</div>
-    <div class="stat-label">Active Investigations</div>
-  </div>
-  <div class="stat-card" style="animation-delay:0.15s">
-    <div class="stat-header">
-      <div class="stat-icon" style="background:linear-gradient(135deg,rgba(239,68,68,0.12),rgba(220,38,38,0.12))">🔔</div>
-      <span class="stat-trend trend-down">Needs attention</span>
-    </div>
-    <div class="stat-number">5</div>
-    <div class="stat-label">Pending Assignments</div>
-  </div>
-  <div class="stat-card" style="animation-delay:0.2s">
-    <div class="stat-header">
-      <div class="stat-icon" style="background:linear-gradient(135deg,rgba(16,185,129,0.12),rgba(5,150,105,0.12))">✅</div>
-      <span class="stat-trend trend-up">↑ 25% rate</span>
-    </div>
-    <div class="stat-number">11</div>
-    <div class="stat-label">Cases Resolved</div>
-  </div>
-</div>
-
-<div class="grid-21" style="gap:22px">
-  <!-- RECENT CASES -->
-  <div>
-    <div class="table-wrap" style="animation:fadeInUp 0.5s ease 0.2s both">
-      <div class="card-header" style="padding:20px 24px">
-        <div>
-          <div class="card-title">Recent Cases</div>
-          <div class="card-subtitle">Your latest assigned investigations</div>
+<div class="grid-21">
+  <div class="form-card">
+    <!-- REPORT TYPE -->
+    <div class="form-section">
+      <div class="form-section-title"><span class="section-icon">📊</span> Report Configuration</div>
+      <div class="form-group">
+        <label class="form-label">Report Type <span class="required">*</span></label>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px" id="reportTypeGrid">
+          <div class="report-type-card active" data-type="case" onclick="selectReportType(this,'case')" style="border:1.5px solid var(--primary);background:rgba(99,102,241,0.06);border-radius:12px;padding:16px;cursor:pointer;transition:all 0.2s">
+            <div style="font-size:24px;margin-bottom:6px">📋</div>
+            <div style="font-size:13px;font-weight:700">Case Investigation Report</div>
+            <div style="font-size:12px;color:var(--text-light)">Detailed report for a single case</div>
+          </div>
+          <div class="report-type-card" data-type="summary" onclick="selectReportType(this,'summary')" style="border:1.5px solid var(--border);border-radius:12px;padding:16px;cursor:pointer;transition:all 0.2s">
+            <div style="font-size:24px;margin-bottom:6px">📊</div>
+            <div style="font-size:13px;font-weight:700">Performance Summary</div>
+            <div style="font-size:12px;color:var(--text-light)">Overview of all your cases</div>
+          </div>
+          <div class="report-type-card" data-type="evidence" onclick="selectReportType(this,'evidence')" style="border:1.5px solid var(--border);border-radius:12px;padding:16px;cursor:pointer;transition:all 0.2s">
+            <div style="font-size:24px;margin-bottom:6px">🗂️</div>
+            <div style="font-size:13px;font-weight:700">Evidence Report</div>
+            <div style="font-size:12px;color:var(--text-light)">Evidence chain of custody report</div>
+          </div>
+          <div class="report-type-card" data-type="timeline" onclick="selectReportType(this,'timeline')" style="border:1.5px solid var(--border);border-radius:12px;padding:16px;cursor:pointer;transition:all 0.2s">
+            <div style="font-size:24px;margin-bottom:6px">📍</div>
+            <div style="font-size:13px;font-weight:700">Timeline Report</div>
+            <div style="font-size:12px;color:var(--text-light)">Investigation timeline & milestones</div>
+          </div>
         </div>
-        <a href="my-cases.html" class="btn btn-outline btn-sm">View All</a>
       </div>
-      <table>
-        <thead>
-          <tr>
-            <th>Case ID</th><th>Subject</th><th>Category</th><th>Priority</th><th>Status</th><th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr><td><b style="color:var(--primary)">#C1042</b></td><td>Workplace Harassment</td><td>Sexual Harassment</td><td><span class="badge badge-urgent">HIGH</span></td><td><span class="badge badge-progress">IN PROGRESS</span></td><td><a href="investigate.html" class="btn btn-primary btn-sm">Investigate</a></td></tr>
-          <tr><td><b style="color:var(--primary)">#C1039</b></td><td>Verbal Abuse at Office</td><td>Verbal Abuse</td><td><span class="badge badge-medium">MEDIUM</span></td><td><span class="badge badge-pending">UNDER REVIEW</span></td><td><a href="investigate.html" class="btn btn-primary btn-sm">Investigate</a></td></tr>
-          <tr><td><b style="color:var(--primary)">#C1036</b></td><td>Stalking Complaint</td><td>Stalking</td><td><span class="badge badge-urgent">HIGH</span></td><td><span class="badge badge-new">NEW</span></td><td><a href="investigate.html" class="btn btn-primary btn-sm">Investigate</a></td></tr>
-          <tr><td><b style="color:var(--primary)">#C1031</b></td><td>Discrimination Case</td><td>Discrimination</td><td><span class="badge badge-low">LOW</span></td><td><span class="badge badge-resolved">RESOLVED</span></td><td><a href="investigate.html" class="btn btn-outline btn-sm">View</a></td></tr>
-          <tr><td><b style="color:var(--primary)">#C1029</b></td><td>Physical Assault Report</td><td>Physical Assault</td><td><span class="badge badge-urgent">CRITICAL</span></td><td><span class="badge badge-progress">IN PROGRESS</span></td><td><a href="investigate.html" class="btn btn-primary btn-sm">Investigate</a></td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <!-- SIDEBAR WIDGETS -->
-  <div style="display:flex;flex-direction:column;gap:22px;">
-    <!-- PENDING ACTIONS -->
-    <div class="card" style="animation:fadeInUp 0.5s ease 0.25s both">
-      <div class="card-header"><div class="card-title">⚠️ Pending Actions</div></div>
-      <div class="card-body" style="padding:0">
-        <div style="padding:0 24px">
-          <div class="overview-item">
-            <span class="overview-label">🔴 Overdue reports</span>
-            <span class="overview-value" style="color:var(--danger)">2</span>
-          </div>
-          <div class="overview-item">
-            <span class="overview-label">📅 Hearings this week</span>
-            <span class="overview-value">3</span>
-          </div>
-          <div class="overview-item">
-            <span class="overview-label">📝 Updates needed</span>
-            <span class="overview-value" style="color:var(--warning)">4</span>
-          </div>
-          <div class="overview-item">
-            <span class="overview-label">🗂️ Evidence to review</span>
-            <span class="overview-value">6</span>
-          </div>
-        </div>
-        <div style="padding:16px 24px;border-top:1px solid var(--border)">
-          <a href="schedule.html" class="btn btn-primary" style="width:100%;justify-content:center">View Schedule</a>
-        </div>
+      <div class="form-group">
+        <label class="form-label">Select Case <span class="required">*</span></label>
+        <select class="form-select" id="reportCase">
+          <option value="">— Select a case —</option>
+          <option>#C1042 · Workplace Harassment</option>
+          <option>#C1039 · Verbal Abuse</option>
+          <option>#C1036 · Stalking</option>
+          <option>#C1031 · Discrimination (Closed)</option>
+          <option>All My Cases (Summary)</option>
+        </select>
       </div>
     </div>
 
-    <!-- PERFORMANCE -->
-    <div class="card" style="animation:fadeInUp 0.5s ease 0.3s both">
-      <div class="card-header"><div class="card-title">📈 My Performance</div></div>
+    <!-- SECTIONS -->
+    <div class="form-section">
+      <div class="form-section-title"><span class="section-icon">☑️</span> Include in Report</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;padding:10px;background:var(--bg);border-radius:8px"><input type="checkbox" checked style="accent-color:var(--primary)"> Case Summary</label>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;padding:10px;background:var(--bg);border-radius:8px"><input type="checkbox" checked style="accent-color:var(--primary)"> Investigation Details</label>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;padding:10px;background:var(--bg);border-radius:8px"><input type="checkbox" checked style="accent-color:var(--primary)"> Evidence List</label>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;padding:10px;background:var(--bg);border-radius:8px"><input type="checkbox" checked style="accent-color:var(--primary)"> Timeline</label>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;padding:10px;background:var(--bg);border-radius:8px"><input type="checkbox" checked style="accent-color:var(--primary)"> Witness Summary</label>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;padding:10px;background:var(--bg);border-radius:8px"><input type="checkbox" checked style="accent-color:var(--primary)"> Resolution & Actions</label>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;padding:10px;background:var(--bg);border-radius:8px"><input type="checkbox" style="accent-color:var(--primary)"> Confidential Notes</label>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;padding:10px;background:var(--bg);border-radius:8px"><input type="checkbox" style="accent-color:var(--primary)"> Chain of Custody</label>
+      </div>
+    </div>
+
+    <!-- FORMAT -->
+    <div class="form-section">
+      <div class="form-section-title"><span class="section-icon">⚙️</span> Export Settings</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Output Format</label>
+          <select class="form-select">
+            <option>PDF Document</option>
+            <option>Word Document (.docx)</option>
+            <option>Excel Spreadsheet</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Confidentiality Level</label>
+          <select class="form-select">
+            <option>CONFIDENTIAL</option>
+            <option>INTERNAL USE ONLY</option>
+            <option>PUBLIC RECORD</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Additional Notes (Optional)</label>
+        <textarea class="form-textarea" placeholder="Any additional remarks to include in the report header..." style="min-height:80px"></textarea>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button class="btn btn-outline" onclick="previewReport()">👁 Preview Report</button>
+      <button class="btn btn-primary" onclick="generateReport()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Generate & Download
+      </button>
+    </div>
+  </div>
+
+  <!-- SIDEBAR -->
+  <div style="display:flex;flex-direction:column;gap:22px">
+    <div class="card" style="animation:fadeInUp 0.5s ease 0.1s both">
+      <div class="card-header"><div class="card-title">📋 Report Preview</div></div>
       <div class="card-body">
-        <div style="margin-bottom:16px">
-          <div style="display:flex;justify-content:space-between;margin-bottom:6px">
-            <span style="font-size:13px;color:var(--text-light)">Resolution Rate</span>
-            <span style="font-size:13px;font-weight:700">78%</span>
+        <div style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:20px;font-size:12px;color:var(--text-light);line-height:1.8">
+          <div style="text-align:center;margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--border)">
+            <div style="font-size:18px;font-weight:800;color:var(--primary)">🛡️ SafeReport</div>
+            <div style="font-size:10px;text-transform:uppercase;letter-spacing:.5px">Official Investigation Report</div>
           </div>
-          <div class="progress-bar"><div class="progress-fill success" style="width:78%"></div></div>
-        </div>
-        <div style="margin-bottom:16px">
-          <div style="display:flex;justify-content:space-between;margin-bottom:6px">
-            <span style="font-size:13px;color:var(--text-light)">On-Time Closure</span>
-            <span style="font-size:13px;font-weight:700">65%</span>
-          </div>
-          <div class="progress-bar"><div class="progress-fill warning" style="width:65%"></div></div>
-        </div>
-        <div>
-          <div style="display:flex;justify-content:space-between;margin-bottom:6px">
-            <span style="font-size:13px;color:var(--text-light)">Avg. Resolution Days</span>
-            <span style="font-size:13px;font-weight:700">12 days</span>
-          </div>
-          <div class="progress-bar"><div class="progress-fill" style="width:50%"></div></div>
+          <div><b>Report Type:</b> Case Investigation Report</div>
+          <div><b>Case ID:</b> #C1042</div>
+          <div><b>Investigator:</b> Rajan Arora</div>
+          <div><b>Department:</b> Dept. of Labour</div>
+          <div><b>Generated:</b> <span id="reportDate"></span></div>
+          <div><b>Confidentiality:</b> CONFIDENTIAL</div>
+          <hr style="margin:10px 0;border-color:var(--border)">
+          <div style="opacity:0.5;font-size:11px">[ Case Summary ]<br>[ Investigation Details ]<br>[ Evidence List ]<br>[ Timeline ]<br>[ Resolution ]</div>
         </div>
       </div>
     </div>
-
-    <!-- QUICK ACTIONS -->
-    <div class="card" style="animation:fadeInUp 0.5s ease 0.35s both">
-      <div class="card-header"><div class="card-title">⚡ Quick Actions</div></div>
-      <div class="card-body" style="display:flex;flex-direction:column;gap:10px;padding:16px 24px;">
-        <a href="add-update.html" class="btn btn-primary" style="justify-content:center">➕ Add Case Update</a>
-        <a href="evidence.html" class="btn btn-outline" style="justify-content:center">📁 Upload Evidence</a>
-        <a href="schedule.html" class="btn btn-outline" style="justify-content:center">📅 Schedule Hearing</a>
-        <a href="close-case.html" class="btn btn-outline" style="justify-content:center;color:var(--success);border-color:var(--success)">✅ Close a Case</a>
+    <div class="card" style="animation:fadeInUp 0.5s ease 0.15s both">
+      <div class="card-header"><div class="card-title">📂 Recent Reports</div></div>
+      <div class="card-body" style="padding:0">
+        <div style="padding:0 20px">
+          <div class="overview-item">
+            <div><div style="font-size:13px;font-weight:600">#C1031 — Final Report</div><div style="font-size:11px;color:var(--text-light)">Jan 10, 2025 · PDF</div></div>
+            <button class="btn btn-outline btn-sm">⬇</button>
+          </div>
+          <div class="overview-item">
+            <div><div style="font-size:13px;font-weight:600">Performance Summary Q4</div><div style="font-size:11px;color:var(--text-light)">Jan 1, 2025 · PDF</div></div>
+            <button class="btn btn-outline btn-sm">⬇</button>
+          </div>
+          <div class="overview-item">
+            <div><div style="font-size:13px;font-weight:600">#C1021 — Evidence Report</div><div style="font-size:11px;color:var(--text-light)">Dec 28, 2024 · PDF</div></div>
+            <button class="btn btn-outline btn-sm">⬇</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -323,6 +316,25 @@
 
 <script src="authority-shared.js"></script>
 <script>
+
+document.getElementById("reportDate").textContent = new Date().toLocaleDateString("en-US",{year:"numeric",month:"short",day:"numeric"});
+function selectReportType(el, type) {
+    document.querySelectorAll(".report-type-card").forEach(c => {
+        c.style.borderColor = "var(--border)"; c.style.background = "";
+    });
+    el.style.borderColor = "var(--primary)"; el.style.background = "rgba(99,102,241,0.06)";
+}
+function previewReport() { showToast("Generating preview...", "info"); }
+function generateReport() {
+    const c = document.getElementById("reportCase").value;
+    if (!c) { showToast("Please select a case.", "error"); return; }
+    showToast("Report generated and downloading...", "success");
+    setTimeout(() => {
+        const w = window.open("","_blank");
+        w.document.write("<h2>SafeReport — Investigation Report</h2><p>Case: " + c + "</p><p>Investigator: Rajan Arora</p><p>Generated: " + new Date().toLocaleString() + "</p>");
+        w.document.close(); w.focus(); setTimeout(() => w.print(), 300);
+    }, 600);
+}
 
 </script>
 </body>

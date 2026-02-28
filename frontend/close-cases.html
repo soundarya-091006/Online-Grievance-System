@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SafeReport Authority | Close Case</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="authority-shared.css">
+<style>
+
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="hamburger-menu">
+    <button class="hamburger-btn" onclick="toggleMenu()" aria-label="Menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+        <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+      </svg>
+    </button>
+    <a href="dashboard.html" class="logo-section">
+      <div class="logo-icon">
+        <svg viewBox="0 0 24 24" fill="none">
+          <defs><linearGradient id="sg" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#6366f1"/><stop offset="100%" stop-color="#8b5cf6"/>
+          </linearGradient></defs>
+          <path d="M12 2L4 5V11C4 16 7.5 20 12 22C16.5 20 20 16 20 11V5L12 2Z" fill="url(#sg)"/>
+          <path d="M9.5 12.5L11 14L14.5 10.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <span class="logo-text">SafeReport</span>
+      <span class="logo-badge">AUTHORITY</span>
+    </a>
+    <!-- SIDENAV DROPDOWN -->
+    <div id="hamburgerDropdown" class="hamburger-menu-dropdown">
+      <div style="padding:14px 14px 6px;">
+        <div class="sidenav-user-section">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <div style="width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,var(--primary),var(--secondary));display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:14px;" class="js-auth-initials">RA</div>
+            <div>
+              <div class="sidenav-user-name js-auth-name">Rajan Arora</div>
+              <div class="sidenav-user-role js-auth-role">Senior Investigator</div>
+              <div class="sidenav-user-dept js-auth-dept">Dept. of Labour</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="nav-section-label">OVERVIEW</div><ul class="sidebar-menu">
+            <li class="menu-item">
+              <a href="dashboard.html" class="menu-link" onclick="closeMenu()">
+                <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 3h7v7H3V3zm11 0h7v7h-7V3zm0 11h7v7h-7v-7zm-11 0h7v7H3v-7z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                Dashboard
+              </a>
+            </li></ul><div class="nav-section-label">CASES</div><ul class="sidebar-menu">
+            <li class="menu-item">
+              <a href="my-cases.html" class="menu-link" onclick="closeMenu()">
+                <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                My Cases
+              </a>
+            </li>
+            <li class="menu-item">
+              <a href="new-assignments.html" class="menu-link" onclick="closeMenu()">
+                <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                New Assignments<span class="menu-badge">5</span>
+              </a>
+            </li>
+            <li class="menu-item">
+              <a href="active-cases.html" class="menu-link" onclick="closeMenu()">
+                <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                Active Investigations<span class="menu-badge">3</span>
+              </a>
+            </li>
+            <li class="menu-item">
+              <a href="investigate.html" class="menu-link" onclick="closeMenu()">
+                <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16zm10 2-4.35-4.35" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                Investigation Panel
+              </a>
+            </li></ul><div class="nav-section-label">ACTIONS</div><ul class="sidebar-menu">
+            <li class="menu-item">
+              <a href="add-update.html" class="menu-link" onclick="closeMenu()">
+                <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                Add Update
+              </a>
+            </li>
+            <li class="menu-item">
+              <a href="close-case.html" class="menu-link active" onclick="closeMenu()">
+                <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                Close Case
+              </a>
+            </li>
+            <li class="menu-item">
+              <a href="closed-cases.html" class="menu-link" onclick="closeMenu()">
+                <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 8h14M5 8a2 2 0 1 0 0-4h14a2 2 0 1 0 0 4M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                Closed Cases
+              </a>
+            </li></ul><div class="nav-section-label">TOOLS</div><ul class="sidebar-menu">
+            <li class="menu-item">
+              <a href="evidence.html" class="menu-link" onclick="closeMenu()">
+                <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 7v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2H9l-2-2H5a2 2 0 0 0-2 2z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                Evidence Manager
+              </a>
+            </li>
+            <li class="menu-item">
+              <a href="generate-report.html" class="menu-link" onclick="closeMenu()">
+                <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                Generate Report
+              </a>
+            </li>
+            <li class="menu-item">
+              <a href="schedule.html" class="menu-link" onclick="closeMenu()">
+                <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M8 2v3M16 2v3M3 9h18M19 4H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                Schedule Manager
+              </a>
+            </li></ul><div class="nav-section-label">ACCOUNT</div><ul class="sidebar-menu">
+            <li class="menu-item">
+              <a href="profile.html" class="menu-link" onclick="closeMenu()">
+                <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                My Profile
+              </a>
+            </li></ul>
+      <div class="nav-divider"></div>
+      <ul class="sidebar-menu" style="margin-bottom:12px;">
+        <li class="menu-item">
+          <a href="../login.html" class="menu-link" onclick="logoutAuth()" style="color:var(--danger);">
+            <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+            </svg>
+            Sign Out
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="topbar-right">
+    <div class="search-box">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+      <input type="text" placeholder="Search cases, IDs...">
+    </div>
+    <div class="notification-icon">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      <span class="notification-badge">5</span>
+    </div>
+    <div class="user-menu" onclick="toggleUserMenu()">
+      <div class="user-avatar js-auth-initials">RA</div>
+      <div>
+        <div class="user-name js-auth-name">Rajan Arora</div>
+        <div class="user-role js-auth-role">Investigator</div>
+      </div>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      <div id="userMenuDropdown" class="user-menu-dropdown">
+        <a href="profile.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>My Profile</a>
+        <a href="schedule.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>My Schedule</a>
+        <a href="#" onclick="logoutAuth()" style="color:var(--danger);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Sign Out</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="main-content">
+  
+<div class="page-header">
+  <div class="page-header-top">
+    <div>
+      <div class="breadcrumb"><a href="dashboard.html">Dashboard</a> <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg> Close Case</div>
+      <h1 class="page-title">Close Case ✅</h1>
+      <p class="page-subtitle">Complete the investigation and formally close Case #C1042.</p>
+    </div>
+    <div class="page-actions">
+      <a href="investigate.html" class="btn btn-outline">← Back to Investigation</a>
+    </div>
+  </div>
+</div>
+
+<div class="alert alert-warning">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg>
+  <div>Closing a case is <b>permanent</b>. Ensure all evidence is reviewed, all witnesses interviewed, and findings are thoroughly documented before proceeding.</div>
+</div>
+
+<div class="grid-21">
+  <div class="form-card">
+    <!-- CASE SUMMARY -->
+    <div class="form-section">
+      <div class="form-section-title"><span class="section-icon">📋</span> Case Being Closed</div>
+      <div style="background:linear-gradient(135deg,rgba(99,102,241,0.06),rgba(139,92,246,0.06));border:1px solid rgba(99,102,241,0.2);border-radius:12px;padding:18px">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+          <div>
+            <div style="font-size:16px;font-weight:800">Case #C1042 — Workplace Harassment Incident</div>
+            <div style="font-size:13px;color:var(--text-light);margin-top:4px">Sexual Harassment · Tech Park, Chennai · Opened Jan 16, 2025</div>
+          </div>
+          <div style="display:flex;gap:8px"><span class="badge badge-urgent">HIGH</span><span class="badge badge-progress">IN PROGRESS</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RESOLUTION -->
+    <div class="form-section">
+      <div class="form-section-title"><span class="section-icon">⚖️</span> Resolution Details</div>
+      <div class="form-group">
+        <label class="form-label">Resolution Type <span class="required">*</span></label>
+        <select class="form-select" id="resolutionType">
+          <option value="">— Select resolution type —</option>
+          <option>Resolved — Action Taken</option>
+          <option>Resolved — Mediation Successful</option>
+          <option>Resolved — No Further Action Required</option>
+          <option>Resolved — Referred to Higher Authority</option>
+          <option>Closed — Insufficient Evidence</option>
+          <option>Closed — Complainant Withdrew</option>
+          <option>Closed — False Complaint</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Actions Taken <span class="required">*</span></label>
+        <textarea class="form-textarea" id="actionsTaken" placeholder="List all actions taken during the investigation..." style="min-height:130px">1. Initial review and case assessment completed
+2. Two witnesses identified and interviewed on Jan 22, 2025
+3. CCTV footage reviewed — corroborating evidence found
+4. Formal hearing conducted on Jan 24, 2025
+5. Written warning issued to the respondent
+6. Complainant provided with resolution summary</textarea>
+      </div>
+    </div>
+
+    <!-- INVESTIGATION SUMMARY -->
+    <div class="form-section">
+      <div class="form-section-title"><span class="section-icon">📝</span> Investigation Summary</div>
+      <div class="form-group">
+        <label class="form-label">Executive Summary <span class="required">*</span></label>
+        <textarea class="form-textarea" id="summary" placeholder="Provide a comprehensive summary of the investigation..." style="min-height:160px">The complaint was investigated thoroughly over a 10-day period. Evidence reviewed included CCTV footage and witness statements from two colleagues, both of whom corroborated the complainant's account. A formal hearing was conducted in which the respondent was given opportunity to present their case. Based on the weight of evidence, the harassment was substantiated. Appropriate disciplinary action has been recommended and initiated.</textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Key Findings</label>
+        <textarea class="form-textarea" placeholder="Summarize key investigation findings..." style="min-height:100px"></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Recommendations</label>
+        <textarea class="form-textarea" placeholder="Any recommendations for prevention or policy improvements..." style="min-height:100px"></textarea>
+      </div>
+    </div>
+
+    <!-- FINAL REPORT -->
+    <div class="form-section">
+      <div class="form-section-title"><span class="section-icon">📄</span> Final Report Upload</div>
+      <div class="upload-zone" onclick="document.getElementById('finalReport').click()">
+        <div class="upload-zone-icon">📄</div>
+        <p>Upload Final Investigation Report</p>
+        <small>PDF only · Max 20MB</small>
+        <input type="file" id="finalReport" style="display:none" accept=".pdf" onchange="showToast('Report uploaded!','success')">
+      </div>
+    </div>
+
+    <!-- CONFIRM CHECKLIST -->
+    <div class="form-section">
+      <div class="form-section-title"><span class="section-icon">☑️</span> Closure Checklist</div>
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:14px">
+          <input type="checkbox" id="check1" style="width:16px;height:16px;accent-color:var(--primary)"> All evidence reviewed and documented
+        </label>
+        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:14px">
+          <input type="checkbox" id="check2" style="width:16px;height:16px;accent-color:var(--primary)"> All witness interviews completed
+        </label>
+        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:14px">
+          <input type="checkbox" id="check3" style="width:16px;height:16px;accent-color:var(--primary)"> Formal hearing conducted (if applicable)
+        </label>
+        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:14px">
+          <input type="checkbox" id="check4" style="width:16px;height:16px;accent-color:var(--primary)"> Investigation summary completed
+        </label>
+        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:14px">
+          <input type="checkbox" id="check5" style="width:16px;height:16px;accent-color:var(--primary)"> Complainant has been notified of outcome
+        </label>
+        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:14px">
+          <input type="checkbox" id="check6" style="width:16px;height:16px;accent-color:var(--primary)"> Final report uploaded
+        </label>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <a href="investigate.html" class="btn btn-outline">Cancel</a>
+      <button class="btn btn-primary" style="background:linear-gradient(135deg,var(--danger),#dc2626);box-shadow:0 4px 15px rgba(239,68,68,0.3)" onclick="closeCase()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        Confirm Case Closure
+      </button>
+    </div>
+  </div>
+
+  <!-- SIDEBAR -->
+  <div style="display:flex;flex-direction:column;gap:22px">
+    <div class="card" style="animation:fadeInUp 0.5s ease 0.1s both">
+      <div class="card-header"><div class="card-title">📊 Case Summary</div></div>
+      <div class="card-body" style="padding:0">
+        <div style="padding:0 20px">
+          <div class="overview-item"><span class="overview-label">Days Open</span><span class="overview-value">12 days</span></div>
+          <div class="overview-item"><span class="overview-label">Evidence Files</span><span class="overview-value">3 files</span></div>
+          <div class="overview-item"><span class="overview-label">Witnesses</span><span class="overview-value">2 interviewed</span></div>
+          <div class="overview-item"><span class="overview-label">Updates Logged</span><span class="overview-value">4 entries</span></div>
+          <div class="overview-item"><span class="overview-label">Hearings</span><span class="overview-value">1 conducted</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="card" style="animation:fadeInUp 0.5s ease 0.15s both">
+      <div class="card-header"><div class="card-title">⚠️ Important Notes</div></div>
+      <div class="card-body">
+        <div style="display:flex;flex-direction:column;gap:10px;font-size:13px;color:var(--text-light)">
+          <div style="padding:10px;background:rgba(239,68,68,0.06);border-radius:8px;border-left:3px solid var(--danger)">Case closure cannot be undone without admin approval.</div>
+          <div style="padding:10px;background:rgba(245,158,11,0.06);border-radius:8px;border-left:3px solid var(--warning)">All evidence will be archived for 7 years as per policy.</div>
+          <div style="padding:10px;background:rgba(99,102,241,0.06);border-radius:8px;border-left:3px solid var(--primary)">Complainant can request re-opening within 30 days.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CONFIRM MODAL -->
+<div class="modal-overlay" id="confirmCloseModal">
+  <div class="modal">
+    <div class="modal-header"><h3 class="modal-title">⚠️ Confirm Case Closure</h3><button class="modal-close" onclick="closeModal('confirmCloseModal')">✕</button></div>
+    <p style="font-size:14px;color:var(--text-light);margin-bottom:20px;line-height:1.7">You are about to permanently close <b>Case #C1042</b>. This action will notify the complainant and archive all case materials. Are you absolutely sure?</p>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('confirmCloseModal')">Cancel</button>
+      <button class="btn btn-primary" style="background:var(--danger)" onclick="finalClose()">Yes, Close Case</button>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="globalToast"><span id="globalToastIcon"></span><span id="globalToastMsg"></span></div>
+
+<script src="authority-shared.js"></script>
+<script>
+
+function closeCase() {
+    const checks = ["check1","check2","check3","check4","check5","check6"];
+    const resolution = document.getElementById("resolutionType").value;
+    const summary = document.getElementById("summary").value;
+    if (!resolution) { showToast("Please select a resolution type.", "error"); return; }
+    if (!summary) { showToast("Please fill in the investigation summary.", "error"); return; }
+    const unchecked = checks.filter(id => !document.getElementById(id).checked);
+    if (unchecked.length > 0) {
+        if (!confirm("Some checklist items are incomplete. Proceed anyway?")) return;
+    }
+    openModal("confirmCloseModal");
+}
+function finalClose() {
+    closeModal("confirmCloseModal");
+    showToast("Case #C1042 has been officially closed and archived.", "success");
+    setTimeout(() => window.location.href = "closed-cases.html", 2000);
+}
+
+</script>
+</body>
+</html>
