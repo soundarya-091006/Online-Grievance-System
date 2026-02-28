@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SafeReport | My Profile</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+:root {
+    --primary: #6366f1;
+    --secondary: #8b5cf6;
+    --success: #10b981;
+    --danger: #ef4444;
+    --border: #e2e8f0;
+    --bg: #f8fafc;
+    --text: #1e293b;
+    --text-light: #64748b;
+    --white: #ffffff;
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:'Inter', sans-serif;
+    background:var(--bg);
+}
+
+.topbar{
+    height:70px;
+    background:white;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 30px;
+    border-bottom:1px solid var(--border);
+}
+
+.logo{
+    font-weight:800;
+    font-size:20px;
+    background:linear-gradient(135deg,var(--primary),var(--secondary));
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+}
+
+.back-btn{
+    text-decoration:none;
+    color:var(--primary);
+    font-weight:600;
+}
+
+.container{
+    max-width:800px;
+    margin:50px auto;
+    background:white;
+    padding:40px;
+    border-radius:20px;
+    border:1px solid var(--border);
+}
+
+.profile-header{
+    display:flex;
+    align-items:center;
+    gap:25px;
+    margin-bottom:35px;
+}
+
+.avatar{
+    width:90px;
+    height:90px;
+    border-radius:20px;
+    background:linear-gradient(135deg,var(--primary),var(--secondary));
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:white;
+    font-size:28px;
+    font-weight:700;
+}
+
+.profile-name{
+    font-size:24px;
+    font-weight:700;
+    color:var(--text);
+}
+
+.profile-role{
+    font-size:14px;
+    color:var(--text-light);
+}
+
+.form-group{
+    margin-bottom:20px;
+}
+
+label{
+    display:block;
+    font-size:13px;
+    font-weight:600;
+    margin-bottom:8px;
+}
+
+input{
+    width:100%;
+    padding:12px;
+    border:1px solid var(--border);
+    border-radius:10px;
+    font-size:14px;
+}
+
+input:focus{
+    outline:none;
+    border-color:var(--primary);
+}
+
+.btn{
+    padding:12px 20px;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+    font-weight:600;
+    font-size:14px;
+}
+
+.btn-primary{
+    background:linear-gradient(135deg,var(--primary),var(--secondary));
+    color:white;
+}
+
+.btn-primary:hover{
+    opacity:0.9;
+}
+
+.success-msg{
+    margin-top:15px;
+    color:var(--success);
+    font-size:14px;
+    display:none;
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+    <div class="logo">SafeReport</div>
+    <a href="dashboard.html" class="back-btn">← Back to Dashboard</a>
+</div>
+
+<div class="container">
+
+    <div class="profile-header">
+        <div class="avatar" id="avatarInitials">U</div>
+        <div>
+            <div class="profile-name" id="displayName">User</div>
+            <div class="profile-role" id="displayRole">Role</div>
+        </div>
+    </div>
+
+    <form id="profileForm">
+
+        <div class="form-group">
+            <label>Full Name</label>
+            <input type="text" id="fullname" required>
+        </div>
+
+        <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="email" disabled>
+        </div>
+
+        <div class="form-group">
+            <label>Phone Number</label>
+            <input type="text" id="phone">
+        </div>
+
+        <div class="form-group">
+            <label>Password</label>
+            <input type="password" id="password">
+        </div>
+
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+
+        <div class="success-msg" id="successMsg">
+            ✅ Profile updated successfully!
+        </div>
+
+    </form>
+
+</div>
+
+<script>
+
+/* ================= LOAD USER ================= */
+
+window.addEventListener("load", function(){
+
+    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+
+    if(!currentUser){
+        window.location.href = "login.html";
+        return;
+    }
+
+    document.getElementById("displayName").innerText = currentUser.fullname;
+    document.getElementById("displayRole").innerText = currentUser.role;
+    document.getElementById("fullname").value = currentUser.fullname;
+    document.getElementById("email").value = currentUser.email;
+    document.getElementById("phone").value = currentUser.phone || "";
+
+    const initials = currentUser.fullname
+        .split(" ")
+        .map(n => n[0])
+        .join("")
+        .toUpperCase();
+
+    document.getElementById("avatarInitials").innerText = initials;
+});
+
+
+/* ================= UPDATE PROFILE ================= */
+
+document.getElementById("profileForm").addEventListener("submit", function(e){
+
+    e.preventDefault();
+
+    let currentUser = JSON.parse(localStorage.getItem("currentUser"));
+    let users = JSON.parse(localStorage.getItem("users")) || [];
+
+    currentUser.fullname = document.getElementById("fullname").value;
+    currentUser.phone = document.getElementById("phone").value;
+
+    const newPassword = document.getElementById("password").value;
+    if(newPassword){
+        currentUser.password = newPassword;
+    }
+
+    // Update in users array
+    users = users.map(user => 
+        user.email === currentUser.email ? currentUser : user
+    );
+
+    localStorage.setItem("currentUser", JSON.stringify(currentUser));
+    localStorage.setItem("users", JSON.stringify(users));
+
+    document.getElementById("displayName").innerText = currentUser.fullname;
+
+    const initials = currentUser.fullname
+        .split(" ")
+        .map(n => n[0])
+        .join("")
+        .toUpperCase();
+
+    document.getElementById("avatarInitials").innerText = initials;
+
+    document.getElementById("successMsg").style.display = "block";
+
+    setTimeout(() => {
+        document.getElementById("successMsg").style.display = "none";
+    }, 3000);
+
+});
+
+</script>
+
+</body>
+</html>
