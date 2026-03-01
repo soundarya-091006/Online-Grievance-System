@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SafeReport | Add Authority</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
     <style>
         :root {
             --primary: #6366f1;
@@ -137,41 +139,77 @@
         .btn-secondary:hover {
             background: var(--bg);
         }
+
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 20px;
+            border-radius: 10px;
+            color: white;
+            font-size: 14px;
+            font-weight: 500;
+            opacity: 0;
+            transition: 0.4s;
+            z-index: 9999;
+        }
+
+        .toast.show {
+            opacity: 1;
+        }
+
+        .toast.success {
+            background: var(--success);
+        }
+
+        .toast.error {
+            background: var(--danger);
+        }
     </style>
 </head>
+
 <body>
     <div class="container">
         <div class="form-card">
             <div class="form-header">
                 <div class="logo-text">SafeReport</div>
                 <h1 class="form-title">Add Authority</h1>
-                <p class="form-subtitle">Create a new authority/department</p>
+                <p class="form-subtitle">Create a new authority account (they will use these credentials to log in)</p>
             </div>
 
             <form id="addAuthorityForm" onsubmit="createAuthority(event)">
                 <div class="form-group">
-                    <label class="form-label">Authority Name</label>
-                    <input type="text" class="form-control" id="authorityName" required>
+                    <label class="form-label">Full Name *</label>
+                    <input type="text" class="form-control" id="authorityName" required placeholder="e.g. Rajan Arora">
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Email Address</label>
-                    <input type="email" class="form-control" id="authorityEmail" required>
+                    <label class="form-label">Email Address *</label>
+                    <input type="email" class="form-control" id="authorityEmail" required
+                        placeholder="e.g. rajan@authority.com">
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Department</label>
-                    <input type="text" class="form-control" id="authorityDepartment" required>
+                    <label class="form-label">Password *</label>
+                    <input type="password" class="form-control" id="authorityPassword" required
+                        placeholder="Set a login password">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Department *</label>
+                    <input type="text" class="form-control" id="authorityDepartment" required
+                        placeholder="e.g. Dept. of Labour">
                 </div>
 
                 <div class="form-group">
                     <label class="form-label">Phone Number</label>
-                    <input type="tel" class="form-control" id="authorityPhone">
+                    <input type="tel" class="form-control" id="authorityPhone" placeholder="e.g. 9876543210">
                 </div>
 
                 <div class="form-group">
                     <label class="form-label">Address</label>
-                    <textarea class="form-control" id="authorityAddress" style="resize: vertical; min-height: 80px;"></textarea>
+                    <textarea class="form-control" id="authorityAddress" style="resize: vertical; min-height: 80px;"
+                        placeholder="Office address"></textarea>
                 </div>
 
                 <div class="form-actions">
@@ -182,27 +220,60 @@
         </div>
     </div>
 
+    <div class="toast" id="toast"></div>
+
     <script>
+        function showToast(msg, type = 'success') {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.className = 'toast ' + type + ' show';
+            setTimeout(() => t.classList.remove('show'), 3000);
+        }
+
         function createAuthority(event) {
             event.preventDefault();
 
-            const authorities = JSON.parse(localStorage.getItem("authorities")) || [];
-            
-            const newAuthority = {
-                id: Date.now().toString(),
-                name: document.getElementById("authorityName").value,
-                email: document.getElementById("authorityEmail").value,
-                department: document.getElementById("authorityDepartment").value,
-                phone: document.getElementById("authorityPhone").value,
-                address: document.getElementById("authorityAddress").value,
+            const name = document.getElementById("authorityName").value.trim();
+            const email = document.getElementById("authorityEmail").value.trim();
+            const password = document.getElementById("authorityPassword").value;
+            const department = document.getElementById("authorityDepartment").value.trim();
+            const phone = document.getElementById("authorityPhone").value.trim();
+            const address = document.getElementById("authorityAddress").value.trim();
+
+            if (!name || !email || !password || !department) {
+                showToast("Please fill all required fields", "error");
+                return;
+            }
+
+            // Save to the unified 'users' array so the authority can log in
+            const users = JSON.parse(localStorage.getItem("users")) || [];
+
+            // Check if email already exists
+            if (users.find(u => u.email.toLowerCase() === email.toLowerCase())) {
+                showToast("A user with this email already exists", "error");
+                return;
+            }
+
+            const newUser = {
+                fullname: name,
+                name: name,
+                email: email,
+                password: password,
+                role: "authority",
+                department: department,
+                phone: phone,
+                address: address,
+                status: "active",
                 createdAt: new Date().toLocaleString()
             };
 
-            authorities.push(newAuthority);
-            localStorage.setItem("authorities", JSON.stringify(authorities));
+            users.push(newUser);
+            localStorage.setItem("users", JSON.stringify(users));
 
-            alert("Authority created successfully");
-            window.location.href = "authority-management.html";
+            showToast("Authority created successfully! They can now log in.");
+            setTimeout(() => {
+                window.location.href = "authority-management.html";
+            }, 1500);
         }
 
         function goBack() {
@@ -210,4 +281,5 @@
         }
     </script>
 </body>
+
 </html>

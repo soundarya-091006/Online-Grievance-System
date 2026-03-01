@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SafeReport | Assigned Cases</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
     <style>
         :root {
             --primary: #6366f1;
@@ -244,6 +246,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="topbar">
         <div style="display: flex; align-items: center;">
@@ -279,7 +282,7 @@
             <div id="unassignedList" style="display:flex;flex-direction:column;gap:16px;">
                 <!-- populated by JS -->
             </div>
-            <hr style="margin:40px 0;"/>
+            <hr style="margin:40px 0;" />
         </div>
         <div class="authority-grid" id="casesGrid"></div>
     </div>
@@ -294,10 +297,15 @@
         }
 
         function loadAssignedCases() {
-            const authorities = JSON.parse(localStorage.getItem("authorities")) || [];
+            const users = JSON.parse(localStorage.getItem("users")) || [];
+            const authorities = users.filter(u => u.role === "authority");
             const complaints = JSON.parse(localStorage.getItem("complaints")) || [];
 
             const grid = document.getElementById("casesGrid");
+            if (authorities.length === 0) {
+                grid.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-light);">No authorities found. Create authorities first from Authority Management.</div>';
+                return;
+            }
             grid.innerHTML = authorities.map(authority => {
                 const assigned = complaints.filter(c => c.assignedTo === authority.email && c.status !== "RESOLVED");
                 const resolved = complaints.filter(c => c.assignedTo === authority.email && c.status === "RESOLVED");
@@ -307,7 +315,7 @@
                 return `
                     <div class="authority-card">
                         <div class="authority-header">
-                            <div class="authority-name">${authority.name}</div>
+                            <div class="authority-name">${authority.fullname || authority.name}</div>
                             <div class="workload-badge">${workload} Workload</div>
                         </div>
                         <div class="case-count">
@@ -319,10 +327,6 @@
                                 <div class="count-number">${resolved.length}</div>
                                 <div class="count-label">Resolved</div>
                             </div>
-                        </div>
-                        <div class="action-buttons">
-                            <button class="btn" onclick="viewCases('${authority.id}')">View Cases</button>
-                            <button class="btn" onclick="reassignCases('${authority.id}')">Reassign</button>
                         </div>
                     </div>
                 `;
@@ -343,13 +347,14 @@
         }
 
         // simple toast fallback
-        function showToast(msg, type='success') {
+        function showToast(msg, type = 'success') {
             alert(msg);
         }
 
         function loadUnassignedCases() {
             const complaints = JSON.parse(localStorage.getItem("complaints")) || [];
-            const authorities = JSON.parse(localStorage.getItem("authorities")) || [];
+            const users = JSON.parse(localStorage.getItem("users")) || [];
+            const authorities = users.filter(u => u.role === "authority");
             const list = document.getElementById("unassignedList");
             const unassigned = complaints.filter(c => c.status === "UNDER REVIEW");
             if (unassigned.length === 0) {
@@ -358,14 +363,14 @@
             }
             list.innerHTML = unassigned.map(c => {
                 const opts = authorities.map(a =>
-                    `<option value="${a.id}">${a.name} (${a.department || 'N/A'})</option>`
+                    `<option value="${a.email}">${a.fullname || a.name} (${a.department || 'N/A'})</option>`
                 ).join('');
                 return `
                     <div class="authority-card" style="border-left:4px solid var(--warning);">
                         <div><strong>#${c.id}</strong> ${c.subject || ''}</div>
                         <div style="margin:6px 0;">Status: ${c.status}</div>
                         <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-                            <select id="sel-${c.id}">${opts}</select>
+                            <select id="sel-${c.id}">${opts.length ? opts : '<option value="">No authorities available</option>'}</select>
                             <button class="btn" onclick="assignTo('${c.id}')">Assign</button>
                         </div>
                     </div>
@@ -380,23 +385,23 @@
                 return;
             }
             const complaints = JSON.parse(localStorage.getItem("complaints")) || [];
-            const authorities = JSON.parse(localStorage.getItem("authorities")) || [];
-            const comp = complaints.find(c => c.id === complaintId);
+            const comp = complaints.find(c => String(c.id) === String(complaintId));
             if (comp) {
                 comp.status = "ASSIGNED";
-                // store authority email so login-based pages can match
-                const auth = (authorities.find(a=>a.id===sel.value)||{});
-                comp.assignedTo = auth.email || sel.value;
+                comp.assignedTo = sel.value;
                 comp.timeline = comp.timeline || [];
                 comp.timeline.push({
                     status: 'Assigned',
                     date: new Date().toISOString(),
-                    description: 'Assigned by admin'
+                    description: 'Assigned by admin to ' + sel.value
                 });
+                comp.updatedAt = new Date().toISOString();
                 localStorage.setItem("complaints", JSON.stringify(complaints));
                 loadUnassignedCases();
                 loadAssignedCases();
-                showToast('Complaint #' + complaintId + ' assigned successfully', 'success');
+                alert('✅ Complaint #' + complaintId + ' assigned successfully!');
+            } else {
+                alert('❌ Error: Complaint not found. Please refresh and try again.');
             }
         }
 
@@ -407,4 +412,5 @@
         });
     </script>
 </body>
+
 </html>

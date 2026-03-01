@@ -1,347 +1,534 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SafeReport Authority | Add Update</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="authority-shared.css">
-<style>
 
-</style>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SafeReport Authority | Add Update</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="authority-shared.css">
+  <style>
+
+  </style>
 </head>
+
 <body>
 
-<!-- TOPBAR -->
-<div class="topbar">
-  <div class="hamburger-menu">
-    <button class="hamburger-btn" onclick="toggleMenu()" aria-label="Menu">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-        <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
-      </svg>
-    </button>
-    <a href="dashboard.html" class="logo-section">
-      <div class="logo-icon">
-        <svg viewBox="0 0 24 24" fill="none">
-          <defs><linearGradient id="sg" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stop-color="#6366f1"/><stop offset="100%" stop-color="#8b5cf6"/>
-          </linearGradient></defs>
-          <path d="M12 2L4 5V11C4 16 7.5 20 12 22C16.5 20 20 16 20 11V5L12 2Z" fill="url(#sg)"/>
-          <path d="M9.5 12.5L11 14L14.5 10.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="hamburger-menu">
+      <button class="hamburger-btn" onclick="toggleMenu()" aria-label="Menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <line x1="3" y1="6" x2="21" y2="6" />
+          <line x1="3" y1="12" x2="21" y2="12" />
+          <line x1="3" y1="18" x2="21" y2="18" />
         </svg>
+      </button>
+      <a href="dashboard.html" class="logo-section">
+        <div class="logo-icon">
+          <svg viewBox="0 0 24 24" fill="none">
+            <defs>
+              <linearGradient id="sg" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#6366f1" />
+                <stop offset="100%" stop-color="#8b5cf6" />
+              </linearGradient>
+            </defs>
+            <path d="M12 2L4 5V11C4 16 7.5 20 12 22C16.5 20 20 16 20 11V5L12 2Z" fill="url(#sg)" />
+            <path d="M9.5 12.5L11 14L14.5 10.5" stroke="white" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round" />
+          </svg>
+        </div>
+        <span class="logo-text">SafeReport</span>
+        <span class="logo-badge">AUTHORITY</span>
+      </a>
+      <!-- SIDENAV DROPDOWN -->
+      <div id="hamburgerDropdown" class="hamburger-menu-dropdown">
+        <div style="padding:14px 14px 6px;">
+          <div class="sidenav-user-section">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <div
+                style="width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,var(--primary),var(--secondary));display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:14px;"
+                class="js-auth-initials">RA</div>
+              <div>
+                <div class="sidenav-user-name js-auth-name">Rajan Arora</div>
+                <div class="sidenav-user-role js-auth-role">Senior Investigator</div>
+                <div class="sidenav-user-dept js-auth-dept">Dept. of Labour</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="nav-section-label">OVERVIEW</div>
+        <ul class="sidebar-menu">
+          <li class="menu-item">
+            <a href="dashboard.html" class="menu-link" onclick="closeMenu()">
+              <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M3 3h7v7H3V3zm11 0h7v7h-7V3zm0 11h7v7h-7v-7zm-11 0h7v7H3v-7z" stroke-linecap="round"
+                  stroke-linejoin="round" />
+              </svg>
+              Dashboard
+            </a>
+          </li>
+        </ul>
+        <div class="nav-section-label">CASES</div>
+        <ul class="sidebar-menu">
+          <li class="menu-item">
+            <a href="my-cases.html" class="menu-link" onclick="closeMenu()">
+              <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke-linecap="round"
+                  stroke-linejoin="round" />
+              </svg>
+              My Cases
+            </a>
+          </li>
+          <li class="menu-item">
+            <a href="new-assignments.html" class="menu-link" onclick="closeMenu()">
+              <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+              New Assignments<span class="menu-badge">5</span>
+            </a>
+          </li>
+          <li class="menu-item">
+            <a href="active-cases.html" class="menu-link" onclick="closeMenu()">
+              <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+              Active Investigations<span class="menu-badge">3</span>
+            </a>
+          </li>
+          <li class="menu-item">
+            <a href="investigate.html" class="menu-link" onclick="closeMenu()">
+              <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16zm10 2-4.35-4.35" stroke-linecap="round"
+                  stroke-linejoin="round" />
+              </svg>
+              Investigation Panel
+            </a>
+          </li>
+        </ul>
+        <div class="nav-section-label">ACTIONS</div>
+        <ul class="sidebar-menu">
+          <li class="menu-item">
+            <a href="add-update.html" class="menu-link active" onclick="closeMenu()">
+              <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" stroke-linecap="round"
+                  stroke-linejoin="round" />
+              </svg>
+              Add Update
+            </a>
+          </li>
+          <li class="menu-item">
+            <a href="close-cases.html" class="menu-link" onclick="closeMenu()">
+              <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" stroke-linecap="round"
+                  stroke-linejoin="round" />
+              </svg>
+              Close Case
+            </a>
+          </li>
+          <li class="menu-item">
+            <a href="closed-cases.html" class="menu-link" onclick="closeMenu()">
+              <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M5 8h14M5 8a2 2 0 1 0 0-4h14a2 2 0 1 0 0 4M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8"
+                  stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+              Closed Cases
+            </a>
+          </li>
+        </ul>
+        <div class="nav-section-label">TOOLS</div>
+        <ul class="sidebar-menu">
+          <li class="menu-item">
+            <a href="evidence.html" class="menu-link" onclick="closeMenu()">
+              <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M3 7v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2H9l-2-2H5a2 2 0 0 0-2 2z"
+                  stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+              Evidence Manager
+            </a>
+          </li>
+          <li class="menu-item">
+            <a href="generate-report.html" class="menu-link" onclick="closeMenu()">
+              <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke-linecap="round"
+                  stroke-linejoin="round" />
+              </svg>
+              Generate Report
+            </a>
+          </li>
+          <li class="menu-item">
+            <a href="schedule.html" class="menu-link" onclick="closeMenu()">
+              <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M8 2v3M16 2v3M3 9h18M19 4H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"
+                  stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+              Schedule Manager
+            </a>
+          </li>
+        </ul>
+        <div class="nav-section-label">ACCOUNT</div>
+        <ul class="sidebar-menu">
+          <li class="menu-item">
+            <a href="profile.html" class="menu-link" onclick="closeMenu()">
+              <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"
+                  stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+              My Profile
+            </a>
+          </li>
+        </ul>
+        <div class="nav-divider"></div>
+        <ul class="sidebar-menu" style="margin-bottom:12px;">
+          <li class="menu-item">
+            <a href="../login.html" class="menu-link" onclick="logoutAuth()" style="color:var(--danger);">
+              <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"
+                stroke-linejoin="round">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                <polyline points="16 17 21 12 16 7" />
+                <line x1="21" y1="12" x2="9" y2="12" />
+              </svg>
+              Sign Out
+            </a>
+          </li>
+        </ul>
       </div>
-      <span class="logo-text">SafeReport</span>
-      <span class="logo-badge">AUTHORITY</span>
-    </a>
-    <!-- SIDENAV DROPDOWN -->
-    <div id="hamburgerDropdown" class="hamburger-menu-dropdown">
-      <div style="padding:14px 14px 6px;">
-        <div class="sidenav-user-section">
-          <div style="display:flex;align-items:center;gap:10px;">
-            <div style="width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,var(--primary),var(--secondary));display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:14px;" class="js-auth-initials">RA</div>
+    </div>
+
+    <div class="topbar-right">
+      <div class="search-box">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <circle cx="11" cy="11" r="8" />
+          <path d="M21 21l-4.35-4.35" />
+        </svg>
+        <input type="text" placeholder="Search cases, IDs...">
+      </div>
+      <div class="notification-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+          <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+        </svg>
+        <span class="notification-badge">5</span>
+      </div>
+      <div class="user-menu" onclick="toggleUserMenu()">
+        <div class="user-avatar js-auth-initials">RA</div>
+        <div>
+          <div class="user-name js-auth-name">Rajan Arora</div>
+          <div class="user-role js-auth-role">Investigator</div>
+        </div>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="6 9 12 15 18 9" />
+        </svg>
+        <div id="userMenuDropdown" class="user-menu-dropdown">
+          <a href="profile.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
+            </svg>My Profile</a>
+          <a href="schedule.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <rect x="3" y="4" width="18" height="18" rx="2" />
+              <line x1="16" y1="2" x2="16" y2="6" />
+              <line x1="8" y1="2" x2="8" y2="6" />
+              <line x1="3" y1="10" x2="21" y2="10" />
+            </svg>My Schedule</a>
+          <a href="#" onclick="logoutAuth()" style="color:var(--danger);"><svg viewBox="0 0 24 24" fill="none"
+              stroke="currentColor">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+              <polyline points="16 17 21 12 16 7" />
+              <line x1="21" y1="12" x2="9" y2="12" />
+            </svg>Sign Out</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="main-content">
+
+    <div class="page-header">
+      <div class="page-header-top">
+        <div>
+          <div class="breadcrumb"><a href="dashboard.html">Dashboard</a> <svg viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2">
+              <polyline points="9 18 15 12 9 6" />
+            </svg> Add Investigation Update</div>
+          <h1 class="page-title">Add Investigation Update ✏️</h1>
+          <p class="page-subtitle">Log new findings, add evidence, and notify the complainant.</p>
+        </div>
+        <div class="page-actions">
+          <a href="my-cases.html" class="btn btn-outline">← Back to Cases</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid-21">
+      <div class="form-card">
+        <!-- SELECT CASE -->
+        <div class="form-section">
+          <div class="form-section-title"><span class="section-icon">📋</span> Select Case</div>
+          <div class="form-group">
+            <label class="form-label">Case ID <span class="required">*</span></label>
+            <select class="form-select" id="caseSelect" onchange="loadCaseInfo()">
+              <option value="">— Select a case —</option>
+            </select>
+          </div>
+          <div id="caseInfoBox"
+            style="background:linear-gradient(135deg,rgba(99,102,241,0.06),rgba(139,92,246,0.06));border:1px solid rgba(99,102,241,0.2);border-radius:12px;padding:16px;display:none;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
+          </div>
+        </div>
+
+        <!-- UPDATE DETAILS -->
+        <div class="form-section">
+          <div class="form-section-title"><span class="section-icon">📝</span> Update Details</div>
+          <div class="form-group">
+            <label class="form-label">Update Type <span class="required">*</span></label>
+            <select class="form-select" id="updateType">
+              <option value="">— Select type —</option>
+              <option>Investigation Finding</option>
+              <option>Witness Statement Received</option>
+              <option>Evidence Added</option>
+              <option>Hearing Conducted</option>
+              <option>Site Visit Completed</option>
+              <option>Status Change</option>
+              <option>General Progress Update</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Update Title <span class="required">*</span></label>
+            <input type="text" class="form-input" placeholder="Brief title for this update..." id="updateTitle">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Detailed Description <span class="required">*</span></label>
+            <textarea class="form-textarea" id="updateDesc"
+              placeholder="Describe the update, findings, or actions taken in detail..."
+              style="min-height:160px"></textarea>
+            <div class="form-hint">This entry will be added to the investigation timeline. Be thorough and factual.
+            </div>
+          </div>
+        </div>
+
+        <!-- STATUS & PROGRESS -->
+        <div class="form-section">
+          <div class="form-section-title"><span class="section-icon">🔄</span> Update Case Status</div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Current Status</label>
+              <input type="text" class="form-input" id="currentStatusDisplay" value="" readonly
+                style="background:var(--bg)">
+            </div>
+            <div class="form-group">
+              <label class="form-label">New Status (optional)</label>
+              <select class="form-select" id="newStatus">
+                <option value="">Keep current status</option>
+                <option>IN PROGRESS</option>
+                <option>RESOLVED</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Progress % (0-100)</label>
+            <input type="number" class="form-input" id="progressInput" min="0" max="100" placeholder="e.g. 50">
+          </div>
+        </div>
+
+        <!-- EVIDENCE -->
+        <div class="form-section">
+          <div class="form-section-title"><span class="section-icon">📎</span> Attach Evidence (Optional)</div>
+          <div class="upload-zone" onclick="document.getElementById('evidenceFile').click()">
+            <div class="upload-zone-icon">📁</div>
+            <p>Click to upload or drag & drop</p>
+            <small>PDF, Images, Videos, Audio (Max 10MB per file)</small>
+            <input type="file" id="evidenceFile" style="display:none" multiple
+              onchange="showToast('Evidence attached!','success')">
+          </div>
+        </div>
+
+        <!-- NOTIFY -->
+        <div class="form-section">
+          <div class="form-section-title"><span class="section-icon">🔔</span> Notify Complainant</div>
+          <div
+            style="display:flex;align-items:center;gap:14px;padding:16px;background:var(--bg);border-radius:12px;border:1px solid var(--border)">
+            <label style="position:relative;width:50px;height:26px;cursor:pointer;flex-shrink:0">
+              <input type="checkbox" id="notifyToggle" style="display:none" checked onchange="toggleNotify()">
+              <div id="notifySlider"
+                style="position:absolute;inset:0;background:var(--primary);border-radius:13px;transition:background 0.3s">
+              </div>
+              <div id="notifyThumb"
+                style="position:absolute;width:20px;height:20px;background:white;border-radius:50%;top:3px;left:27px;transition:left 0.3s;box-shadow:0 2px 4px rgba(0,0,0,0.2)">
+              </div>
+            </label>
             <div>
-              <div class="sidenav-user-name js-auth-name">Rajan Arora</div>
-              <div class="sidenav-user-role js-auth-role">Senior Investigator</div>
-              <div class="sidenav-user-dept js-auth-dept">Dept. of Labour</div>
+              <div style="font-size:13px;font-weight:600">Send notification to complainant</div>
+              <div style="font-size:12px;color:var(--text-light)">Complainant will receive a status update notification
+                (identity protected).</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <a href="my-cases.html" class="btn btn-outline">Cancel</a>
+          <button class="btn btn-primary" onclick="submitUpdate()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="9 11 12 14 22 4" />
+              <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+            </svg>
+            Submit Update
+          </button>
+        </div>
+      </div>
+
+      <!-- SIDEBAR -->
+      <div style="display:flex;flex-direction:column;gap:22px">
+        <div class="card" style="animation:fadeInUp 0.5s ease 0.15s both">
+          <div class="card-header">
+            <div class="card-title">📍 Recent Timeline</div>
+          </div>
+          <div class="card-body">
+            <div class="timeline" id="timelineSidebar">
+              <div style="color:var(--text-light);font-size:13px;padding:10px;">Select a case to view its timeline.
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card" style="animation:fadeInUp 0.5s ease 0.2s both">
+          <div class="card-header">
+            <div class="card-title">💡 Update Tips</div>
+          </div>
+          <div class="card-body">
+            <div style="display:flex;flex-direction:column;gap:10px;font-size:13px;color:var(--text-light)">
+              <div>✅ Be specific with dates, times, and locations</div>
+              <div>✅ Include objective facts, avoid assumptions</div>
+              <div>✅ Reference witness/evidence file numbers</div>
+              <div>✅ Note any pending actions or follow-ups</div>
+              <div>✅ Use professional language throughout</div>
             </div>
           </div>
         </div>
       </div>
-      <div class="nav-section-label">OVERVIEW</div><ul class="sidebar-menu">
-            <li class="menu-item">
-              <a href="dashboard.html" class="menu-link" onclick="closeMenu()">
-                <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 3h7v7H3V3zm11 0h7v7h-7V3zm0 11h7v7h-7v-7zm-11 0h7v7H3v-7z" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                Dashboard
-              </a>
-            </li></ul><div class="nav-section-label">CASES</div><ul class="sidebar-menu">
-            <li class="menu-item">
-              <a href="my-cases.html" class="menu-link" onclick="closeMenu()">
-                <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                My Cases
-              </a>
-            </li>
-            <li class="menu-item">
-              <a href="new-assignments.html" class="menu-link" onclick="closeMenu()">
-                <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                New Assignments<span class="menu-badge">5</span>
-              </a>
-            </li>
-            <li class="menu-item">
-              <a href="active-cases.html" class="menu-link" onclick="closeMenu()">
-                <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                Active Investigations<span class="menu-badge">3</span>
-              </a>
-            </li>
-            <li class="menu-item">
-              <a href="investigate.html" class="menu-link" onclick="closeMenu()">
-                <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16zm10 2-4.35-4.35" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                Investigation Panel
-              </a>
-            </li></ul><div class="nav-section-label">ACTIONS</div><ul class="sidebar-menu">
-            <li class="menu-item">
-              <a href="add-update.html" class="menu-link active" onclick="closeMenu()">
-                <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                Add Update
-              </a>
-            </li>
-            <li class="menu-item">
-              <a href="close-case.html" class="menu-link" onclick="closeMenu()">
-                <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                Close Case
-              </a>
-            </li>
-            <li class="menu-item">
-              <a href="closed-cases.html" class="menu-link" onclick="closeMenu()">
-                <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 8h14M5 8a2 2 0 1 0 0-4h14a2 2 0 1 0 0 4M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                Closed Cases
-              </a>
-            </li></ul><div class="nav-section-label">TOOLS</div><ul class="sidebar-menu">
-            <li class="menu-item">
-              <a href="evidence.html" class="menu-link" onclick="closeMenu()">
-                <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 7v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2H9l-2-2H5a2 2 0 0 0-2 2z" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                Evidence Manager
-              </a>
-            </li>
-            <li class="menu-item">
-              <a href="generate-report.html" class="menu-link" onclick="closeMenu()">
-                <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                Generate Report
-              </a>
-            </li>
-            <li class="menu-item">
-              <a href="schedule.html" class="menu-link" onclick="closeMenu()">
-                <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M8 2v3M16 2v3M3 9h18M19 4H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                Schedule Manager
-              </a>
-            </li></ul><div class="nav-section-label">ACCOUNT</div><ul class="sidebar-menu">
-            <li class="menu-item">
-              <a href="profile.html" class="menu-link" onclick="closeMenu()">
-                <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                My Profile
-              </a>
-            </li></ul>
-      <div class="nav-divider"></div>
-      <ul class="sidebar-menu" style="margin-bottom:12px;">
-        <li class="menu-item">
-          <a href="../login.html" class="menu-link" onclick="logoutAuth()" style="color:var(--danger);">
-            <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
-            </svg>
-            Sign Out
-          </a>
-        </li>
-      </ul>
     </div>
+
   </div>
 
-  <div class="topbar-right">
-    <div class="search-box">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-      <input type="text" placeholder="Search cases, IDs...">
-    </div>
-    <div class="notification-icon">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-      <span class="notification-badge">5</span>
-    </div>
-    <div class="user-menu" onclick="toggleUserMenu()">
-      <div class="user-avatar js-auth-initials">RA</div>
-      <div>
-        <div class="user-name js-auth-name">Rajan Arora</div>
-        <div class="user-role js-auth-role">Investigator</div>
-      </div>
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-      <div id="userMenuDropdown" class="user-menu-dropdown">
-        <a href="profile.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>My Profile</a>
-        <a href="schedule.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>My Schedule</a>
-        <a href="#" onclick="logoutAuth()" style="color:var(--danger);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Sign Out</a>
-      </div>
-    </div>
-  </div>
-</div>
+  <!-- TOAST -->
+  <div class="toast" id="globalToast"><span id="globalToastIcon"></span><span id="globalToastMsg"></span></div>
 
-<!-- MAIN CONTENT -->
-<div class="main-content">
-  
-<div class="page-header">
-  <div class="page-header-top">
-    <div>
-      <div class="breadcrumb"><a href="dashboard.html">Dashboard</a> <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg> Add Investigation Update</div>
-      <h1 class="page-title">Add Investigation Update ✏️</h1>
-      <p class="page-subtitle">Log new findings, add evidence, and notify the complainant.</p>
-    </div>
-    <div class="page-actions">
-      <a href="my-cases.html" class="btn btn-outline">← Back to Cases</a>
-    </div>
-  </div>
-</div>
+  <script src="authority-shared.js"></script>
+  <script>
 
-<div class="grid-21">
-  <div class="form-card">
-    <!-- SELECT CASE -->
-    <div class="form-section">
-      <div class="form-section-title"><span class="section-icon">📋</span> Select Case</div>
-      <div class="form-group">
-        <label class="form-label">Case ID <span class="required">*</span></label>
-        <select class="form-select" id="caseSelect" onchange="loadCaseInfo()">
-          <option value="">— Select a case —</option>
-          <option value="C1042" selected>#C1042 · Workplace Harassment · IN PROGRESS</option>
-          <option value="C1039">#C1039 · Verbal Abuse · UNDER REVIEW</option>
-          <option value="C1036">#C1036 · Stalking · NEW</option>
-          <option value="C1029">#C1029 · Physical Assault · IN PROGRESS</option>
-        </select>
-      </div>
-      <div id="caseInfoBox" style="background:linear-gradient(135deg,rgba(99,102,241,0.06),rgba(139,92,246,0.06));border:1px solid rgba(99,102,241,0.2);border-radius:12px;padding:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
+    let selectedComplaint = null;
+
+    function toggleNotify() {
+      const on = document.getElementById("notifyToggle").checked;
+      document.getElementById("notifySlider").style.background = on ? "var(--primary)" : "var(--border)";
+      document.getElementById("notifyThumb").style.left = on ? "27px" : "3px";
+    }
+
+    function initPage() {
+      const currentUser = JSON.parse(localStorage.getItem("currentUser")) || {};
+      if (currentUser.role !== "authority") { window.location.href = "../login.html"; return; }
+      const complaints = JSON.parse(localStorage.getItem("complaints")) || [];
+      const myCases = complaints.filter(c => c.assignedTo === currentUser.email && (c.status === "ASSIGNED" || c.status === "IN PROGRESS"));
+      const sel = document.getElementById("caseSelect");
+      sel.innerHTML = '<option value="">— Select a case —</option>';
+      myCases.forEach(c => {
+        const opt = document.createElement("option");
+        opt.value = c.id;
+        opt.textContent = '#' + c.id + ' · ' + (c.subject || c.category || 'Case') + ' · ' + c.status;
+        sel.appendChild(opt);
+      });
+      // Auto-select from URL param
+      const params = new URLSearchParams(window.location.search);
+      const idParam = params.get('id');
+      if (idParam) {
+        sel.value = idParam;
+        loadCaseInfo();
+      }
+    }
+
+    function loadCaseInfo() {
+      const caseId = document.getElementById("caseSelect").value;
+      const box = document.getElementById("caseInfoBox");
+      if (!caseId) { box.style.display = 'none'; selectedComplaint = null; renderTimeline(); return; }
+      const complaints = JSON.parse(localStorage.getItem("complaints")) || [];
+      selectedComplaint = complaints.find(c => String(c.id) === String(caseId));
+      if (!selectedComplaint) { box.style.display = 'none'; return; }
+      box.style.display = 'flex';
+      box.innerHTML = `
         <div>
-          <div style="font-size:14px;font-weight:700">Case #C1042 — Workplace Harassment</div>
-          <div style="font-size:12px;color:var(--text-light)">Tech Park, Chennai · Assigned: Jan 20, 2025</div>
+          <div style="font-size:14px;font-weight:700">Case #${selectedComplaint.id} — ${selectedComplaint.subject || selectedComplaint.category || ''}</div>
+          <div style="font-size:12px;color:var(--text-light)">${selectedComplaint.category || ''} · Submitted: ${formatDate(selectedComplaint.createdAt)}</div>
         </div>
-        <div style="display:flex;gap:8px"><span class="badge badge-urgent">HIGH</span><span class="badge badge-progress">IN PROGRESS</span></div>
-      </div>
-    </div>
-
-    <!-- UPDATE DETAILS -->
-    <div class="form-section">
-      <div class="form-section-title"><span class="section-icon">📝</span> Update Details</div>
-      <div class="form-group">
-        <label class="form-label">Update Type <span class="required">*</span></label>
-        <select class="form-select" id="updateType">
-          <option value="">— Select type —</option>
-          <option>Investigation Finding</option>
-          <option>Witness Statement Received</option>
-          <option>Evidence Added</option>
-          <option>Hearing Conducted</option>
-          <option>Site Visit Completed</option>
-          <option>Status Change</option>
-          <option>General Progress Update</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Update Title <span class="required">*</span></label>
-        <input type="text" class="form-input" placeholder="Brief title for this update..." id="updateTitle">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Detailed Description <span class="required">*</span></label>
-        <textarea class="form-textarea" id="updateDesc" placeholder="Describe the update, findings, or actions taken in detail..." style="min-height:160px"></textarea>
-        <div class="form-hint">This entry will be added to the investigation timeline. Be thorough and factual.</div>
-      </div>
-    </div>
-
-    <!-- STATUS -->
-    <div class="form-section">
-      <div class="form-section-title"><span class="section-icon">🔄</span> Update Case Status</div>
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">Current Status</label>
-          <input type="text" class="form-input" value="IN PROGRESS" readonly style="background:var(--bg)">
+        <div style="display:flex;gap:8px">
+          ${selectedComplaint.priority ? '<span class="badge badge-urgent">' + selectedComplaint.priority + '</span>' : ''}
+          <span class="badge badge-progress">${selectedComplaint.status}</span>
         </div>
-        <div class="form-group">
-          <label class="form-label">New Status (optional)</label>
-          <select class="form-select" id="newStatus">
-            <option value="">Keep current status</option>
-            <option>UNDER REVIEW</option><option>IN PROGRESS</option>
-            <option>PENDING INFO</option><option>RESOLVED</option>
-          </select>
+    `;
+      document.getElementById("currentStatusDisplay").value = selectedComplaint.status;
+      document.getElementById("progressInput").value = selectedComplaint.progress || '';
+      renderTimeline();
+    }
+
+    function renderTimeline() {
+      const container = document.getElementById("timelineSidebar");
+      if (!selectedComplaint || !selectedComplaint.timeline || selectedComplaint.timeline.length === 0) {
+        container.innerHTML = '<div style="color:var(--text-light);font-size:13px;padding:10px;">No timeline entries yet.</div>';
+        return;
+      }
+      const entries = [...selectedComplaint.timeline].reverse().slice(0, 6);
+      container.innerHTML = entries.map(t => `
+        <div class="timeline-item done">
+          <div class="timeline-time">${formatDateTime(t.date)}</div>
+          <div class="timeline-card"><h4>${t.status || 'Update'}</h4><p>${t.description || ''}</p></div>
         </div>
-      </div>
-    </div>
+    `).join('');
+    }
 
-    <!-- EVIDENCE -->
-    <div class="form-section">
-      <div class="form-section-title"><span class="section-icon">📎</span> Attach Evidence (Optional)</div>
-      <div class="upload-zone" onclick="document.getElementById('evidenceFile').click()">
-        <div class="upload-zone-icon">📁</div>
-        <p>Click to upload or drag & drop</p>
-        <small>PDF, Images, Videos, Audio (Max 10MB per file)</small>
-        <input type="file" id="evidenceFile" style="display:none" multiple onchange="showToast('Evidence attached!','success')">
-      </div>
-    </div>
+    function submitUpdate() {
+      const caseId = document.getElementById("caseSelect").value;
+      const type = document.getElementById("updateType").value;
+      const title = document.getElementById("updateTitle").value;
+      const desc = document.getElementById("updateDesc").value;
+      const newStatus = document.getElementById("newStatus").value;
+      const progress = document.getElementById("progressInput").value;
+      if (!caseId) { showToast("Please select a case first.", "error"); return; }
+      if (!type || !title || !desc) { showToast("Please fill all required fields.", "error"); return; }
 
-    <!-- NOTIFY -->
-    <div class="form-section">
-      <div class="form-section-title"><span class="section-icon">🔔</span> Notify Complainant</div>
-      <div style="display:flex;align-items:center;gap:14px;padding:16px;background:var(--bg);border-radius:12px;border:1px solid var(--border)">
-        <label style="position:relative;width:50px;height:26px;cursor:pointer;flex-shrink:0">
-          <input type="checkbox" id="notifyToggle" style="display:none" checked onchange="toggleNotify()">
-          <div id="notifySlider" style="position:absolute;inset:0;background:var(--primary);border-radius:13px;transition:background 0.3s"></div>
-          <div id="notifyThumb" style="position:absolute;width:20px;height:20px;background:white;border-radius:50%;top:3px;left:27px;transition:left 0.3s;box-shadow:0 2px 4px rgba(0,0,0,0.2)"></div>
-        </label>
-        <div>
-          <div style="font-size:13px;font-weight:600">Send notification to complainant</div>
-          <div style="font-size:12px;color:var(--text-light)">Complainant will receive a status update notification (identity protected).</div>
-        </div>
-      </div>
-    </div>
+      const complaints = JSON.parse(localStorage.getItem("complaints")) || [];
+      const comp = complaints.find(c => String(c.id) === String(caseId));
+      if (!comp) { showToast("Case not found.", "error"); return; }
 
-    <div class="form-actions">
-      <a href="my-cases.html" class="btn btn-outline">Cancel</a>
-      <button class="btn btn-outline" onclick="saveDraft()">💾 Save Draft</button>
-      <button class="btn btn-primary" onclick="submitUpdate()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-        Submit Update
-      </button>
-    </div>
-  </div>
+      // Add timeline entry
+      comp.timeline = comp.timeline || [];
+      comp.timeline.push({
+        status: title,
+        date: new Date().toISOString(),
+        description: '[' + type + '] ' + desc
+      });
 
-  <!-- SIDEBAR -->
-  <div style="display:flex;flex-direction:column;gap:22px">
-    <div class="card" style="animation:fadeInUp 0.5s ease 0.15s both">
-      <div class="card-header"><div class="card-title">📍 Recent Timeline</div></div>
-      <div class="card-body">
-        <div class="timeline">
-          <div class="timeline-item done">
-            <div class="timeline-time">Jan 18 · 11:30 AM</div>
-            <div class="timeline-card"><h4>Witnesses Identified</h4><p>Two witnesses identified, interviews to be scheduled.</p></div>
-          </div>
-          <div class="timeline-item done">
-            <div class="timeline-time">Jan 17 · 02:00 PM</div>
-            <div class="timeline-card"><h4>Evidence Reviewed</h4><p>3 evidence files reviewed, CCTV footage requested.</p></div>
-          </div>
-          <div class="timeline-item done">
-            <div class="timeline-time">Jan 16 · 10:00 AM</div>
-            <div class="timeline-card"><h4>Case Assigned</h4><p>Assigned to investigator Rajan Arora.</p></div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="card" style="animation:fadeInUp 0.5s ease 0.2s both">
-      <div class="card-header"><div class="card-title">💡 Update Tips</div></div>
-      <div class="card-body">
-        <div style="display:flex;flex-direction:column;gap:10px;font-size:13px;color:var(--text-light)">
-          <div>✅ Be specific with dates, times, and locations</div>
-          <div>✅ Include objective facts, avoid assumptions</div>
-          <div>✅ Reference witness/evidence file numbers</div>
-          <div>✅ Note any pending actions or follow-ups</div>
-          <div>✅ Use professional language throughout</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+      // Update status if changed
+      if (newStatus && newStatus !== comp.status) {
+        comp.status = newStatus;
+        comp.timeline.push({
+          status: 'Status Changed to ' + newStatus,
+          date: new Date().toISOString(),
+          description: 'Status updated by authority'
+        });
+      }
 
-</div>
+      // Update progress
+      if (progress !== '' && !isNaN(progress)) {
+        comp.progress = parseInt(progress);
+      }
 
-<!-- TOAST -->
-<div class="toast" id="globalToast"><span id="globalToastIcon"></span><span id="globalToastMsg"></span></div>
+      comp.updatedAt = new Date().toISOString();
+      localStorage.setItem("complaints", JSON.stringify(complaints));
+      showToast("Update submitted to timeline successfully!", "success");
+      setTimeout(() => window.location.href = "active-cases.html", 1500);
+    }
 
-<script src="authority-shared.js"></script>
-<script>
+    window.addEventListener('DOMContentLoaded', initPage);
 
-function toggleNotify() {
-    const on = document.getElementById("notifyToggle").checked;
-    document.getElementById("notifySlider").style.background = on ? "var(--primary)" : "var(--border)";
-    document.getElementById("notifyThumb").style.left = on ? "27px" : "3px";
-}
-function loadCaseInfo() { showToast("Case information loaded.", "info"); }
-function saveDraft() { showToast("Draft saved successfully.", "success"); }
-function submitUpdate() {
-    const type = document.getElementById("updateType").value;
-    const title = document.getElementById("updateTitle").value;
-    const desc = document.getElementById("updateDesc").value;
-    if (!type || !title || !desc) { showToast("Please fill all required fields.", "error"); return; }
-    showToast("Update submitted to timeline successfully!", "success");
-    setTimeout(() => window.location.href = "investigate.html", 1800);
-}
-
-</script>
+  </script>
 </body>
+
 </html>

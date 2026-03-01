@@ -87,18 +87,22 @@ document.addEventListener('keydown', e => {
 function getAuthUser() {
     const currentUser = JSON.parse(localStorage.getItem('currentUser'));
     if (currentUser && currentUser.role === 'authority') {
+        const displayName = currentUser.fullname || currentUser.name || 'Authority Officer';
+        // Try to get department from the users array
+        const users = JSON.parse(localStorage.getItem('users')) || [];
+        const fullRecord = users.find(u => u.email === currentUser.email && u.role === 'authority');
         return {
-            name: currentUser.fullname || 'Authority Officer',
+            name: displayName,
             role: 'Authority Officer',
-            dept: 'Investigation Department',
-            initials: (currentUser.fullname || 'AU').split(' ').map(n => n[0]).join('').toUpperCase()
+            dept: (fullRecord && fullRecord.department) || 'Investigation Department',
+            initials: displayName.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2)
         };
     }
     return {
-        name: 'Rajan Arora',
-        role: 'Senior Investigator',
-        dept: 'Dept. of Labour',
-        initials: 'RA'
+        name: 'Authority Officer',
+        role: 'Authority Officer',
+        dept: 'Investigation Department',
+        initials: 'AO'
     };
 }
 function loadAuthUser() {

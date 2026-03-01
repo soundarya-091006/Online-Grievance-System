@@ -1,359 +1,421 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SafeReport Authority | My Cases</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="authority-shared.css">
-<style>
 
-</style>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SafeReport Authority | My Cases</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="authority-shared.css">
+  <style>
+
+  </style>
 </head>
+
 <body>
 
-<!-- TOPBAR -->
-<div class="topbar">
-  <div class="hamburger-menu">
-    <button class="hamburger-btn" onclick="toggleMenu()" aria-label="Menu">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-        <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
-      </svg>
-    </button>
-    <a href="dashboard.html" class="logo-section">
-      <div class="logo-icon">
-        <svg viewBox="0 0 24 24" fill="none">
-          <defs><linearGradient id="sg" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stop-color="#6366f1"/><stop offset="100%" stop-color="#8b5cf6"/>
-          </linearGradient></defs>
-          <path d="M12 2L4 5V11C4 16 7.5 20 12 22C16.5 20 20 16 20 11V5L12 2Z" fill="url(#sg)"/>
-          <path d="M9.5 12.5L11 14L14.5 10.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="hamburger-menu">
+      <button class="hamburger-btn" onclick="toggleMenu()" aria-label="Menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <line x1="3" y1="6" x2="21" y2="6" />
+          <line x1="3" y1="12" x2="21" y2="12" />
+          <line x1="3" y1="18" x2="21" y2="18" />
         </svg>
-      </div>
-      <span class="logo-text">SafeReport</span>
-      <span class="logo-badge">AUTHORITY</span>
-    </a>
-    <!-- SIDENAV DROPDOWN -->
-    <div id="hamburgerDropdown" class="hamburger-menu-dropdown">
-      <div style="padding:14px 14px 6px;">
-        <div class="sidenav-user-section">
-          <div style="display:flex;align-items:center;gap:10px;">
-            <div style="width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,var(--primary),var(--secondary));display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:14px;" class="js-auth-initials">RA</div>
-            <div>
-              <div class="sidenav-user-name js-auth-name">Rajan Arora</div>
-              <div class="sidenav-user-role js-auth-role">Senior Investigator</div>
-              <div class="sidenav-user-dept js-auth-dept">Dept. of Labour</div>
+      </button>
+      <a href="dashboard.html" class="logo-section">
+        <div class="logo-icon">
+          <svg viewBox="0 0 24 24" fill="none">
+            <defs>
+              <linearGradient id="sg" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#6366f1" />
+                <stop offset="100%" stop-color="#8b5cf6" />
+              </linearGradient>
+            </defs>
+            <path d="M12 2L4 5V11C4 16 7.5 20 12 22C16.5 20 20 16 20 11V5L12 2Z" fill="url(#sg)" />
+            <path d="M9.5 12.5L11 14L14.5 10.5" stroke="white" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round" />
+          </svg>
+        </div>
+        <span class="logo-text">SafeReport</span>
+        <span class="logo-badge">AUTHORITY</span>
+      </a>
+      <!-- SIDENAV DROPDOWN -->
+      <div id="hamburgerDropdown" class="hamburger-menu-dropdown">
+        <div style="padding:14px 14px 6px;">
+          <div class="sidenav-user-section">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <div
+                style="width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,var(--primary),var(--secondary));display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:14px;"
+                class="js-auth-initials">RA</div>
+              <div>
+                <div class="sidenav-user-name js-auth-name">Rajan Arora</div>
+                <div class="sidenav-user-role js-auth-role">Senior Investigator</div>
+                <div class="sidenav-user-dept js-auth-dept">Dept. of Labour</div>
+              </div>
             </div>
           </div>
         </div>
+        <div class="nav-section-label">OVERVIEW</div>
+        <ul class="sidebar-menu">
+          <li class="menu-item">
+            <a href="dashboard.html" class="menu-link" onclick="closeMenu()">
+              <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M3 3h7v7H3V3zm11 0h7v7h-7V3zm0 11h7v7h-7v-7zm-11 0h7v7H3v-7z" stroke-linecap="round"
+                  stroke-linejoin="round" />
+              </svg>
+              Dashboard
+            </a>
+          </li>
+        </ul>
+        <div class="nav-section-label">CASES</div>
+        <ul class="sidebar-menu">
+          <li class="menu-item">
+            <a href="my-cases.html" class="menu-link active" onclick="closeMenu()">
+              <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke-linecap="round"
+                  stroke-linejoin="round" />
+              </svg>
+              My Cases
+            </a>
+          </li>
+          <li class="menu-item">
+            <a href="new-assignments.html" class="menu-link" onclick="closeMenu()">
+              <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+              New Assignments<span id="badgeNewAssignments" class="menu-badge">0</span>
+            </a>
+          </li>
+          <li class="menu-item">
+            <a href="active-cases.html" class="menu-link" onclick="closeMenu()">
+              <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+              Active Investigations<span id="badgeActiveCases" class="menu-badge">0</span>
+            </a>
+          </li>
+          <li class="menu-item">
+            <a href="investigate.html" class="menu-link" onclick="closeMenu()">
+              <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16zm10 2-4.35-4.35" stroke-linecap="round"
+                  stroke-linejoin="round" />
+              </svg>
+              Investigation Panel
+            </a>
+          </li>
+        </ul>
+        <div class="nav-section-label">ACTIONS</div>
+        <ul class="sidebar-menu">
+          <li class="menu-item">
+            <a href="add-update.html" class="menu-link" onclick="closeMenu()">
+              <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" stroke-linecap="round"
+                  stroke-linejoin="round" />
+              </svg>
+              Add Update
+            </a>
+          </li>
+          <li class="menu-item">
+            <a href="close-cases.html" class="menu-link" onclick="closeMenu()">
+              <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" stroke-linecap="round"
+                  stroke-linejoin="round" />
+              </svg>
+              Close Case
+            </a>
+          </li>
+          <li class="menu-item">
+            <a href="closed-cases.html" class="menu-link" onclick="closeMenu()">
+              <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M5 8h14M5 8a2 2 0 1 0 0-4h14a2 2 0 1 0 0 4M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8"
+                  stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+              Closed Cases
+            </a>
+          </li>
+        </ul>
+        <div class="nav-section-label">TOOLS</div>
+        <ul class="sidebar-menu">
+          <li class="menu-item">
+            <a href="evidence.html" class="menu-link" onclick="closeMenu()">
+              <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M3 7v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2H9l-2-2H5a2 2 0 0 0-2 2z"
+                  stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+              Evidence Manager
+            </a>
+          </li>
+          <li class="menu-item">
+            <a href="generate-report.html" class="menu-link" onclick="closeMenu()">
+              <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke-linecap="round"
+                  stroke-linejoin="round" />
+              </svg>
+              Generate Report
+            </a>
+          </li>
+          <li class="menu-item">
+            <a href="schedule.html" class="menu-link" onclick="closeMenu()">
+              <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M8 2v3M16 2v3M3 9h18M19 4H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"
+                  stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+              Schedule Manager
+            </a>
+          </li>
+        </ul>
+        <div class="nav-section-label">ACCOUNT</div>
+        <ul class="sidebar-menu">
+          <li class="menu-item">
+            <a href="profile.html" class="menu-link" onclick="closeMenu()">
+              <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"
+                  stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+              My Profile
+            </a>
+          </li>
+        </ul>
+        <div class="nav-divider"></div>
+        <ul class="sidebar-menu" style="margin-bottom:12px;">
+          <li class="menu-item">
+            <a href="../login.html" class="menu-link" onclick="logoutAuth()" style="color:var(--danger);">
+              <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"
+                stroke-linejoin="round">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                <polyline points="16 17 21 12 16 7" />
+                <line x1="21" y1="12" x2="9" y2="12" />
+              </svg>
+              Sign Out
+            </a>
+          </li>
+        </ul>
       </div>
-      <div class="nav-section-label">OVERVIEW</div><ul class="sidebar-menu">
-            <li class="menu-item">
-              <a href="dashboard.html" class="menu-link" onclick="closeMenu()">
-                <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 3h7v7H3V3zm11 0h7v7h-7V3zm0 11h7v7h-7v-7zm-11 0h7v7H3v-7z" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                Dashboard
-              </a>
-            </li></ul><div class="nav-section-label">CASES</div><ul class="sidebar-menu">
-            <li class="menu-item">
-              <a href="my-cases.html" class="menu-link active" onclick="closeMenu()">
-                <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                My Cases
-              </a>
-            </li>
-            <li class="menu-item">
-              <a href="new-assignments.html" class="menu-link" onclick="closeMenu()">
-                <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                New Assignments<span id="badgeNewAssignments" class="menu-badge">0</span>
-              </a>
-            </li>
-            <li class="menu-item">
-              <a href="active-cases.html" class="menu-link" onclick="closeMenu()">
-                <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                Active Investigations<span id="badgeActiveCases" class="menu-badge">0</span>
-              </a>
-            </li>
-            <li class="menu-item">
-              <a href="investigate.html" class="menu-link" onclick="closeMenu()">
-                <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16zm10 2-4.35-4.35" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                Investigation Panel
-              </a>
-            </li></ul><div class="nav-section-label">ACTIONS</div><ul class="sidebar-menu">
-            <li class="menu-item">
-              <a href="add-update.html" class="menu-link" onclick="closeMenu()">
-                <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                Add Update
-              </a>
-            </li>
-            <li class="menu-item">
-              <a href="close-case.html" class="menu-link" onclick="closeMenu()">
-                <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                Close Case
-              </a>
-            </li>
-            <li class="menu-item">
-              <a href="closed-cases.html" class="menu-link" onclick="closeMenu()">
-                <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 8h14M5 8a2 2 0 1 0 0-4h14a2 2 0 1 0 0 4M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                Closed Cases
-              </a>
-            </li></ul><div class="nav-section-label">TOOLS</div><ul class="sidebar-menu">
-            <li class="menu-item">
-              <a href="evidence.html" class="menu-link" onclick="closeMenu()">
-                <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 7v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2H9l-2-2H5a2 2 0 0 0-2 2z" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                Evidence Manager
-              </a>
-            </li>
-            <li class="menu-item">
-              <a href="generate-report.html" class="menu-link" onclick="closeMenu()">
-                <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                Generate Report
-              </a>
-            </li>
-            <li class="menu-item">
-              <a href="schedule.html" class="menu-link" onclick="closeMenu()">
-                <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M8 2v3M16 2v3M3 9h18M19 4H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                Schedule Manager
-              </a>
-            </li></ul><div class="nav-section-label">ACCOUNT</div><ul class="sidebar-menu">
-            <li class="menu-item">
-              <a href="profile.html" class="menu-link" onclick="closeMenu()">
-                <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                My Profile
-              </a>
-            </li></ul>
-      <div class="nav-divider"></div>
-      <ul class="sidebar-menu" style="margin-bottom:12px;">
-        <li class="menu-item">
-          <a href="../login.html" class="menu-link" onclick="logoutAuth()" style="color:var(--danger);">
-            <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+    </div>
+
+    <div class="topbar-right">
+      <div class="search-box">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <circle cx="11" cy="11" r="8" />
+          <path d="M21 21l-4.35-4.35" />
+        </svg>
+        <input type="text" placeholder="Search cases, IDs...">
+      </div>
+      <div class="notification-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+          <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+        </svg>
+        <span class="notification-badge">5</span>
+      </div>
+      <div class="user-menu" onclick="toggleUserMenu()">
+        <div class="user-avatar js-auth-initials">RA</div>
+        <div>
+          <div class="user-name js-auth-name">Rajan Arora</div>
+          <div class="user-role js-auth-role">Investigator</div>
+        </div>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="6 9 12 15 18 9" />
+        </svg>
+        <div id="userMenuDropdown" class="user-menu-dropdown">
+          <a href="profile.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
+            </svg>My Profile</a>
+          <a href="schedule.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <rect x="3" y="4" width="18" height="18" rx="2" />
+              <line x1="16" y1="2" x2="16" y2="6" />
+              <line x1="8" y1="2" x2="8" y2="6" />
+              <line x1="3" y1="10" x2="21" y2="10" />
+            </svg>My Schedule</a>
+          <a href="#" onclick="logoutAuth()" style="color:var(--danger);"><svg viewBox="0 0 24 24" fill="none"
+              stroke="currentColor">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+              <polyline points="16 17 21 12 16 7" />
+              <line x1="21" y1="12" x2="9" y2="12" />
+            </svg>Sign Out</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="main-content">
+
+    <div class="page-header">
+      <div class="page-header-top">
+        <div>
+          <div class="breadcrumb">
+            <a href="dashboard.html">Dashboard</a>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="9 18 15 12 9 6" />
             </svg>
-            Sign Out
+            My Cases
+          </div>
+          <h1 class="page-title">My Cases 📁</h1>
+          <p class="page-subtitle">All complaints assigned to you — track, investigate, and resolve.</p>
+        </div>
+        <div class="page-actions">
+          <button class="btn btn-outline" onclick="exportCases()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="7 10 12 15 17 10" />
+              <line x1="12" y1="15" x2="12" y2="3" />
+            </svg>
+            Export
+          </button>
+          <a href="generate-report.html" class="btn btn-primary">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+              <polyline points="14 2 14 8 20 8" />
+            </svg>
+            Generate Report
           </a>
-        </li>
-      </ul>
-    </div>
-  </div>
-
-  <div class="topbar-right">
-    <div class="search-box">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-      <input type="text" placeholder="Search cases, IDs...">
-    </div>
-    <div class="notification-icon">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-      <span class="notification-badge">5</span>
-    </div>
-    <div class="user-menu" onclick="toggleUserMenu()">
-      <div class="user-avatar js-auth-initials">RA</div>
-      <div>
-        <div class="user-name js-auth-name">Rajan Arora</div>
-        <div class="user-role js-auth-role">Investigator</div>
-      </div>
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-      <div id="userMenuDropdown" class="user-menu-dropdown">
-        <a href="profile.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>My Profile</a>
-        <a href="schedule.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>My Schedule</a>
-        <a href="#" onclick="logoutAuth()" style="color:var(--danger);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Sign Out</a>
+        </div>
       </div>
     </div>
-  </div>
-</div>
 
-<!-- MAIN CONTENT -->
-<div class="main-content">
-  
-<div class="page-header">
-  <div class="page-header-top">
-    <div>
-      <div class="breadcrumb">
-        <a href="dashboard.html">Dashboard</a>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-        My Cases
+    <!-- MINI STATS -->
+    <div
+      style="display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin-bottom:24px;animation:fadeInUp 0.5s ease 0.1s both">
+      <div class="card" style="text-align:center;padding:18px;cursor:pointer;border-bottom:3px solid var(--primary)"
+        onclick="filterByStatus('all')">
+        <div style="font-size:26px;font-weight:800;color:var(--primary)" id="miniAll">0</div>
+        <div style="font-size:12px;color:var(--text-light)">All Cases</div>
       </div>
-      <h1 class="page-title">My Cases 📁</h1>
-      <p class="page-subtitle">All complaints assigned to you — track, investigate, and resolve.</p>
+      <div class="card" style="text-align:center;padding:18px;cursor:pointer" onclick="filterByStatus('assigned')">
+        <div style="font-size:26px;font-weight:800;color:#1e40af" id="miniAssigned">0</div>
+        <div style="font-size:12px;color:var(--text-light)">Assigned</div>
+      </div>
+      <div class="card" style="text-align:center;padding:18px;cursor:pointer" onclick="filterByStatus('in progress')">
+        <div style="font-size:26px;font-weight:800;color:var(--warning)" id="miniInProgress">0</div>
+        <div style="font-size:12px;color:var(--text-light)">In Progress</div>
+      </div>
+      <div class="card" style="text-align:center;padding:18px;cursor:pointer" onclick="filterByStatus('resolved')">
+        <div style="font-size:26px;font-weight:800;color:var(--success)" id="miniResolved">0</div>
+        <div style="font-size:12px;color:var(--text-light)">Resolved</div>
+      </div>
+      <div class="card" style="text-align:center;padding:18px;cursor:pointer" onclick="filterByStatus('under review')">
+        <div style="font-size:26px;font-weight:800;color:var(--text-light)" id="miniUnderReview">0</div>
+        <div style="font-size:12px;color:var(--text-light)">Under Review</div>
+      </div>
     </div>
-    <div class="page-actions">
-      <button class="btn btn-outline" onclick="exportCases()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        Export
-      </button>
-      <a href="generate-report.html" class="btn btn-primary">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-        Generate Report
-      </a>
+
+    <!-- FILTERS -->
+    <div class="filters-bar" style="animation:fadeInUp 0.5s ease 0.15s both">
+      <div class="search-filter">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <circle cx="11" cy="11" r="8" />
+          <path d="M21 21l-4.35-4.35" />
+        </svg>
+        <input type="text" placeholder="Search case ID, subject..." id="searchInput" oninput="filterTable()">
+      </div>
+      <select class="filter-select" id="statusFilter" onchange="filterTable()">
+        <option value="">All Status</option>
+        <option>NEW</option>
+        <option>UNDER REVIEW</option>
+        <option>IN PROGRESS</option>
+        <option>RESOLVED</option>
+        <option>CLOSED</option>
+      </select>
+      <select class="filter-select" id="priorityFilter" onchange="filterTable()">
+        <option value="">All Priority</option>
+        <option>CRITICAL</option>
+        <option>HIGH</option>
+        <option>MEDIUM</option>
+        <option>LOW</option>
+      </select>
+      <select class="filter-select" id="categoryFilter" onchange="filterTable()">
+        <option value="">All Categories</option>
+        <option>Sexual Harassment</option>
+        <option>Verbal Abuse</option>
+        <option>Physical Assault</option>
+        <option>Stalking</option>
+        <option>Discrimination</option>
+      </select>
+      <button class="btn btn-outline btn-sm" onclick="resetFilters()">Reset</button>
     </div>
+
+    <div
+      style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;font-size:13px;color:var(--text-light)">
+      <span>Showing <b id="rowCount" style="color:var(--text)">6</b> cases</span>
+      <select class="filter-select" onchange="sortTable(this.value)">
+        <option>Newest First</option>
+        <option>Oldest First</option>
+        <option>Priority High-Low</option>
+        <option>Priority Low-High</option>
+      </select>
+    </div>
+
+    <!-- TABLE -->
+    <div class="table-wrap" style="animation:fadeInUp 0.5s ease 0.2s both">
+      <table id="casesTable">
+        <thead>
+          <tr>
+            <th>Case ID</th>
+            <th>Subject</th>
+            <th>Category</th>
+            <th>Date</th>
+            <th>Priority</th>
+            <th>Status</th>
+            <th>Complainant</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="casesBody">
+          <tr>
+            <td colspan="8" style="text-align:center;padding:30px;color:var(--text-light)">Loading...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
   </div>
-</div>
 
-<!-- MINI STATS -->
-<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin-bottom:24px;animation:fadeInUp 0.5s ease 0.1s both">
-  <div class="card" style="text-align:center;padding:18px;cursor:pointer;border-bottom:3px solid var(--primary)" onclick="filterByStatus('all')">
-    <div style="font-size:26px;font-weight:800;color:var(--primary)">24</div>
-    <div style="font-size:12px;color:var(--text-light)">All Cases</div>
-  </div>
-  <div class="card" style="text-align:center;padding:18px;cursor:pointer" onclick="filterByStatus('new')">
-    <div style="font-size:26px;font-weight:800;color:#1e40af">5</div>
-    <div style="font-size:12px;color:var(--text-light)">New</div>
-  </div>
-  <div class="card" style="text-align:center;padding:18px;cursor:pointer" onclick="filterByStatus('progress')">
-    <div style="font-size:26px;font-weight:800;color:var(--warning)">8</div>
-    <div style="font-size:12px;color:var(--text-light)">In Progress</div>
-  </div>
-  <div class="card" style="text-align:center;padding:18px;cursor:pointer" onclick="filterByStatus('resolved')">
-    <div style="font-size:26px;font-weight:800;color:var(--success)">11</div>
-    <div style="font-size:12px;color:var(--text-light)">Resolved</div>
-  </div>
-  <div class="card" style="text-align:center;padding:18px;cursor:pointer" onclick="filterByStatus('closed')">
-    <div style="font-size:26px;font-weight:800;color:var(--text-light)">0</div>
-    <div style="font-size:12px;color:var(--text-light)">Closed</div>
-  </div>
-</div>
+  <!-- TOAST -->
+  <div class="toast" id="globalToast"><span id="globalToastIcon"></span><span id="globalToastMsg"></span></div>
 
-<!-- FILTERS -->
-<div class="filters-bar" style="animation:fadeInUp 0.5s ease 0.15s both">
-  <div class="search-filter">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-    <input type="text" placeholder="Search case ID, subject..." id="searchInput" oninput="filterTable()">
-  </div>
-  <select class="filter-select" id="statusFilter" onchange="filterTable()">
-    <option value="">All Status</option>
-    <option>NEW</option><option>UNDER REVIEW</option><option>IN PROGRESS</option>
-    <option>RESOLVED</option><option>CLOSED</option>
-  </select>
-  <select class="filter-select" id="priorityFilter" onchange="filterTable()">
-    <option value="">All Priority</option>
-    <option>CRITICAL</option><option>HIGH</option><option>MEDIUM</option><option>LOW</option>
-  </select>
-  <select class="filter-select" id="categoryFilter" onchange="filterTable()">
-    <option value="">All Categories</option>
-    <option>Sexual Harassment</option><option>Verbal Abuse</option>
-    <option>Physical Assault</option><option>Stalking</option><option>Discrimination</option>
-  </select>
-  <button class="btn btn-outline btn-sm" onclick="resetFilters()">Reset</button>
-</div>
+  <script src="authority-shared.js"></script>
+  <script>
 
-<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;font-size:13px;color:var(--text-light)">
-  <span>Showing <b id="rowCount" style="color:var(--text)">6</b> cases</span>
-  <select class="filter-select" onchange="sortTable(this.value)">
-    <option>Newest First</option><option>Oldest First</option>
-    <option>Priority High-Low</option><option>Priority Low-High</option>
-  </select>
-</div>
+    let authorityCases = [];
 
-<!-- TABLE -->
-<div class="table-wrap" style="animation:fadeInUp 0.5s ease 0.2s both">
-  <table id="casesTable">
-    <thead>
-      <tr>
-        <th>Case ID</th><th>Subject</th><th>Category</th><th>Date</th>
-        <th>Priority</th><th>Status</th><th>Complainant</th><th>Actions</th>
-      </tr>
-    </thead>
-    <tbody id="casesBody">
-      <tr>
-        <td><b style="color:var(--primary)">#C1042</b></td>
-        <td>Workplace Harassment Incident</td>
-        <td>Sexual Harassment</td><td>Jan 15, 2025</td>
-        <td><span class="badge badge-urgent">HIGH</span></td>
-        <td><span class="badge badge-progress">IN PROGRESS</span></td>
-        <td>Anonymous</td>
-        <td style="display:flex;gap:6px;flex-wrap:wrap">
-          <a href="investigate.html" class="btn btn-primary btn-sm">Investigate</a>
-          <a href="add-update.html" class="btn btn-outline btn-sm">Update</a>
-        </td>
-      </tr>
-      <tr>
-        <td><b style="color:var(--primary)">#C1039</b></td>
-        <td>Verbal Abuse at Office</td>
-        <td>Verbal Abuse</td><td>Jan 14, 2025</td>
-        <td><span class="badge badge-medium">MEDIUM</span></td>
-        <td><span class="badge badge-pending">UNDER REVIEW</span></td>
-        <td>Jane Doe</td>
-        <td style="display:flex;gap:6px;flex-wrap:wrap">
-          <a href="investigate.html" class="btn btn-primary btn-sm">Investigate</a>
-          <a href="add-update.html" class="btn btn-outline btn-sm">Update</a>
-        </td>
-      </tr>
-      <tr>
-        <td><b style="color:var(--primary)">#C1036</b></td>
-        <td>Stalking — Near Residence</td>
-        <td>Stalking</td><td>Jan 12, 2025</td>
-        <td><span class="badge badge-urgent">HIGH</span></td>
-        <td><span class="badge badge-new">NEW</span></td>
-        <td>Anonymous</td>
-        <td style="display:flex;gap:6px;flex-wrap:wrap">
-          <a href="investigate.html" class="btn btn-primary btn-sm">Investigate</a>
-          <a href="add-update.html" class="btn btn-outline btn-sm">Update</a>
-        </td>
-      </tr>
-      <tr>
-        <td><b style="color:var(--primary)">#C1031</b></td>
-        <td>Workplace Discrimination</td>
-        <td>Discrimination</td><td>Jan 8, 2025</td>
-        <td><span class="badge badge-low">LOW</span></td>
-        <td><span class="badge badge-resolved">RESOLVED</span></td>
-        <td>Priya S.</td>
-        <td style="display:flex;gap:6px;flex-wrap:wrap">
-          <a href="investigate.html" class="btn btn-outline btn-sm">View</a>
-          <a href="generate-report.html" class="btn btn-outline btn-sm">Report</a>
-        </td>
-      </tr>
-      <tr>
-        <td><b style="color:var(--primary)">#C1029</b></td>
-        <td>Physical Assault Report</td>
-        <td>Physical Assault</td><td>Jan 5, 2025</td>
-        <td><span class="badge badge-urgent">CRITICAL</span></td>
-        <td><span class="badge badge-progress">IN PROGRESS</span></td>
-        <td>Anonymous</td>
-        <td style="display:flex;gap:6px;flex-wrap:wrap">
-          <a href="investigate.html" class="btn btn-primary btn-sm">Investigate</a>
-          <a href="add-update.html" class="btn btn-outline btn-sm">Update</a>
-        </td>
-      </tr>
-      <tr>
-        <td><b style="color:var(--primary)">#C1021</b></td>
-        <td>Online Harassment</td>
-        <td>Verbal Abuse</td><td>Dec 28, 2024</td>
-        <td><span class="badge badge-medium">MEDIUM</span></td>
-        <td><span class="badge badge-resolved">RESOLVED</span></td>
-        <td>Arun K.</td>
-        <td style="display:flex;gap:6px;flex-wrap:wrap">
-          <a href="investigate.html" class="btn btn-outline btn-sm">View</a>
-          <a href="generate-report.html" class="btn btn-outline btn-sm">Report</a>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-
-</div>
-
-<!-- TOAST -->
-<div class="toast" id="globalToast"><span id="globalToastIcon"></span><span id="globalToastMsg"></span></div>
-
-<script src="authority-shared.js"></script>
-<script>
-
-let authorityCases = [];
-
-function loadAuthorityCases() {
-    const currentUser = JSON.parse(localStorage.getItem("currentUser")) || {};
-    if (currentUser.role !== "authority") {
+    function loadAuthorityCases() {
+      const currentUser = JSON.parse(localStorage.getItem("currentUser")) || {};
+      if (currentUser.role !== "authority") {
         window.location.href = "../login.html";
         return;
-    }
-    const complaints = JSON.parse(localStorage.getItem("complaints")) || [];
-    authorityCases = complaints.filter(c => c.assignedTo === currentUser.email);
-    populateTable(authorityCases);
-}
+      }
+      const complaints = JSON.parse(localStorage.getItem("complaints")) || [];
+      authorityCases = complaints.filter(c => c.assignedTo === currentUser.email);
 
-function populateTable(data) {
-    const tbody = document.getElementById("casesBody");
-    tbody.innerHTML = data.map(c => {
+      // Update mini stats dynamically
+      const el = (id) => document.getElementById(id);
+      if (el('miniAll')) el('miniAll').textContent = authorityCases.length;
+      if (el('miniAssigned')) el('miniAssigned').textContent = authorityCases.filter(c => c.status === 'ASSIGNED').length;
+      if (el('miniInProgress')) el('miniInProgress').textContent = authorityCases.filter(c => c.status === 'IN PROGRESS').length;
+      if (el('miniResolved')) el('miniResolved').textContent = authorityCases.filter(c => c.status === 'RESOLVED').length;
+      if (el('miniUnderReview')) el('miniUnderReview').textContent = authorityCases.filter(c => c.status === 'UNDER REVIEW').length;
+
+      populateTable(authorityCases);
+    }
+
+    function populateTable(data) {
+      const tbody = document.getElementById("casesBody");
+      if (data.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:30px;color:var(--text-light)">No cases assigned to you.</td></tr>';
+        document.getElementById('rowCount').innerText = 0;
+        return;
+      }
+      tbody.innerHTML = data.map(c => {
         const priority = c.priority ? `<span class="badge badge-urgent">${c.priority}</span>` : '';
-        const statusBadge = `<span class="badge badge-${c.status.toLowerCase().replace(' ','')}">${c.status}</span>`;
-        const date = c.createdAt ? new Date(c.createdAt).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '';
+        const statusClass = c.status === 'RESOLVED' ? 'badge-resolved' : c.status === 'IN PROGRESS' ? 'badge-progress' : c.status === 'ASSIGNED' ? 'badge-new' : 'badge-pending';
+        const statusBadge = `<span class="badge ${statusClass}">${c.status}</span>`;
+        const date = c.createdAt ? new Date(c.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '';
+        const isActive = c.status === 'ASSIGNED' || c.status === 'IN PROGRESS';
         const row = `
         <tr>
           <td><b style="color:var(--primary)">#${c.id}</b></td>
@@ -362,61 +424,62 @@ function populateTable(data) {
           <td>${date}</td>
           <td>${priority}</td>
           <td>${statusBadge}</td>
-          <td>${c.userEmail || 'Anonymous'}</td>
+          <td>${c.isAnonymous ? 'Anonymous' : (c.userEmail || 'Anonymous')}</td>
           <td style="display:flex;gap:6px;flex-wrap:wrap">
-            <a href="investigate.html" class="btn btn-primary btn-sm">Investigate</a>
-            <a href="add-update.html" class="btn btn-outline btn-sm">Update</a>
+            ${isActive ? '<a href="add-update.html?id=' + c.id + '" class="btn btn-primary btn-sm">Update</a>' : ''}
+            ${isActive ? '<a href="close-cases.html?id=' + c.id + '" class="btn btn-outline btn-sm">Close</a>' : ''}
+            ${!isActive ? '<a href="closed-cases.html" class="btn btn-outline btn-sm">View</a>' : ''}
           </td>
         </tr>`;
         return row;
-    }).join('');
-    document.getElementById('rowCount').innerText = data.length;
-}
+      }).join('');
+      document.getElementById('rowCount').innerText = data.length;
+    }
 
-function filterTable() {
-    const search = document.getElementById("searchInput").value.toLowerCase();
-    const status = document.getElementById("statusFilter").value.toLowerCase();
-    const priority = document.getElementById("priorityFilter").value.toLowerCase();
-    const category = document.getElementById("categoryFilter").value.toLowerCase();
-    let filtered = authorityCases.filter(c => {
+    function filterTable() {
+      const search = document.getElementById("searchInput").value.toLowerCase();
+      const status = document.getElementById("statusFilter").value.toLowerCase();
+      const priority = document.getElementById("priorityFilter").value.toLowerCase();
+      const category = document.getElementById("categoryFilter").value.toLowerCase();
+      let filtered = authorityCases.filter(c => {
         if (search && !(c.id && c.id.toString().includes(search)) &&
-            !(c.subject && c.subject.toLowerCase().includes(search))) return false;
+          !(c.subject && c.subject.toLowerCase().includes(search))) return false;
         if (status && c.status.toLowerCase() !== status) return false;
         if (priority && c.priority && c.priority.toLowerCase() !== priority) return false;
         if (category && c.category && c.category.toLowerCase() !== category) return false;
         return true;
-    });
-    populateTable(filtered);
-}
+      });
+      populateTable(filtered);
+    }
 
-function resetFilters() {
-    ["searchInput","statusFilter","priorityFilter","categoryFilter"].forEach(id => {
+    function resetFilters() {
+      ["searchInput", "statusFilter", "priorityFilter", "categoryFilter"].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.value = "";
-    });
-    filterTable();
-}
-function filterByStatus(s) { 
-    const map = {all:"",new:"new",progress:"progress",resolved:"resolved",closed:"closed"};
-    const sf = document.getElementById("statusFilter");
-    if (sf) { sf.value = map[s]||""; filterTable(); }
-}
-function sortTable(v) { showToast("Sorted: "+v, "info"); }
-function exportCases() { showToast("Exporting cases as CSV...", "success"); }
-
-// initialize
-window.addEventListener('DOMContentLoaded', loadAuthorityCases);
-
-// watch for complaint updates from other tabs/pages
-window.addEventListener('storage', function(e){
-    if(e.key === 'complaints') {
-        loadAuthorityCases();
+      });
+      filterTable();
     }
-});
-// also refresh on visibility or focus
-window.addEventListener('focus', loadAuthorityCases);
-setInterval(loadAuthorityCases, 3000);
+    function filterByStatus(s) {
+      const sf = document.getElementById("statusFilter");
+      if (sf) { sf.value = s === 'all' ? '' : s.toUpperCase(); filterTable(); }
+    }
+    function sortTable(v) { showToast("Sorted: " + v, "info"); }
+    function exportCases() { showToast("Exporting cases as CSV...", "success"); }
 
-</script>
+    // initialize
+    window.addEventListener('DOMContentLoaded', loadAuthorityCases);
+
+    // watch for complaint updates from other tabs/pages
+    window.addEventListener('storage', function (e) {
+      if (e.key === 'complaints') {
+        loadAuthorityCases();
+      }
+    });
+    // also refresh on visibility or focus
+    window.addEventListener('focus', loadAuthorityCases);
+    setInterval(loadAuthorityCases, 3000);
+
+  </script>
 </body>
+
 </html>
