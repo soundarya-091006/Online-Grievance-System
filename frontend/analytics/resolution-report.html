@@ -94,23 +94,23 @@
         <div class="stats-grid">
             <div class="stat-card">
                 <div class="stat-header"><div class="stat-icon" style="color:var(--success); background:rgba(16,185,129,0.1)">✅</div></div>
-                <div class="stat-number">84.5%</div>
+                <div class="stat-number" id="overallResolutionRate">0.0%</div>
                 <div class="stat-label">Overall Resolution Rate</div>
             </div>
             <div class="stat-card">
                 <div class="stat-header"><div class="stat-icon" style="color:var(--warning); background:rgba(245,158,11,0.1)">⏱</div></div>
-                <div class="stat-number">4.2 Days</div>
+                <div class="stat-number" id="avgResolutionTime">0.0 Days</div>
                 <div class="stat-label">Avg. Resolution Time</div>
             </div>
             <div class="stat-card">
                 <div class="stat-header"><div class="stat-icon" style="color:var(--primary); background:rgba(99,102,241,0.1)">🎯</div></div>
-                <div class="stat-number">92%</div>
+                <div class="stat-number" id="slaCompliance">0.0%</div>
                 <div class="stat-label">SLA Compliance</div>
             </div>
             <div class="stat-card">
                 <div class="stat-header"><div class="stat-icon" style="color:var(--accent); background:rgba(236,72,153,0.1)">⭐</div></div>
-                <div class="stat-number">4.8/5</div>
-                <div class="stat-label">Satisfaction Score</div>
+                <div class="stat-number" id="resolvedCasesCount">0</div>
+                <div class="stat-label">Resolved Cases</div>
             </div>
         </div>
 
@@ -119,41 +119,14 @@
                 <div class="card-header">
                     <h2 class="card-title">Resolution Rate by Category</h2>
                 </div>
-                <div class="card-body">
-                    <div class="progress-item">
-                        <div class="progress-header"><span>Harassment</span> <span>88% (124/140)</span></div>
-                        <div class="progress-track"><div class="progress-fill" style="width: 88%; background: var(--success)"></div></div>
-                    </div>
-                    <div class="progress-item">
-                        <div class="progress-header"><span>Workplace Misconduct</span> <span>75% (90/120)</span></div>
-                        <div class="progress-track"><div class="progress-fill" style="width: 75%; background: var(--warning)"></div></div>
-                    </div>
-                    <div class="progress-item">
-                        <div class="progress-header"><span>Fraud / Ethics</span> <span>95% (190/200)</span></div>
-                        <div class="progress-track"><div class="progress-fill" style="width: 95%; background: var(--primary)"></div></div>
-                    </div>
-                    <div class="progress-item">
-                        <div class="progress-header"><span>Safety Hazards</span> <span>60% (30/50)</span></div>
-                        <div class="progress-track"><div class="progress-fill" style="width: 60%; background: var(--danger)"></div></div>
-                    </div>
-                </div>
+                <div class="card-body" id="categoryResolutionContainer"></div>
             </div>
 
             <div class="card">
                 <div class="card-header">
                     <h2 class="card-title">Time to Resolve (Avg)</h2>
                 </div>
-                <div class="card-body" style="display: flex; flex-direction: column; gap: 20px;">
-                    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border); padding-bottom:10px;">
-                        <span style="font-weight:600">High Priority</span> <span style="color:var(--success); font-weight:700">1.2 Days</span>
-                    </div>
-                    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border); padding-bottom:10px;">
-                        <span style="font-weight:600">Medium Priority</span> <span style="color:var(--warning); font-weight:700">3.5 Days</span>
-                    </div>
-                    <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <span style="font-weight:600">Low Priority</span> <span style="color:var(--text-light); font-weight:700">7.1 Days</span>
-                    </div>
-                </div>
+                <div class="card-body" id="priorityResolutionContainer" style="display: flex; flex-direction: column; gap: 20px;"></div>
             </div>
         </div>
 
@@ -172,125 +145,191 @@
                             <th>Success Rate</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td><strong>HR Department</strong></td>
-                            <td>145</td>
-                            <td>130</td>
-                            <td>3.1 Days</td>
-                            <td><span style="color:var(--success); font-weight:600">89%</span></td>
-                        </tr>
-                        <tr>
-                            <td><strong>Ethics Committee</strong></td>
-                            <td>80</td>
-                            <td>76</td>
-                            <td>5.5 Days</td>
-                            <td><span style="color:var(--success); font-weight:600">95%</span></td>
-                        </tr>
-                        <tr>
-                            <td><strong>Security Team</strong></td>
-                            <td>65</td>
-                            <td>40</td>
-                            <td>2.0 Days</td>
-                            <td><span style="color:var(--warning); font-weight:600">61%</span></td>
-                        </tr>
-                    </tbody>
+                    <tbody id="authorityMetricsBody"></tbody>
                 </table>
             </div>
         </div>
     </div>
 
-    <script>
-    /* --- NAVIGATION TOGGLES --- */
-    function toggleMenu() {
-            const dropdown = document.getElementById("hamburgerDropdown");
-            dropdown.classList.toggle("active");
+        <script>
+    function getComplaints() {
+        return JSON.parse(localStorage.getItem("complaints")) || [];
+    }
+
+    function toDate(value) {
+        const date = new Date(value);
+        return Number.isNaN(date.getTime()) ? null : date;
+    }
+
+    function getStatusDate(complaint, statusKey) {
+        const target = String(statusKey || "").toUpperCase();
+        const timeline = complaint.timeline || complaint.statusHistory || [];
+        const entry = timeline.find((item) => String(item.status || "").toUpperCase().includes(target));
+        return entry?.date || entry?.timestamp || null;
+    }
+
+    function getResolvedDate(complaint) {
+        return complaint.resolvedAt || getStatusDate(complaint, "RESOLVED") || complaint.updatedAt || null;
+    }
+
+    function normalizeCategory(value) {
+        return (value || "Uncategorized").toString().trim();
+    }
+
+    function normalizePriority(value) {
+        const key = String(value || "").toUpperCase();
+        if (["URGENT", "CRITICAL", "HIGH"].includes(key)) return "High";
+        if (key === "MEDIUM") return "Medium";
+        return "Low";
+    }
+
+    function getResolutionDays(complaint) {
+        const created = toDate(complaint.createdAt);
+        const resolved = toDate(getResolvedDate(complaint));
+        if (!created || !resolved) return null;
+        const days = (resolved - created) / (1000 * 60 * 60 * 24);
+        return days >= 0 ? days : null;
+    }
+
+    function renderResolutionReport() {
+        const complaints = getComplaints();
+        const total = complaints.length;
+        const resolved = complaints.filter((c) => String(c.status || "").toUpperCase() === "RESOLVED");
+        const resolutionRate = total ? (resolved.length / total) * 100 : 0;
+
+        const durations = resolved.map(getResolutionDays).filter((d) => Number.isFinite(d));
+        const avgDays = durations.length ? durations.reduce((a, b) => a + b, 0) / durations.length : 0;
+
+        const slaThresholdDays = 30;
+        const slaMet = resolved.filter((c) => {
+            const days = getResolutionDays(c);
+            return Number.isFinite(days) && days <= slaThresholdDays;
+        }).length;
+        const slaRate = resolved.length ? (slaMet / resolved.length) * 100 : 0;
+
+        document.getElementById("overallResolutionRate").textContent = `${resolutionRate.toFixed(1)}%`;
+        document.getElementById("avgResolutionTime").textContent = `${avgDays.toFixed(1)} Days`;
+        document.getElementById("slaCompliance").textContent = `${slaRate.toFixed(1)}%`;
+        document.getElementById("resolvedCasesCount").textContent = resolved.length.toLocaleString();
+
+        const categoryMap = {};
+        complaints.forEach((complaint) => {
+            const category = normalizeCategory(complaint.category);
+            if (!categoryMap[category]) categoryMap[category] = { total: 0, resolved: 0 };
+            categoryMap[category].total += 1;
+            if (String(complaint.status || "").toUpperCase() === "RESOLVED") categoryMap[category].resolved += 1;
+        });
+
+        const categoryContainer = document.getElementById("categoryResolutionContainer");
+        const sortedCategories = Object.entries(categoryMap).sort((a, b) => b[1].total - a[1].total);
+        if (!sortedCategories.length) {
+            categoryContainer.innerHTML = '<div style="color: var(--text-light);">No complaint data available.</div>';
+        } else {
+            categoryContainer.innerHTML = sortedCategories.map(([category, stats], index) => {
+                const pct = stats.total ? (stats.resolved / stats.total) * 100 : 0;
+                const color = pct >= 80 ? 'var(--success)' : pct >= 50 ? 'var(--warning)' : 'var(--danger)';
+                return `
+                    <div class="progress-item">
+                        <div class="progress-header"><span>${category}</span> <span>${pct.toFixed(1)}% (${stats.resolved}/${stats.total})</span></div>
+                        <div class="progress-track"><div class="progress-fill" style="width: ${pct.toFixed(1)}%; background: ${color}"></div></div>
+                    </div>
+                `;
+            }).join("");
         }
 
-        function toggleUserMenu() {
-            const dropdown = document.getElementById("userMenuDropdown");
-            dropdown.classList.toggle("active");
-        }
+        const priorityLevels = ["High", "Medium", "Low"];
+        const priorityContainer = document.getElementById("priorityResolutionContainer");
+        priorityContainer.innerHTML = priorityLevels.map((level, idx) => {
+            const resolvedForLevel = resolved.filter((c) => normalizePriority(c.priority) === level);
+            const levelDurations = resolvedForLevel.map(getResolutionDays).filter((d) => Number.isFinite(d));
+            const avg = levelDurations.length ? (levelDurations.reduce((a, b) => a + b, 0) / levelDurations.length) : 0;
+            const color = idx === 0 ? 'var(--success)' : idx === 1 ? 'var(--warning)' : 'var(--text-light)';
+            return `
+                <div style="display:flex; justify-content:space-between; align-items:center; ${idx < 2 ? 'border-bottom: 1px solid var(--border); padding-bottom:10px;' : ''}">
+                    <span style="font-weight:600">${level} Priority</span>
+                    <span style="color:${color}; font-weight:700">${avg.toFixed(1)} Days</span>
+                </div>
+            `;
+        }).join("");
 
-        function logoutUser() {
-            localStorage.removeItem("currentUser");
-            window.location.href = "../../login.html";
-        }
-
-        // Close menus on outside click
-        document.addEventListener("click", function(event) {
-            const hamburgerMenu = document.querySelector(".hamburger-menu");
-            const dropdown = document.getElementById("hamburgerDropdown");
-            const userMenu = document.querySelector(".user-menu");
-            const userMenuDropdown = document.getElementById("userMenuDropdown");
-            
-            if (!hamburgerMenu.contains(event.target)) {
-                dropdown.classList.remove("active");
-            }
-            if (!userMenu.contains(event.target)) {
-                userMenuDropdown.classList.remove("active");
+        const authorityMap = {};
+        complaints.forEach((complaint) => {
+            const authority = complaint.assignedTo || complaint.assignedAuthority || "Unassigned";
+            if (!authorityMap[authority]) authorityMap[authority] = { assigned: 0, resolved: 0, durations: [] };
+            authorityMap[authority].assigned += 1;
+            if (String(complaint.status || "").toUpperCase() === "RESOLVED") {
+                authorityMap[authority].resolved += 1;
+                const days = getResolutionDays(complaint);
+                if (Number.isFinite(days)) authorityMap[authority].durations.push(days);
             }
         });
 
-        // Smooth scroll animations
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.opacity = '1';
-                    entry.target.style.transform = 'translateY(0)';
-                }
+        const tbody = document.getElementById("authorityMetricsBody");
+        const rows = Object.entries(authorityMap)
+            .sort((a, b) => b[1].assigned - a[1].assigned)
+            .map(([authority, stats]) => {
+                const avgResolve = stats.durations.length ? (stats.durations.reduce((a, b) => a + b, 0) / stats.durations.length) : 0;
+                const success = stats.assigned ? (stats.resolved / stats.assigned) * 100 : 0;
+                const successColor = success >= 80 ? 'var(--success)' : success >= 50 ? 'var(--warning)' : 'var(--danger)';
+                return `
+                    <tr>
+                        <td><strong>${authority}</strong></td>
+                        <td>${stats.assigned}</td>
+                        <td>${stats.resolved}</td>
+                        <td>${avgResolve.toFixed(1)} Days</td>
+                        <td><span style="color:${successColor}; font-weight:600">${success.toFixed(1)}%</span></td>
+                    </tr>
+                `;
             });
-        }, observerOptions);
 
-        document.querySelectorAll('.stat-card, .chart-card').forEach(el => {
-            observer.observe(el);
-        });
-    
-    document.querySelector('.user-menu').addEventListener('click', function() {
-        // Toggle user dropdown
-        console.log("User menu clicked");
-    });
+        tbody.innerHTML = rows.length ? rows.join("") : '<tr><td colspan="5" style="text-align:center; color: var(--text-light);">No authority assignment data available.</td></tr>';
 
-    /* --- PROGRESS BAR ANIMATION --- */
-    window.addEventListener('load', () => {
         const progressFills = document.querySelectorAll('.progress-fill');
-        
-        // Temporarily set to 0, then animate to target width
-        progressFills.forEach(fill => {
+        progressFills.forEach((fill) => {
             const targetWidth = fill.style.width;
             fill.style.width = '0%';
             fill.style.transition = 'width 1s cubic-bezier(0.4, 0, 0.2, 1)';
-            
             setTimeout(() => {
                 fill.style.width = targetWidth;
             }, 100);
         });
+    }
+
+    window.addEventListener("load", () => {
+        renderResolutionReport();
     });
 
-    /* --- EXPORT BUTTON SIMULATION --- */
+    window.addEventListener("complaintsUpdated", renderResolutionReport);
+    window.addEventListener("storage", (event) => {
+        if (event.key === "complaints") renderResolutionReport();
+    });
+
     document.querySelector('.btn-primary').addEventListener('click', function() {
-        const originalText = this.innerHTML;
-        this.innerHTML = '⏳ Generating PDF...';
-        this.style.opacity = '0.8';
-        this.style.pointerEvents = 'none';
-        
-        setTimeout(() => {
-            this.innerHTML = '✅ Download Complete';
-            this.style.background = 'var(--success)';
-            
-            setTimeout(() => {
-                this.innerHTML = originalText;
-                this.style.background = 'linear-gradient(135deg, var(--primary), var(--secondary))';
-                this.style.opacity = '1';
-                this.style.pointerEvents = 'auto';
-            }, 3000);
-        }, 1500);
+        const complaints = getComplaints();
+        const rows = [
+            ["ID", "Assigned To", "Status", "Priority", "Created At", "Resolved At"],
+            ...complaints.map((c) => [
+                c.id || "",
+                c.assignedTo || c.assignedAuthority || "Unassigned",
+                c.status || "",
+                c.priority || "",
+                c.createdAt || "",
+                getResolvedDate(c) || ""
+            ])
+        ];
+
+        const csv = rows
+            .map((row) => row.map((val) => `"${String(val).replace(/"/g, '""')}"`).join(","))
+            .join("\n");
+
+        const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = `resolution_report_${new Date().toISOString().split("T")[0]}.csv`;
+        link.click();
     });
 </script>
 
 </body>
 </html>
+

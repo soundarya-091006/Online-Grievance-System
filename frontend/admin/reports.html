@@ -258,8 +258,22 @@
         }
 
         function generateReport(type) {
-            alert("Report generation for: " + type + " coming soon");
-            // This will be implemented with actual charting libraries like Chart.js
+            const analyticsRoutes = {
+                trends: "../analytics/dashboard.html",
+                resolution: "../analytics/resolution-report.html",
+                category: "../analytics/complaints-report.html",
+                authority: "../analytics/resolution-report.html",
+                custom: "../analytics/user-activity.html",
+                export: "../analytics/complaints-report.html"
+            };
+
+            const target = analyticsRoutes[type];
+            if (target) {
+                window.location.href = target;
+                return;
+            }
+
+            alert("Unknown report type: " + type);
         }
 
         function logout() {

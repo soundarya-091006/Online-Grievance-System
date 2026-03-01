@@ -6,8 +6,7 @@
     <title>SafeReport | User Activity</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
-        /* BASE CSS OMITTED FOR BREVITY - ASSUME SAME AS ABOVE */
-        :root { --primary: #6366f1; --primary-dark: #4f46e5; --secondary: #8b5cf6; --success: #10b981; --warning: #f59e0b; --danger: #ef4444; --text: #1e293b; --text-light: #64748b; --border: #e2e8f0; --bg: #f8fafc; --white: #ffffff; }
+        :root { --primary: #6366f1; --secondary: #8b5cf6; --success: #10b981; --warning: #f59e0b; --danger: #ef4444; --text: #1e293b; --text-light: #64748b; --border: #e2e8f0; --bg: #f8fafc; --white: #ffffff; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); }
         .topbar { position: fixed; top: 0; left: 0; right: 0; height: 70px; background: rgba(255, 255, 255, 0.95); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 30px; z-index: 1000; }
@@ -19,16 +18,18 @@
         .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; margin-bottom: 35px; }
         .stat-card { background: var(--white); border-radius: 20px; padding: 28px; border: 1px solid var(--border); }
         .stat-number { font-size: 36px; font-weight: 800; color: var(--text); }
-        .card { background: var(--white); border-radius: 20px; border: 1px solid var(--border); padding: 25px; margin-bottom: 30px;}
+        .card { background: var(--white); border-radius: 20px; border: 1px solid var(--border); padding: 25px; margin-bottom: 30px; }
         .card-header { font-size: 18px; font-weight: 700; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid var(--border); }
-        
-        /* Activity List */
         .activity-list { display: flex; flex-direction: column; gap: 15px; }
         .activity-item { display: flex; align-items: center; gap: 15px; padding: 15px; background: var(--bg); border-radius: 12px; }
         .act-icon { width: 40px; height: 40px; border-radius: 50%; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; }
         .act-details h4 { font-size: 14px; color: var(--text); }
         .act-details p { font-size: 12px; color: var(--text-light); }
         .act-time { margin-left: auto; font-size: 12px; color: var(--text-light); font-weight: 600; }
+        @media (max-width: 900px) {
+            .stats-grid { grid-template-columns: 1fr; }
+            .two-col { grid-template-columns: 1fr !important; }
+        }
     </style>
 </head>
 <body>
@@ -38,101 +39,167 @@
 
     <div class="main-content">
         <div class="page-header">
-            <h1 class="page-title">User Activity & Engagement 👥</h1>
-            <p style="color:var(--text-light)">Monitor registration trends, active users, and system engagement.</p>
+            <h1 class="page-title">User Activity & Engagement</h1>
+            <p style="color:var(--text-light)">Live insights from local complaint and user records.</p>
         </div>
 
         <div class="stats-grid">
             <div class="stat-card">
                 <div style="color:var(--text-light); font-weight:600; margin-bottom:10px;">Total Registered Users</div>
-                <div class="stat-number">4,289</div>
-                <div style="color:var(--success); font-size:13px; margin-top:5px;">+124 this month</div>
+                <div class="stat-number" id="totalUsersCount">0</div>
+                <div style="color:var(--success); font-size:13px; margin-top:5px;" id="usersThisMonth">0 added this month</div>
             </div>
             <div class="stat-card">
-                <div style="color:var(--text-light); font-weight:600; margin-bottom:10px;">Daily Active Users (DAU)</div>
-                <div class="stat-number">856</div>
-                <div style="color:var(--success); font-size:13px; margin-top:5px;">+12% vs last week</div>
+                <div style="color:var(--text-light); font-weight:600; margin-bottom:10px;">Daily Active Reporters</div>
+                <div class="stat-number" id="dailyActiveUsersCount">0</div>
+                <div style="color:var(--success); font-size:13px; margin-top:5px;">Unique users with complaints in 24h</div>
             </div>
             <div class="stat-card">
-                <div style="color:var(--text-light); font-weight:600; margin-bottom:10px;">Avg. Session Duration</div>
-                <div class="stat-number">4m 12s</div>
-                <div style="color:var(--danger); font-size:13px; margin-top:5px;">-15s vs last week</div>
+                <div style="color:var(--text-light); font-weight:600; margin-bottom:10px;">Avg Complaints / User</div>
+                <div class="stat-number" id="avgComplaintsPerUser">0.00</div>
+                <div style="color:var(--text-light); font-size:13px; margin-top:5px;">Based on local complaint records</div>
             </div>
         </div>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 25px;">
+        <div class="two-col" style="display: grid; grid-template-columns: 1fr 1fr; gap: 25px;">
             <div class="card">
                 <div class="card-header">Recent System Activity</div>
-                <div class="activity-list">
-                    <div class="activity-item">
-                        <div class="act-icon" style="background:var(--success)">✓</div>
-                        <div class="act-details"><h4>Jane Doe resolved Complaint #C003</h4><p>Ethics Committee</p></div>
-                        <div class="act-time">2 mins ago</div>
-                    </div>
-                    <div class="activity-item">
-                        <div class="act-icon" style="background:var(--primary)">+</div>
-                        <div class="act-details"><h4>New User Registration</h4><p>user123@email.com</p></div>
-                        <div class="act-time">15 mins ago</div>
-                    </div>
-                    <div class="activity-item">
-                        <div class="act-icon" style="background:var(--warning)">!</div>
-                        <div class="act-details"><h4>Failed Login Attempt</h4><p>IP: 192.168.1.1</p></div>
-                        <div class="act-time">1 hour ago</div>
-                    </div>
-                </div>
+                <div class="activity-list" id="recentActivityList"></div>
             </div>
-            
+
             <div class="card">
                 <div class="card-header">Engagement Breakdown</div>
-                <div style="padding: 20px; background:var(--bg); border-radius:12px; margin-bottom:15px;">
-                    <div style="display:flex; justify-content:space-between; margin-bottom:10px;"><strong>Web Portal Logins</strong> <span>65%</span></div>
-                    <div style="width:100%; height:8px; background:var(--border); border-radius:4px;"><div style="width:65%; height:100%; background:var(--primary); border-radius:4px;"></div></div>
-                </div>
-                <div style="padding: 20px; background:var(--bg); border-radius:12px; margin-bottom:15px;">
-                    <div style="display:flex; justify-content:space-between; margin-bottom:10px;"><strong>Mobile App Logins</strong> <span>30%</span></div>
-                    <div style="width:100%; height:8px; background:var(--border); border-radius:4px;"><div style="width:30%; height:100%; background:var(--secondary); border-radius:4px;"></div></div>
-                </div>
-                <div style="padding: 20px; background:var(--bg); border-radius:12px;">
-                    <div style="display:flex; justify-content:space-between; margin-bottom:10px;"><strong>API Access</strong> <span>5%</span></div>
-                    <div style="width:100%; height:8px; background:var(--border); border-radius:4px;"><div style="width:5%; height:100%; background:var(--text-light); border-radius:4px;"></div></div>
-                </div>
+                <div id="engagementBreakdown"></div>
             </div>
         </div>
     </div>
 
     <script>
-    /* --- NUMBER COUNTING ANIMATION --- */
-    function animateValue(obj, start, end, duration) {
-        let startTimestamp = null;
-        const step = (timestamp) => {
-            if (!startTimestamp) startTimestamp = timestamp;
-            const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-            
-            // Format with commas if it's a large number
-            let currentValue = Math.floor(progress * (end - start) + start);
-            obj.innerHTML = currentValue.toLocaleString();
-            
-            if (progress < 1) {
-                window.requestAnimationFrame(step);
-            } else {
-                // Ensure exact final value is set
-                obj.innerHTML = end.toLocaleString(); 
-            }
-        };
-        window.requestAnimationFrame(step);
+    function getComplaints() {
+        return JSON.parse(localStorage.getItem("complaints")) || [];
     }
 
-    window.addEventListener('load', () => {
-        const statCards = document.querySelectorAll('.stat-number');
-        
-        // Animate Total Users
-        animateValue(statCards[0], 0, 4289, 1500);
-        
-        // Animate Daily Active Users
-        animateValue(statCards[1], 0, 856, 1500);
-        
-        // Skip animating the time string (4m 12s) to avoid complexity, 
-        // or write a custom time animator if needed.
+    function getUsers() {
+        return JSON.parse(localStorage.getItem("users")) || [];
+    }
+
+    function toDate(value) {
+        const date = new Date(value);
+        return Number.isNaN(date.getTime()) ? null : date;
+    }
+
+    function formatSince(date) {
+        if (!date) return "now";
+        const diffMs = Date.now() - date.getTime();
+        const mins = Math.floor(diffMs / 60000);
+        if (mins < 1) return "just now";
+        if (mins < 60) return `${mins} min ago`;
+        const hours = Math.floor(mins / 60);
+        if (hours < 24) return `${hours} hr ago`;
+        const days = Math.floor(hours / 24);
+        return `${days} day${days === 1 ? "" : "s"} ago`;
+    }
+
+    function renderActivityPage() {
+        const complaints = getComplaints();
+        const users = getUsers();
+
+        const totalUsers = users.length;
+        const usersThisMonth = users.filter((u) => {
+            const created = toDate(u.createdAt || u.joinedAt || u.registeredAt);
+            if (!created) return false;
+            const now = new Date();
+            return created.getFullYear() === now.getFullYear() && created.getMonth() === now.getMonth();
+        }).length;
+
+        const activeReporters24h = new Set(
+            complaints
+                .filter((c) => {
+                    const created = toDate(c.createdAt);
+                    return created && (Date.now() - created.getTime()) <= 24 * 60 * 60 * 1000;
+                })
+                .map((c) => c.userEmail)
+                .filter(Boolean)
+        ).size;
+
+        const reporters = new Set(complaints.map((c) => c.userEmail).filter(Boolean)).size;
+        const avgComplaintsPerUser = reporters ? complaints.length / reporters : 0;
+
+        document.getElementById("totalUsersCount").textContent = totalUsers.toLocaleString();
+        document.getElementById("usersThisMonth").textContent = `${usersThisMonth} added this month`;
+        document.getElementById("dailyActiveUsersCount").textContent = activeReporters24h.toLocaleString();
+        document.getElementById("avgComplaintsPerUser").textContent = avgComplaintsPerUser.toFixed(2);
+
+        const events = complaints
+            .map((c) => ({
+                type: "complaint",
+                time: toDate(c.updatedAt || c.createdAt),
+                status: String(c.status || "NEW").toUpperCase(),
+                complaintId: c.id,
+                by: c.userEmail || "Unknown user",
+                category: c.category || "Uncategorized"
+            }))
+            .filter((e) => e.time)
+            .sort((a, b) => b.time - a.time)
+            .slice(0, 6);
+
+        const activityList = document.getElementById("recentActivityList");
+        if (!events.length) {
+            activityList.innerHTML = '<div style="color: var(--text-light);">No recent activity from complaints yet.</div>';
+        } else {
+            activityList.innerHTML = events.map((event) => {
+                const isResolved = event.status === "RESOLVED";
+                const icon = isResolved ? "?" : event.status === "NEW" ? "+" : "!";
+                const iconColor = isResolved ? "var(--success)" : event.status === "NEW" ? "var(--primary)" : "var(--warning)";
+                return `
+                    <div class="activity-item">
+                        <div class="act-icon" style="background:${iconColor}">${icon}</div>
+                        <div class="act-details">
+                            <h4>Complaint #${event.complaintId} is ${event.status}</h4>
+                            <p>${event.by} � ${event.category}</p>
+                        </div>
+                        <div class="act-time">${formatSince(event.time)}</div>
+                    </div>
+                `;
+            }).join("");
+        }
+
+        const totalComplaints = complaints.length;
+        const statusCounts = {
+            New: complaints.filter((c) => ["NEW", "UNDER REVIEW"].includes(String(c.status || "").toUpperCase())).length,
+            Active: complaints.filter((c) => ["ASSIGNED", "IN PROGRESS"].includes(String(c.status || "").toUpperCase())).length,
+            Resolved: complaints.filter((c) => String(c.status || "").toUpperCase() === "RESOLVED").length
+        };
+
+        const sections = [
+            { label: "New / Review", value: statusCounts.New, color: "var(--primary)" },
+            { label: "Active Work", value: statusCounts.Active, color: "var(--warning)" },
+            { label: "Resolved", value: statusCounts.Resolved, color: "var(--success)" }
+        ];
+
+        const container = document.getElementById("engagementBreakdown");
+        container.innerHTML = sections.map((section) => {
+            const pct = totalComplaints ? (section.value / totalComplaints) * 100 : 0;
+            return `
+                <div style="padding: 20px; background:var(--bg); border-radius:12px; margin-bottom:15px;">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+                        <strong>${section.label}</strong>
+                        <span>${pct.toFixed(1)}%</span>
+                    </div>
+                    <div style="width:100%; height:8px; background:var(--border); border-radius:4px;">
+                        <div style="width:${pct.toFixed(1)}%; height:100%; background:${section.color}; border-radius:4px;"></div>
+                    </div>
+                </div>
+            `;
+        }).join("");
+    }
+
+    window.addEventListener("load", renderActivityPage);
+    window.addEventListener("complaintsUpdated", renderActivityPage);
+    window.addEventListener("storage", (event) => {
+        if (event.key === "complaints" || event.key === "users") {
+            renderActivityPage();
+        }
     });
 </script>
 

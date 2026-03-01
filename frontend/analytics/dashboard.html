@@ -665,14 +665,7 @@
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <polyline points="6 9 12 15 18 9"/>
                 </svg>
-                <!--<div id="userMenuDropdown" class="user-menu-dropdown">
-                    <a href="#">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                            <circle cx="12" cy="7" r="4"/>
-                        </svg>
-                        My Profile
-                    </a>-->
+                <div id="userMenuDropdown" class="user-menu-dropdown">
                     <a href="../../login.html" onclick="logoutUser()">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
                             <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
@@ -701,7 +694,7 @@
                     <div class="stat-icon">📈</div>
                     <span class="stat-trend trend-up">↑ 23%</span>
                 </div>
-                <div class="stat-number" id="totalComplaints">1,247</div>
+                <div class="stat-number" id="totalComplaints">0</div>
                 <div class="stat-label">Total Complaints</div>
             </div>
             <div class="stat-card">
@@ -709,7 +702,7 @@
                     <div class="stat-icon">✅</div>
                     <span class="stat-trend trend-up">↑ 18%</span>
                 </div>
-                <div class="stat-number" id="resolutionRate">89%</div>
+                <div class="stat-number" id="resolutionRate">0%</div>
                 <div class="stat-label">Resolution Rate</div>
             </div>
             <div class="stat-card">
@@ -717,7 +710,7 @@
                     <div class="stat-icon">⏱️</div>
                     <span class="stat-trend trend-down">↓ 5%</span>
                 </div>
-                <div class="stat-number" id="avgResolution">4.2</div>
+                <div class="stat-number" id="avgResolution">0.0</div>
                 <div class="stat-label">Avg Resolution Days</div>
             </div>
             <div class="stat-card">
@@ -725,8 +718,8 @@
                     <div class="stat-icon">👥</div>
                     <span class="stat-trend trend-up">↑ 12%</span>
                 </div>
-                <div class="stat-number" id="activeUsers">2,847</div>
-                <div class="stat-label">Active Users</div>
+                <div class="stat-number" id="activeUsers">0</div>
+                <div class="stat-label">Reporting Users</div>
             </div>
         </div>
 
@@ -754,109 +747,248 @@
             <h3 class="section-title">Key Performance Indicators</h3>
             <div class="kpi-grid">
                 <div class="kpi-card">
-                    <div class="kpi-value" style="color: var(--success);">97.2%</div>
+                    <div class="kpi-value" id="kpiSla" style="color: var(--success);">0%</div>
                     <div class="kpi-label">SLA Compliance</div>
                 </div>
                 <div class="kpi-card">
-                    <div class="kpi-value" style="color: var(--warning);">156</div>
+                    <div class="kpi-value" id="kpiHighPriority" style="color: var(--warning);">0</div>
                     <div class="kpi-label">High Priority</div>
                 </div>
                 <div class="kpi-card">
-                    <div class="kpi-value" style="color: var(--primary);">342</div>
+                    <div class="kpi-value" id="kpiThisMonth" style="color: var(--primary);">0</div>
                     <div class="kpi-label">This Month</div>
                 </div>
                 <div class="kpi-card">
-                    <div class="kpi-value" style="color: var(--danger);">28</div>
+                    <div class="kpi-value" id="kpiOverdue" style="color: var(--danger);">0</div>
                     <div class="kpi-label">Overdue</div>
                 </div>
                 <div class="kpi-card">
-                    <div class="kpi-value" style="color: var(--success);">94%</div>
+                    <div class="kpi-value" id="kpiResolved30" style="color: var(--success);">0%</div>
                     <div class="kpi-label">User Satisfaction</div>
                 </div>
                 <div class="kpi-card">
-                    <div class="kpi-value">2.1min</div>
-                    <div class="kpi-label">Avg Response Time</div>
+                    <div class="kpi-value" id="kpiAvgAge">0.0d</div>
+                    <div class="kpi-label">Avg Open Age</div>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // Load current user
-        window.addEventListener("load", function(){
-            const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-            if(currentUser){
-                document.querySelector(".user-name").innerText = currentUser.fullname;
-                document.querySelector(".user-role").innerText = currentUser.role;
-                const initials = currentUser.fullname.split(" ").map(n => n[0]).join("").toUpperCase();
-                document.querySelector(".user-avatar").innerText = initials;
-            } else {
-                window.location.href = "../../login.html";
+        let complaintsTrendChart = null;
+        let resolutionChart = null;
+
+        function getComplaints() {
+            return JSON.parse(localStorage.getItem("complaints")) || [];
+        }
+
+        function toDate(value) {
+            const date = new Date(value);
+            return Number.isNaN(date.getTime()) ? null : date;
+        }
+
+        function getStatusDate(complaint, statusKey) {
+            const target = String(statusKey || "").toUpperCase();
+            const timeline = complaint.timeline || complaint.statusHistory || [];
+            const matched = timeline.find((entry) =>
+                String(entry.status || "").toUpperCase().includes(target)
+            );
+            return matched?.date || matched?.timestamp || null;
+        }
+
+        function getResolvedDate(complaint) {
+            return complaint.resolvedAt || getStatusDate(complaint, "RESOLVED") || complaint.updatedAt || null;
+        }
+
+        function formatMonthKey(date) {
+            return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
+        }
+
+        function getLast6MonthsSeries(complaints) {
+            const months = [];
+            const now = new Date();
+            for (let i = 5; i >= 0; i -= 1) {
+                months.push(new Date(now.getFullYear(), now.getMonth() - i, 1));
             }
-        });
 
-        // Initialize Charts
-        window.addEventListener('load', function() {
-            // Complaints Trend Chart
-            const ctx1 = document.getElementById('complaintsTrendChart').getContext('2d');
-            new Chart(ctx1, {
-                type: 'line',
-                data: {
-                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-                    datasets: [{
-                        label: 'New Complaints',
-                        data: [120, 190, 300, 500, 450, 580],
-                        borderColor: 'rgb(99, 102, 241)',
-                        backgroundColor: 'rgba(99, 102, 241, 0.1)',
-                        tension: 0.4,
-                        fill: true
-                    }, {
-                        label: 'Resolved',
-                        data: [100, 150, 250, 420, 380, 520],
-                        borderColor: 'rgb(16, 185, 129)',
-                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
-                        tension: 0.4,
-                        fill: true
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'top',
-                        }
+            const labels = months.map((d) =>
+                d.toLocaleString("en-US", { month: "short" })
+            );
+            const keys = months.map((d) => formatMonthKey(d));
+            const newCounts = Object.fromEntries(keys.map((k) => [k, 0]));
+            const resolvedCounts = Object.fromEntries(keys.map((k) => [k, 0]));
+
+            complaints.forEach((complaint) => {
+                const created = toDate(complaint.createdAt);
+                if (created) {
+                    const key = formatMonthKey(created);
+                    if (newCounts[key] !== undefined) newCounts[key] += 1;
+                }
+
+                if (String(complaint.status || "").toUpperCase() === "RESOLVED") {
+                    const resolved = toDate(getResolvedDate(complaint));
+                    if (resolved) {
+                        const key = formatMonthKey(resolved);
+                        if (resolvedCounts[key] !== undefined) resolvedCounts[key] += 1;
                     }
                 }
             });
 
-            // Resolution Rate Chart
-            const ctx2 = document.getElementById('resolutionChart').getContext('2d');
-            new Chart(ctx2, {
-                type: 'doughnut',
+            return {
+                labels,
+                newData: keys.map((k) => newCounts[k]),
+                resolvedData: keys.map((k) => resolvedCounts[k])
+            };
+        }
+
+        function getAverageResolutionDays(resolvedComplaints) {
+            const durations = resolvedComplaints
+                .map((complaint) => {
+                    const created = toDate(complaint.createdAt);
+                    const resolved = toDate(getResolvedDate(complaint));
+                    if (!created || !resolved) return null;
+                    const days = (resolved - created) / (1000 * 60 * 60 * 24);
+                    return days >= 0 ? days : null;
+                })
+                .filter((days) => Number.isFinite(days));
+
+            if (!durations.length) return 0;
+            return durations.reduce((sum, days) => sum + days, 0) / durations.length;
+        }
+
+        function updateTopbarUser() {
+            const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+            if (!currentUser) {
+                window.location.href = "../../login.html";
+                return;
+            }
+
+            const displayName = currentUser.fullname || currentUser.name || currentUser.email || "Admin User";
+            document.querySelector(".user-name").innerText = displayName;
+            document.querySelector(".user-role").innerText = currentUser.role || "Administrator";
+            const initials = displayName
+                .split(" ")
+                .map((part) => part[0])
+                .join("")
+                .slice(0, 2)
+                .toUpperCase();
+            document.querySelector(".user-avatar").innerText = initials;
+        }
+
+        function renderDashboardAnalytics() {
+            const complaints = getComplaints();
+            const total = complaints.length;
+            const resolved = complaints.filter((c) => String(c.status || "").toUpperCase() === "RESOLVED");
+            const inProgress = complaints.filter((c) =>
+                ["ASSIGNED", "IN PROGRESS", "UNDER REVIEW"].includes(String(c.status || "").toUpperCase())
+            );
+            const pending = Math.max(total - resolved.length - inProgress.length, 0);
+
+            const resolutionRate = total ? (resolved.length / total) * 100 : 0;
+            const avgResolution = getAverageResolutionDays(resolved);
+            const reportingUsers = new Set(complaints.map((c) => c.userEmail).filter(Boolean)).size;
+
+            const now = new Date();
+            const thisMonth = complaints.filter((c) => {
+                const created = toDate(c.createdAt);
+                return created && created.getFullYear() === now.getFullYear() && created.getMonth() === now.getMonth();
+            }).length;
+            const highPriority = complaints.filter((c) =>
+                ["HIGH", "URGENT", "CRITICAL"].includes(String(c.priority || "").toUpperCase())
+            ).length;
+            const overdue = complaints.filter((c) => {
+                if (!c.targetResolutionDate) return false;
+                const target = toDate(c.targetResolutionDate);
+                return target && target.getTime() < Date.now() && String(c.status || "").toUpperCase() !== "RESOLVED";
+            }).length;
+            const resolved30Days = complaints.filter((c) => {
+                if (String(c.status || "").toUpperCase() !== "RESOLVED") return false;
+                const resolvedDate = toDate(getResolvedDate(c));
+                return resolvedDate && (Date.now() - resolvedDate.getTime()) <= 30 * 24 * 60 * 60 * 1000;
+            }).length;
+            const resolved30Rate = total ? (resolved30Days / total) * 100 : 0;
+            const openComplaints = complaints.filter((c) => String(c.status || "").toUpperCase() !== "RESOLVED");
+            const avgOpenAge = openComplaints.length
+                ? openComplaints
+                    .map((c) => {
+                        const created = toDate(c.createdAt);
+                        return created ? (Date.now() - created.getTime()) / (1000 * 60 * 60 * 24) : 0;
+                    })
+                    .reduce((a, b) => a + b, 0) / openComplaints.length
+                : 0;
+
+            document.getElementById("totalComplaints").textContent = total.toLocaleString();
+            document.getElementById("resolutionRate").textContent = `${resolutionRate.toFixed(1)}%`;
+            document.getElementById("avgResolution").textContent = avgResolution.toFixed(1);
+            document.getElementById("activeUsers").textContent = reportingUsers.toLocaleString();
+
+            document.getElementById("kpiSla").textContent = `${resolutionRate.toFixed(1)}%`;
+            document.getElementById("kpiHighPriority").textContent = highPriority.toLocaleString();
+            document.getElementById("kpiThisMonth").textContent = thisMonth.toLocaleString();
+            document.getElementById("kpiOverdue").textContent = overdue.toLocaleString();
+            document.getElementById("kpiResolved30").textContent = `${resolved30Rate.toFixed(1)}%`;
+            document.getElementById("kpiAvgAge").textContent = `${avgOpenAge.toFixed(1)}d`;
+
+            const monthlySeries = getLast6MonthsSeries(complaints);
+
+            if (complaintsTrendChart) complaintsTrendChart.destroy();
+            complaintsTrendChart = new Chart(document.getElementById("complaintsTrendChart").getContext("2d"), {
+                type: "line",
                 data: {
-                    labels: ['Resolved', 'In Progress', 'Pending'],
-                    datasets: [{
-                        data: [89, 8, 3],
-                        backgroundColor: [
-                            'rgba(16, 185, 129, 0.8)',
-                            'rgba(245, 158, 11, 0.8)',
-                            'rgba(239, 68, 68, 0.8)'
-                        ],
-                        borderWidth: 0
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'bottom',
+                    labels: monthlySeries.labels,
+                    datasets: [
+                        {
+                            label: "New Complaints",
+                            data: monthlySeries.newData,
+                            borderColor: "rgb(99, 102, 241)",
+                            backgroundColor: "rgba(99, 102, 241, 0.1)",
+                            tension: 0.4,
+                            fill: true
+                        },
+                        {
+                            label: "Resolved",
+                            data: monthlySeries.resolvedData,
+                            borderColor: "rgb(16, 185, 129)",
+                            backgroundColor: "rgba(16, 185, 129, 0.1)",
+                            tension: 0.4,
+                            fill: true
                         }
-                    }
-                }
+                    ]
+                },
+                options: { responsive: true, maintainAspectRatio: false }
             });
+
+            if (resolutionChart) resolutionChart.destroy();
+            resolutionChart = new Chart(document.getElementById("resolutionChart").getContext("2d"), {
+                type: "doughnut",
+                data: {
+                    labels: ["Resolved", "In Progress", "Pending"],
+                    datasets: [
+                        {
+                            data: [resolved.length, inProgress.length, pending],
+                            backgroundColor: [
+                                "rgba(16, 185, 129, 0.8)",
+                                "rgba(245, 158, 11, 0.8)",
+                                "rgba(239, 68, 68, 0.8)"
+                            ],
+                            borderWidth: 0
+                        }
+                    ]
+                },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+        }
+
+        window.addEventListener("load", () => {
+            updateTopbarUser();
+            renderDashboardAnalytics();
         });
+
+        window.addEventListener("storage", (event) => {
+            if (event.key === "complaints") renderDashboardAnalytics();
+        });
+
+        window.addEventListener("complaintsUpdated", renderDashboardAnalytics);
 
         // Menu Functions (IDENTICAL TO USER DASHBOARD)
         function toggleMenu() {
