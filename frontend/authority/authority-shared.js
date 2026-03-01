@@ -85,7 +85,16 @@ document.addEventListener('keydown', e => {
 
 /* ─── AUTHORITY USER ─── */
 function getAuthUser() {
-    return JSON.parse(localStorage.getItem('authUser')) || {
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    if (currentUser && currentUser.role === 'authority') {
+        return {
+            name: currentUser.fullname || 'Authority Officer',
+            role: 'Authority Officer',
+            dept: 'Investigation Department',
+            initials: (currentUser.fullname || 'AU').split(' ').map(n => n[0]).join('').toUpperCase()
+        };
+    }
+    return {
         name: 'Rajan Arora',
         role: 'Senior Investigator',
         dept: 'Dept. of Labour',
@@ -103,6 +112,7 @@ window.addEventListener('DOMContentLoaded', loadAuthUser);
 
 /* ─── LOGOUT ─── */
 function logoutAuth() {
+    localStorage.removeItem('currentUser');
     localStorage.removeItem('authUser');
     window.location.href = '../login.html';
 }
@@ -128,3 +138,10 @@ function statusBadge(s) {
     };
     return `<span class="badge ${map[s] || 'badge-new'}">${s}</span>`;
 }
+
+// keep authority pages in sync when complaints change elsewhere
+window.addEventListener("storage", function(evt) {
+    if (evt.key === "complaints") {
+        document.dispatchEvent(new Event("complaintsUpdated"));
+    }
+});

@@ -63,13 +63,13 @@
             <li class="menu-item">
               <a href="new-assignments.html" class="menu-link" onclick="closeMenu()">
                 <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                New Assignments<span class="menu-badge">5</span>
+                New Assignments<span id="badgeNewAssignments" class="menu-badge">0</span>
               </a>
             </li>
             <li class="menu-item">
               <a href="active-cases.html" class="menu-link" onclick="closeMenu()">
                 <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                Active Investigations<span class="menu-badge">3</span>
+                Active Investigations<span id="badgeActiveCases" class="menu-badge">0</span>
               </a>
             </li>
             <li class="menu-item">
@@ -183,13 +183,13 @@
 
 <!-- STATS -->
 <div class="stats-grid">
-  <div class="stat-card" style="animation-delay:0.05s">
+  <div id="cardTotalComplaints" class="stat-card" style="animation-delay:0.05s">
     <div class="stat-header">
       <div class="stat-icon" style="background:linear-gradient(135deg,rgba(99,102,241,0.12),rgba(139,92,246,0.12))">📋</div>
-      <span class="stat-trend trend-up">↑ 3 this week</span>
+      <span class="stat-trend trend-up" id="trendTotalComplaints">↑ 3 this week</span>
     </div>
-    <div class="stat-number">24</div>
-    <div class="stat-label">Total Assigned Cases</div>
+    <div id="totalComplaintsNumber" class="stat-number">0</div>
+    <div class="stat-label" id="totalComplaintsLabel">All Complaints</div>
   </div>
   <div class="stat-card" style="animation-delay:0.1s">
     <div class="stat-header">
@@ -323,7 +323,33 @@
 
 <script src="authority-shared.js"></script>
 <script>
+    window.addEventListener('DOMContentLoaded', () => {
+        updateDashboardCounts();
+    });
 
+    // real-time sync
+    window.addEventListener('storage', function(e) {
+        if (e.key === 'complaints') updateDashboardCounts();
+    });
+    window.addEventListener('focus', updateDashboardCounts);
+    setInterval(updateDashboardCounts, 3000);
+
+    function updateDashboardCounts() {
+        const complaints = JSON.parse(localStorage.getItem("complaints")) || [];
+        const currentUser = JSON.parse(localStorage.getItem("currentUser")) || {};
+        if (currentUser.role !== "authority") return;
+
+        const totalCases = complaints.length;
+        const newCount = complaints.filter(c => c.assignedTo === currentUser.email && c.status === "ASSIGNED").length;
+        const activeCount = complaints.filter(c => c.assignedTo === currentUser.email && (c.status === "ASSIGNED" || c.status === "IN PROGRESS")).length;
+        
+        const nEl = document.getElementById("badgeNewAssignments");
+        const aEl = document.getElementById("badgeActiveCases");
+        const totalEl = document.getElementById("totalComplaintsNumber");
+        if (nEl) nEl.innerText = newCount;
+        if (aEl) aEl.innerText = activeCount;
+        if (totalEl) totalEl.innerText = totalCases;
+    }
 </script>
 </body>
 </html>

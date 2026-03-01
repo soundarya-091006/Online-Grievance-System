@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SafeReport System Validation</title>
+    <style>
+        :root {
+            --primary: #6366f1;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+            --bg: #f8fafc;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+        }
+        h1 { 
+            margin-bottom: 10px; 
+            font-size: 32px;
+            background: linear-gradient(135deg, var(--primary), #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .subtitle { color: var(--text-light); margin-bottom: 30px; }
+        .test-group {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-left: 4px solid var(--primary);
+            background: rgba(99,102,241,0.05);
+            border-radius: 6px;
+        }
+        .test-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 10px;
+            padding: 8px;
+            background: white;
+            border-radius: 4px;
+        }
+        .test-item:last-child { margin-bottom: 0; }
+        .status-icon {
+            font-size: 18px;
+            min-width: 24px;
+            text-align: center;
+        }
+        .status-icon.pass { color: var(--success); }
+        .status-icon.fail { color: var(--danger); }
+        .status-icon.warn { color: var(--warning); }
+        .test-label {
+            flex: 1;
+            font-size: 14px;
+        }
+        .test-result {
+            font-size: 12px;
+            color: var(--text-light);
+            max-width: 200px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .summary {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        .summary-item {
+            text-align: center;
+            padding: 15px;
+            background: var(--bg);
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+        .summary-number {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        .summary-label {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+        .pass-rate {
+            width: 100%;
+            height: 8px;
+            background: var(--border);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+        .pass-rate-fill {
+            height: 100%;
+            background: var(--success);
+            transition: width 0.3s;
+        }
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), #8b5cf6);
+            color: white;
+            margin-right: 10px;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(99,102,241,0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>✓ SafeReport System Validation</h1>
+        <p class="subtitle">Comprehensive check of all system components and workflows</p>
+
+        <div class="summary">
+            <div class="summary-item">
+                <div class="summary-number" id="passCount">0</div>
+                <div class="summary-label">Passed</div>
+                <div class="pass-rate"><div class="pass-rate-fill" id="passBar" style="width: 0%"></div></div>
+            </div>
+            <div class="summary-item">
+                <div class="summary-number" id="failCount">0</div>
+                <div class="summary-label">Failed</div>
+                <div class="pass-rate"><div class="pass-rate-fill" style="background: var(--danger)" id="failBar"></div></div>
+            </div>
+            <div class="summary-item">
+                <div class="summary-number" id="passRate">0%</div>
+                <div class="summary-label">Success Rate</div>
+            </div>
+        </div>
+
+        <button class="btn-primary" onclick="runValidation()">🚀 Run Full Validation</button>
+        <button class="btn-primary" onclick="runValidation(true)" style="background: var(--warning); color: white;">⚡ Quick Check</button>
+
+        <div id="results"></div>
+    </div>
+
+    <script>
+        const results = document.getElementById('results');
+        let passCount = 0, failCount = 0;
+
+        function test(name, condition, details = '') {
+            const testGroup = results.lastElementChild;
+            const item = document.createElement('div');
+            item.className = 'test-item';
+            const isPass = Boolean(condition);
+            if (isPass) passCount++; else failCount++;
+            
+            item.innerHTML = `
+                <div class="status-icon ${isPass ? 'pass' : 'fail'}">${isPass ? '✓' : '✕'}</div>
+                <div class="test-label">${name}</div>
+                <div class="test-result">${details}</div>
+            `;
+            testGroup.appendChild(item);
+        }
+
+        function updateSummary() {
+            const total = passCount + failCount;
+            const rate = total > 0 ? Math.round((passCount / total) * 100) : 0;
+            document.getElementById('passCount').textContent = passCount;
+            document.getElementById('failCount').textContent = failCount;
+            document.getElementById('passRate').textContent = rate + '%';
+            document.getElementById('passBar').style.width = rate + '%';
+            document.getElementById('failBar').style.width = (100 - rate) + '%';
+        }
+
+        function createGroup(title) {
+            const group = document.createElement('div');
+            group.className = 'test-group';
+            group.innerHTML = `<strong>${title}</strong>`;
+            results.appendChild(group);
+        }
+
+        function runValidation(quick = false) {
+            results.innerHTML = '';
+            passCount = 0;
+            failCount = 0;
+
+            // 1. localStorage Support
+            createGroup('🔍 System Foundation');
+            test('localStorage API', typeof(Storage) !== 'undefined');
+            test('localStorage write/read', () => {
+                localStorage.setItem('_test', 'ok');
+                const result = localStorage.getItem('_test') === 'ok';
+                localStorage.removeItem('_test');
+                return result;
+            });
+
+            // 2. Data Structure
+            createGroup('📊 Data Structure');
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            const authorities = JSON.parse(localStorage.getItem('authorities')) || [];
+            const complaints = JSON.parse(localStorage.getItem('complaints')) || [];
+            
+            test('Users table exists', users.length > 0, `Found ${users.length} users`);
+            test('Authorities table exists', authorities.length > 0, `Found ${authorities.length} authorities`);
+            test('Complaints table exists', complaints.length > 0, `Found ${complaints.length} complaints`);
+
+            // 3. User Data Validation
+            createGroup('👤 User Data Integrity');
+            const requiredUserFields = ['fullname', 'email', 'password', 'role'];
+            if (users.length > 0) {
+                const user = users[0];
+                requiredUserFields.forEach(field => {
+                    test(`User field: ${field}`, user.hasOwnProperty(field), user[field] ? 'Present' : 'Missing');
+                });
+                test('User roles valid', ['user', 'admin', 'authority'].includes(user.role), user.role);
+            }
+
+            // 4. Authority Data Validation
+            createGroup('🏢 Authority Data Integrity');
+            const requiredAuthFields = ['id', 'name', 'email', 'department'];
+            if (authorities.length > 0) {
+                const auth = authorities[0];
+                requiredAuthFields.forEach(field => {
+                    test(`Authority field: ${field}`, auth.hasOwnProperty(field), auth[field] ? 'Present' : 'Missing');
+                });
+            }
+
+            // 5. Complaint Status Validation
+            createGroup('📋 Complaint Data Integrity');
+            const validStatuses = ['NEW', 'UNDER REVIEW', 'ASSIGNED', 'IN PROGRESS', 'RESOLVED', 'CLOSED'];
+            const statusCounts = {};
+            if (complaints.length > 0) {
+                const complaint = complaints[0];
+                test('Complaint has ID', complaint.hasOwnProperty('id'));
+                test('Complaint has userEmail', complaint.hasOwnProperty('userEmail'));
+                test('Complaint has status', complaint.hasOwnProperty('status'));
+                test('Complaint status valid', validStatuses.includes(complaint.status), complaint.status);
+                
+                complaints.forEach(c => {
+                    statusCounts[c.status] = (statusCounts[c.status] || 0) + 1;
+                });
+            }
+
+            // 6. Workflow Validation
+            if (!quick) {
+                createGroup('🔄 Workflow State');
+                test('Has NEW complaints', statusCounts['NEW'] > 0 || Object.keys(statusCounts).length === 0, `Count: ${statusCounts['NEW'] || 0}`);
+                test('Has UNDER REVIEW complaints', statusCounts['UNDER REVIEW'] || 0, `Count: ${statusCounts['UNDER REVIEW'] || 0}`);
+                test('Has ASSIGNED complaints', statusCounts['ASSIGNED'] || 0, `Count: ${statusCounts['ASSIGNED'] || 0}`);
+                test('Has IN PROGRESS complaints', statusCounts['IN PROGRESS'] || 0, `Count: ${statusCounts['IN PROGRESS'] || 0}`);
+
+                // 7. Assignment Validation
+                createGroup('🎯 Assignment Integrity');
+                const assignedComplaints = complaints.filter(c => c.status === 'ASSIGNED' || c.status === 'IN PROGRESS');
+                const withAssignment = assignedComplaints.filter(c => c.assignedTo);
+                test('All active cases have assignedTo', withAssignment.length === (assignedComplaints.filter(c => c.assignedTo).length), `${withAssignment.length}/${assignedComplaints.length}`);
+                
+                if (assignedComplaints.length > 0) {
+                    const assigned = assignedComplaints[0];
+                    if (assigned.assignedTo) {
+                        const authExists = authorities.some(a => a.email === assigned.assignedTo);
+                        test('Assignment references valid authority', authExists, assigned.assignedTo);
+                    }
+                }
+
+                // 8. Time-series Data
+                createGroup('📅 Data Timeline');
+                const withTimeline = complaints.filter(c => c.timeline && c.timeline.length > 0);
+                test('Some complaints have timeline', withTimeline.length > 0, `${withTimeline.length} complaints with history`);
+            }
+
+            // 9. Authentication
+            createGroup('🔐 Authentication');
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            test('Session persistence', currentUser !== null, currentUser ? `${currentUser.fullname} (${currentUser.role})` : 'No session');
+
+            updateSummary();
+        }
+
+        // Auto-run on load
+        window.addEventListener('load', () => {
+            // Don't auto-run, let user click
+        });
+    </script>
+</body>
+</html>

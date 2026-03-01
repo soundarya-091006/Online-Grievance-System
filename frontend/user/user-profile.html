@@ -520,11 +520,7 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
         </a></li>
         <li class="menu-item"><a href="complaint-status.html" class="menu-link" onclick="closeMenu()">
           <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          Track Status<span class="menu-badge">2</span>
-        </a></li>
-        <li class="menu-item"><a href="complaint-history.html" class="menu-link" onclick="closeMenu()">
-          <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 8h14M5 8a2 2 0 1 0 0-4h14a2 2 0 1 0 0 4M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          History
+          Track Status<span class="menu-badge" id="statusBadge">0</span>
         </a></li>
       </ul>
 
@@ -1236,6 +1232,23 @@ function showToast(msg, type = 'success') {
   clearTimeout(t._t);
   t._t = setTimeout(() => t.classList.remove('show'), 3200);
 }
+
+/* ── STATUS BADGE ── */
+function updateStatusBadge(){
+  const complaints = JSON.parse(localStorage.getItem("complaints")) || [];
+  const currentUser = JSON.parse(localStorage.getItem("currentUser")) || {};
+  const activeCount = complaints.filter(c =>
+      c.userEmail === currentUser.email &&
+      !['RESOLVED','CLOSED'].includes(c.status)
+  ).length;
+  const badgeEl = document.getElementById('statusBadge');
+  if(badgeEl){
+      badgeEl.innerText = activeCount;
+      if(activeCount>0) badgeEl.classList.add('show'); else badgeEl.classList.remove('show');
+  }
+}
+
+document.addEventListener('DOMContentLoaded', updateStatusBadge);
 
 /* ── LOGOUT ── */
 function logoutUser() { localStorage.removeItem('authUser'); window.location.href = '../login.html'; }

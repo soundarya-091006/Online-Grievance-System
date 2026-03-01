@@ -63,13 +63,13 @@
             <li class="menu-item">
               <a href="new-assignments.html" class="menu-link" onclick="closeMenu()">
                 <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                New Assignments<span class="menu-badge">5</span>
+                New Assignments<span id="badgeNewAssignments" class="menu-badge">0</span>
               </a>
             </li>
             <li class="menu-item">
               <a href="active-cases.html" class="menu-link" onclick="closeMenu()">
                 <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                Active Investigations<span class="menu-badge">3</span>
+                Active Investigations<span id="badgeActiveCases" class="menu-badge">0</span>
               </a>
             </li>
             <li class="menu-item">
@@ -335,24 +335,60 @@
 <script src="authority-shared.js"></script>
 <script>
 
+let authorityCases = [];
+
+function loadAuthorityCases() {
+    const currentUser = JSON.parse(localStorage.getItem("currentUser")) || {};
+    if (currentUser.role !== "authority") {
+        window.location.href = "../login.html";
+        return;
+    }
+    const complaints = JSON.parse(localStorage.getItem("complaints")) || [];
+    authorityCases = complaints.filter(c => c.assignedTo === currentUser.email);
+    populateTable(authorityCases);
+}
+
+function populateTable(data) {
+    const tbody = document.getElementById("casesBody");
+    tbody.innerHTML = data.map(c => {
+        const priority = c.priority ? `<span class="badge badge-urgent">${c.priority}</span>` : '';
+        const statusBadge = `<span class="badge badge-${c.status.toLowerCase().replace(' ','')}">${c.status}</span>`;
+        const date = c.createdAt ? new Date(c.createdAt).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '';
+        const row = `
+        <tr>
+          <td><b style="color:var(--primary)">#${c.id}</b></td>
+          <td>${c.subject || ''}</td>
+          <td>${c.category || ''}</td>
+          <td>${date}</td>
+          <td>${priority}</td>
+          <td>${statusBadge}</td>
+          <td>${c.userEmail || 'Anonymous'}</td>
+          <td style="display:flex;gap:6px;flex-wrap:wrap">
+            <a href="investigate.html" class="btn btn-primary btn-sm">Investigate</a>
+            <a href="add-update.html" class="btn btn-outline btn-sm">Update</a>
+          </td>
+        </tr>`;
+        return row;
+    }).join('');
+    document.getElementById('rowCount').innerText = data.length;
+}
+
 function filterTable() {
     const search = document.getElementById("searchInput").value.toLowerCase();
     const status = document.getElementById("statusFilter").value.toLowerCase();
     const priority = document.getElementById("priorityFilter").value.toLowerCase();
     const category = document.getElementById("categoryFilter").value.toLowerCase();
-    const rows = document.querySelectorAll("#casesBody tr");
-    let count = 0;
-    rows.forEach(row => {
-        const text = row.textContent.toLowerCase();
-        const show = (!search || text.includes(search)) &&
-                     (!status || text.includes(status)) &&
-                     (!priority || text.includes(priority)) &&
-                     (!category || text.includes(category));
-        row.style.display = show ? "" : "none";
-        if (show) count++;
+    let filtered = authorityCases.filter(c => {
+        if (search && !(c.id && c.id.toString().includes(search)) &&
+            !(c.subject && c.subject.toLowerCase().includes(search))) return false;
+        if (status && c.status.toLowerCase() !== status) return false;
+        if (priority && c.priority && c.priority.toLowerCase() !== priority) return false;
+        if (category && c.category && c.category.toLowerCase() !== category) return false;
+        return true;
     });
-    document.getElementById("rowCount").textContent = count;
+    populateTable(filtered);
 }
+
 function resetFilters() {
     ["searchInput","statusFilter","priorityFilter","categoryFilter"].forEach(id => {
         const el = document.getElementById(id);
@@ -367,6 +403,19 @@ function filterByStatus(s) {
 }
 function sortTable(v) { showToast("Sorted: "+v, "info"); }
 function exportCases() { showToast("Exporting cases as CSV...", "success"); }
+
+// initialize
+window.addEventListener('DOMContentLoaded', loadAuthorityCases);
+
+// watch for complaint updates from other tabs/pages
+window.addEventListener('storage', function(e){
+    if(e.key === 'complaints') {
+        loadAuthorityCases();
+    }
+});
+// also refresh on visibility or focus
+window.addEventListener('focus', loadAuthorityCases);
+setInterval(loadAuthorityCases, 3000);
 
 </script>
 </body>

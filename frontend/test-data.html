@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SafeReport | Test Data Initialization</title>
+    <style>
+        :root {
+            --primary: #6366f1;
+            --secondary: #8b5cf6;
+            --success: #10b981;
+            --danger: #ef4444;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+            --bg: #f8fafc;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            padding: 40px 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        h1 { margin-bottom: 20px; font-size: 28px; }
+        p { margin-bottom: 20px; color: var(--text-light); }
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #4f46e5;
+        }
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+        .log {
+            margin-top: 30px;
+            padding: 20px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-family: 'Monaco', monospace;
+            font-size: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+            color: var(--text-light);
+        }
+        .log-item {
+            margin-bottom: 8px;
+            padding: 8px;
+            background: white;
+            border-radius: 4px;
+            border-left: 3px solid var(--primary);
+        }
+        .log-item.success {
+            border-left-color: var(--success);
+            color: var(--success);
+        }
+        .log-item.error {
+            border-left-color: var(--danger);
+            color: var(--danger);
+        }
+        .info-box {
+            background: rgba(99,102,241,0.1);
+            border-left: 4px solid var(--primary);
+            padding: 16px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 SafeReport Test Data Setup</h1>
+        <p>Initialize sample data for testing the complete grievance workflow.</p>
+        
+        <div class="info-box">
+            <strong>ℹ️ Test Credentials:</strong><br>
+            Admin: <code>admin@test.com</code> / <code>Admin@123</code><br>
+            Authority: <code>rajan@authority.com</code> / <code>Auth@123</code> (and mukesh@authority.com<br>
+            <code>Auth@123</code>)<br>
+            <em>Note:</em> registration page only creates <strong>user</strong> accounts. Admin and authorities
+            are pre‑provisioned (hardcoded here for demo). When backend is added, those should be seeded in
+            the database.
+        </div>
+
+        <button class="btn btn-primary" onclick="initializeSampleData()">✅ Initialize All Sample Data</button>
+        <button class="btn btn-danger" onclick="clearAllData()">🗑️ Clear All Data</button>
+        <button class="btn btn-primary" onclick="showDataSummary()">📊 Show Data Summary</button>
+
+        <div id="logArea" class="log"></div>
+    </div>
+
+    <script>
+        const logArea = document.getElementById('logArea');
+
+        function log(message, type = 'info') {
+            const div = document.createElement('div');
+            div.className = `log-item ${type}`;
+            div.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            logArea.appendChild(div);
+            logArea.scrollTop = logArea.scrollHeight;
+        }
+
+        function initializeSampleData() {
+            logArea.innerHTML = '';
+            log('Starting data initialization...', 'info');
+
+            try {
+                // Sample users
+                const users = [
+                    {
+                        fullname: "Amit Kumar",
+                        email: "amit@test.com",
+                        phone: "9876543210",
+                        password: "User@123",
+                        role: "user"
+                    },
+                    {
+                        fullname: "Priya Singh",
+                        email: "priya@test.com",
+                        phone: "9876543211",
+                        password: "User@123",
+                        role: "user"
+                    },
+                    {
+                        fullname: "Rajan Arora",
+                        email: "rajan@authority.com",
+                        phone: "9876543212",
+                        password: "Auth@123",
+                        role: "authority"
+                    },
+                    {
+                        fullname: "Mukesh Rao",
+                        email: "mukesh@authority.com",
+                        phone: "9876543213",
+                        password: "Auth@123",
+                        role: "authority"
+                    }
+                ];
+                localStorage.setItem('users', JSON.stringify(users));
+                log(`✓ Created ${users.length} test users`, 'success');
+
+                // Sample authorities
+                const authorities = [
+                    {
+                        id: '1',
+                        name: 'Rajan Arora',
+                        email: 'rajan@authority.com',
+                        department: 'Labour Department',
+                        phone: '9876543212',
+                        address: 'Labour Office, Chennai',
+                        createdAt: new Date().toISOString()
+                    },
+                    {
+                        id: '2',
+                        name: 'Mukesh Rao',
+                        email: 'mukesh@authority.com',
+                        department: 'Legal Department',
+                        phone: '9876543213',
+                        address: 'Legal Office, Chennai',
+                        createdAt: new Date().toISOString()
+                    }
+                ];
+                localStorage.setItem('authorities', JSON.stringify(authorities));
+                log(`✓ Created ${authorities.length} test authorities`, 'success');
+
+                // Sample complaints
+                const complaints = [
+                    {
+                        id: 'C001',
+                        userEmail: 'amit@test.com',
+                        category: 'Workplace Harassment',
+                        subject: 'Repeated incidents of verbal abuse',
+                        description: 'Senior colleague has been verbally abusive over the past month.',
+                        location: 'Office Building A, Chennai',
+                        priority: 'High',
+                        status: 'NEW',
+                        createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString()
+                    },
+                    {
+                        id: 'C002',
+                        userEmail: 'amit@test.com',
+                        category: 'Discrimination',
+                        subject: 'Pay disparity discrimination',
+                        description: 'Being paid less than peers for same work.',
+                        location: 'Office Building B, Chennai',
+                        priority: 'Medium',
+                        status: 'UNDER REVIEW',
+                        createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString()
+                    },
+                    {
+                        id: 'C003',
+                        userEmail: 'priya@test.com',
+                        category: 'Sexual Harassment',
+                        subject: 'Inappropriate behavior at workplace',
+                        description: 'Manager making inappropriate comments and gestures.',
+                        location: 'Tech Park, Bangalore',
+                        priority: 'Critical',
+                        status: 'UNDER REVIEW',
+                        createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString()
+                    },
+                    {
+                        id: 'C004',
+                        userEmail: 'priya@test.com',
+                        category: 'Working Conditions',
+                        subject: 'Unsafe working environment',
+                        description: 'Poor ventilation and no safety equipment provided.',
+                        location: 'Factory Unit C, Pune',
+                        priority: 'High',
+                        status: 'ASSIGNED',
+                        assignedTo: 'rajan@authority.com',
+                        createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+                        timeline: [
+                            { status: 'Assigned', date: new Date().toISOString(), description: 'Assigned to Rajan Arora' }
+                        ]
+                    }
+                ];
+                localStorage.setItem('complaints', JSON.stringify(complaints));
+                log(`✓ Created ${complaints.length} test complaints`, 'success');
+
+                log('✅ Data initialization complete!', 'success');
+                log('You can now test the complete workflow:', 'info');
+                log('1. Login as user: amit@test.com / User@123', 'info');
+                log('2. Admin login: admin@test.com / Admin@123', 'info');
+                log('3. Authority login: rajan@authority.com / Auth@123', 'info');
+
+            } catch (error) {
+                log(`❌ Error: ${error.message}`, 'error');
+            }
+        }
+
+        function clearAllData() {
+            if (!confirm('Clear all stored data? This cannot be undone.')) return;
+            logArea.innerHTML = '';
+            localStorage.removeItem('users');
+            localStorage.removeItem('authorities');
+            localStorage.removeItem('complaints');
+            localStorage.removeItem('currentUser');
+            log('✓ All data cleared', 'success');
+        }
+
+        function showDataSummary() {
+            logArea.innerHTML = '';
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            const authorities = JSON.parse(localStorage.getItem('authorities')) || [];
+            const complaints = JSON.parse(localStorage.getItem('complaints')) || [];
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+
+            log(`📊 DATA SUMMARY`, 'info');
+            log(`Users: ${users.length}`, 'info');
+            users.forEach(u => log(`  - ${u.fullname} (${u.email}) [${u.role}]`, 'info'));
+            
+            log(`Authorities: ${authorities.length}`, 'info');
+            authorities.forEach(a => log(`  - ${a.name} (${a.email})`, 'info'));
+            
+            log(`Complaints: ${complaints.length}`, 'info');
+            const statusCounts = {};
+            complaints.forEach(c => {
+                statusCounts[c.status] = (statusCounts[c.status] || 0) + 1;
+                log(`  - #${c.id}: ${c.subject} [${c.status}]${c.assignedTo ? ' → ' + c.assignedTo : ''}`, 'info');
+            });
+            
+            log(`Status breakdown:`, 'info');
+            Object.entries(statusCounts).forEach(([status, count]) => {
+                log(`  ${status}: ${count}`, 'info');
+            });
+
+            if (currentUser) {
+                log(`Current logged-in user: ${currentUser.fullname} (${currentUser.role})`, 'success');
+            } else {
+                log(`No user currently logged in`, 'info');
+            }
+        }
+    </script>
+</body>
+</html>

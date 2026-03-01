@@ -927,12 +927,20 @@
                         </a>
                     </li>
                     <li class="menu-item">
-                        <a href="my-complaint.html" class="menu-link" onclick="closeMenu()">
+                        <a href="my-complaints.html" class="menu-link" onclick="closeMenu()">
                             <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                                 <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
                                 <polyline points="14 2 14 8 20 8"/>
                             </svg>
                             My Complaints
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="complaint-status.html" class="menu-link" onclick="closeMenu()">
+                            <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            Track Status
                         </a>
                     </li>
                     <li class="menu-item">
@@ -1068,7 +1076,7 @@
                 <div class="action-card">
                     <div class="action-icon">📄</div>
                     <div class="action-content">
-                        <a href="my-complaint.html" class="menu-link">My Complaints</a>
+                        <a href="my-complaints.html" class="menu-link">My Complaints</a>
                         <p>View all your complaints</p>
                     </div>
                 </div>
@@ -1500,6 +1508,22 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+function updateStatusBadge(){
+    const complaints = JSON.parse(localStorage.getItem("complaints")) || [];
+    const currentUser = JSON.parse(localStorage.getItem("currentUser")) || {};
+    const activeCount = complaints.filter(c =>
+        c.userEmail === currentUser.email &&
+        !['RESOLVED','CLOSED'].includes(c.status)
+    ).length;
+    document.querySelectorAll('#statusBadge').forEach(el=>{
+        el.innerText = activeCount;
+        if(activeCount>0) el.classList.add('show'); else el.classList.remove('show');
+    });
+}
+
+// update badge on each load
+window.addEventListener('load', updateStatusBadge);
 
 function logoutUser() {
     localStorage.removeItem("currentUser");

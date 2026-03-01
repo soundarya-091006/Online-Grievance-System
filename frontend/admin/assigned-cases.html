@@ -258,7 +258,7 @@
 
     <div class="sidebar">
         <ul class="sidebar-menu">
-            <li><a href="../admin-dashboard.html">Dashboard</a></li>
+            <li><a href="admin-dashboard.html">Dashboard</a></li>
             <li><a href="all-complaints.html">All Complaints</a></li>
             <li><a href="pending-review.html">Pending Review</a></li>
             <li><a href="assigned-cases.html" class="active">Assigned Cases</a></li>
@@ -273,6 +273,14 @@
 
     <div class="main-content">
         <h1 class="page-title">Assigned Cases</h1>
+        <!-- Pending assignment queue -->
+        <div id="unassignedSection">
+            <h2 style="margin-bottom:16px;font-size:20px;font-weight:700;">Pending Assignments</h2>
+            <div id="unassignedList" style="display:flex;flex-direction:column;gap:16px;">
+                <!-- populated by JS -->
+            </div>
+            <hr style="margin:40px 0;"/>
+        </div>
         <div class="authority-grid" id="casesGrid"></div>
     </div>
 
@@ -291,8 +299,8 @@
 
             const grid = document.getElementById("casesGrid");
             grid.innerHTML = authorities.map(authority => {
-                const assigned = complaints.filter(c => c.assignedTo === authority.id && c.status !== "RESOLVED");
-                const resolved = complaints.filter(c => c.assignedTo === authority.id && c.status === "RESOLVED");
+                const assigned = complaints.filter(c => c.assignedTo === authority.email && c.status !== "RESOLVED");
+                const resolved = complaints.filter(c => c.assignedTo === authority.email && c.status === "RESOLVED");
                 const total = assigned.length + resolved.length;
                 const workload = total > 10 ? "High" : total > 5 ? "Medium" : "Low";
 
@@ -334,8 +342,67 @@
             window.location.href = "../login.html";
         }
 
+        // simple toast fallback
+        function showToast(msg, type='success') {
+            alert(msg);
+        }
+
+        function loadUnassignedCases() {
+            const complaints = JSON.parse(localStorage.getItem("complaints")) || [];
+            const authorities = JSON.parse(localStorage.getItem("authorities")) || [];
+            const list = document.getElementById("unassignedList");
+            const unassigned = complaints.filter(c => c.status === "UNDER REVIEW");
+            if (unassigned.length === 0) {
+                list.innerHTML = '<div style="color:var(--text-light);">No cases waiting for assignment.</div>';
+                return;
+            }
+            list.innerHTML = unassigned.map(c => {
+                const opts = authorities.map(a =>
+                    `<option value="${a.id}">${a.name} (${a.department || 'N/A'})</option>`
+                ).join('');
+                return `
+                    <div class="authority-card" style="border-left:4px solid var(--warning);">
+                        <div><strong>#${c.id}</strong> ${c.subject || ''}</div>
+                        <div style="margin:6px 0;">Status: ${c.status}</div>
+                        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+                            <select id="sel-${c.id}">${opts}</select>
+                            <button class="btn" onclick="assignTo('${c.id}')">Assign</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function assignTo(complaintId) {
+            const sel = document.getElementById(`sel-${complaintId}`);
+            if (!sel || !sel.value) {
+                alert('Please select an authority');
+                return;
+            }
+            const complaints = JSON.parse(localStorage.getItem("complaints")) || [];
+            const authorities = JSON.parse(localStorage.getItem("authorities")) || [];
+            const comp = complaints.find(c => c.id === complaintId);
+            if (comp) {
+                comp.status = "ASSIGNED";
+                // store authority email so login-based pages can match
+                const auth = (authorities.find(a=>a.id===sel.value)||{});
+                comp.assignedTo = auth.email || sel.value;
+                comp.timeline = comp.timeline || [];
+                comp.timeline.push({
+                    status: 'Assigned',
+                    date: new Date().toISOString(),
+                    description: 'Assigned by admin'
+                });
+                localStorage.setItem("complaints", JSON.stringify(complaints));
+                loadUnassignedCases();
+                loadAssignedCases();
+                showToast('Complaint #' + complaintId + ' assigned successfully', 'success');
+            }
+        }
+
         window.addEventListener("DOMContentLoaded", () => {
             checkAdminAccess();
+            loadUnassignedCases();
             loadAssignedCases();
         });
     </script>

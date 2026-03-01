@@ -20,7 +20,7 @@
         <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
       </svg>
     </button>
-    <a href="dashboard.html" class="logo-section">
+    <a href="authority-dashboard.html" class="logo-section">
       <div class="logo-icon">
         <svg viewBox="0 0 24 24" fill="none">
           <defs><linearGradient id="sg" x1="0" y1="0" x2="1" y2="1">
@@ -49,7 +49,7 @@
       </div>
       <div class="nav-section-label">OVERVIEW</div><ul class="sidebar-menu">
             <li class="menu-item">
-              <a href="dashboard.html" class="menu-link" onclick="closeMenu()">
+              <a href="authority-dashboard.html" class="menu-link" onclick="closeMenu()">
                 <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 3h7v7H3V3zm11 0h7v7h-7V3zm0 11h7v7h-7v-7zm-11 0h7v7H3v-7z" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 Dashboard
               </a>
@@ -63,13 +63,13 @@
             <li class="menu-item">
               <a href="new-assignments.html" class="menu-link" onclick="closeMenu()">
                 <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                New Assignments<span class="menu-badge">5</span>
+                New Assignments<span id="badgeNewAssignments" class="menu-badge">0</span>
               </a>
             </li>
             <li class="menu-item">
               <a href="active-cases.html" class="menu-link active" onclick="closeMenu()">
                 <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                Active Investigations<span class="menu-badge">3</span>
+                Active Investigations<span id="badgeActiveCases" class="menu-badge">0</span>
               </a>
             </li>
             <li class="menu-item">
@@ -165,7 +165,7 @@
 <div class="page-header">
   <div class="page-header-top">
     <div>
-      <div class="breadcrumb"><a href="dashboard.html">Dashboard</a> <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg> Active Investigations</div>
+      <div class="breadcrumb"><a href="authority-dashboard.html">Dashboard</a> <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg> Active Investigations</div>
       <h1 class="page-title">Active Investigations ⚡</h1>
       <p class="page-subtitle">8 cases currently under active investigation — track progress and flag overdue items.</p>
     </div>
@@ -192,7 +192,7 @@
   <button class="filter-chip">🟡 On Track (6)</button>
 </div>
 
-<div style="display:flex;flex-direction:column;gap:18px;animation:fadeInUp 0.5s ease 0.15s both">
+<div id="casesContainer" style="display:flex;flex-direction:column;gap:18px;animation:fadeInUp 0.5s ease 0.15s both">
 
   <!-- OVERDUE CARD -->
   <div class="case-card" style="border-left:4px solid var(--danger)">
@@ -319,7 +319,102 @@
 
 <script src="authority-shared.js"></script>
 <script>
+    function loadActiveCases() {
+        const currentUser = JSON.parse(localStorage.getItem("currentUser")) || {};
+        if (currentUser.role !== "authority") {
+            window.location.href = "../login.html";
+            return;
+        }
+        const complaints = JSON.parse(localStorage.getItem("complaints")) || [];
+        const myCases = complaints.filter(c =>
+            c.assignedTo === currentUser.email &&
+            (c.status === "ASSIGNED" || c.status === "IN PROGRESS")
+        );
+        const container = document.getElementById("casesContainer");
+        if (!container) return;
+        if (myCases.length === 0) {
+            container.innerHTML = '<div style="color:var(--text-light);">No active investigations.</div>';
+            return;
+        }
+        container.innerHTML = myCases.map(c => {
+            // build simple card
+            return `
+                <div class="case-card" style="border-left:4px solid var(--primary);">
+                    <div class="case-card-header">
+                        <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+                            <div class="case-id-badge">#${c.id}</div>
+                            <div>
+                                <div style="font-size:11px;color:var(--text-light);">${c.status}</div>
+                                <div style="font-size:13px;font-weight:600">${c.category || ''}</div>
+                            </div>
+                        </div>
+                        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+                            <span class="badge badge-urgent">${c.priority || 'N/A'}</span>
+                            <span class="badge badge-progress">${c.status}</span>
+                        </div>
+                    </div>
+                    <div class="case-card-body">
+                        <div class="case-title">${c.subject || ''}</div>
+                        <div style="margin:12px 0">
+                            <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+                                <span style="font-size:12px;color:var(--text-light)">Investigation Progress</span>
+                                <span style="font-size:12px;font-weight:700;color:var(--primary)">${c.progress || '0'}%</span>
+                            </div>
+                            <div class="progress-bar"><div class="progress-fill primary" style="width:${c.progress || 0}%"></div></div>
+                        </div>
+                        <div class="case-meta">
+                            <div class="case-meta-item">📅 Target: ${c.targetDate || ''}</div>
+                            <div class="case-meta-item">🔄 Last Update: ${c.updatedAt || ''}</div>
+                        </div>
+                    </div>
+                    <div class="case-card-footer">
+                        <div class="case-actions">
+                            <a href="investigate.html" class="btn btn-primary btn-sm">Investigate</a>
+                            <a href="add-update.html" class="btn btn-warning btn-sm" style="color:white">Quick Update</a>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
 
+    // initialize on load
+    window.addEventListener("DOMContentLoaded", () => {
+        loadActiveCases();
+        updateNavCounts();
+    });
+
+    // keep view in sync if complaints are modified elsewhere
+    window.addEventListener("storage", function(e) {
+        if (e.key === "complaints") {
+            loadActiveCases();
+            updateNavCounts();
+        }
+    });
+
+    // also refresh when returning to tab
+    window.addEventListener("focus", function() {
+        loadActiveCases();
+        updateNavCounts();
+    });
+
+    // periodic poll as fallback
+    setInterval(function() {
+        loadActiveCases();
+        updateNavCounts();
+    }, 3000);
+
+    function updateNavCounts() {
+        const complaints = JSON.parse(localStorage.getItem("complaints")) || [];
+        const currentUser = JSON.parse(localStorage.getItem("currentUser")) || {};
+        if (currentUser.role !== "authority") return;
+        const newCount = complaints.filter(c => c.assignedTo === currentUser.email && c.status === "ASSIGNED").length;
+        const activeCount = complaints.filter(c => c.assignedTo === currentUser.email && (c.status === "ASSIGNED" || c.status === "IN PROGRESS")).length;
+        const nEl = document.getElementById("badgeNewAssignments");
+        const aEl = document.getElementById("badgeActiveCases");
+        if (nEl) nEl.innerText = newCount;
+        if (aEl) aEl.innerText = activeCount;
+    }
 </script>
 </body>
 </html>

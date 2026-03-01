@@ -63,13 +63,13 @@
             <li class="menu-item">
               <a href="new-assignments.html" class="menu-link active" onclick="closeMenu()">
                 <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                New Assignments<span class="menu-badge">5</span>
+                New Assignments<span id="badgeNewAssignments" class="menu-badge">0</span>
               </a>
             </li>
             <li class="menu-item">
               <a href="active-cases.html" class="menu-link" onclick="closeMenu()">
                 <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                Active Investigations<span class="menu-badge">3</span>
+                Active Investigations<span id="badgeActiveCases" class="menu-badge">0</span>
               </a>
             </li>
             <li class="menu-item">
@@ -187,17 +187,8 @@
 
 <!-- ASSIGNMENT CARDS -->
 <div style="display:flex;flex-direction:column;gap:20px;" id="assignmentList">
-
-  <div class="case-card" id="case1042">
-    <div class="case-card-header">
-      <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
-        <div class="case-id-badge">#C1042</div>
-        <div>
-          <div style="font-size:11px;color:var(--text-light)">Assigned: Jan 20, 2025 · 09:15 AM</div>
-          <div style="font-size:13px;font-weight:600;color:var(--text)">Sexual Harassment</div>
-        </div>
-      </div>
-      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+    <!-- dynamically populated -->
+</div>
         <span class="badge badge-urgent">🔴 CRITICAL PRIORITY</span>
         <span class="badge badge-new">NEW</span>
         <span style="font-size:12px;color:var(--danger);font-weight:600">⏰ Expires in 18 hrs</span>
@@ -323,25 +314,118 @@ function declineCase(cardId, caseId) {
     }
     showToast("Case " + caseId + " declined and returned to admin.", "warning");
 }
+// dynamic authority assignment logic
+function loadNewAssignments() {
+    const currentUser = JSON.parse(localStorage.getItem("currentUser")) || {};
+    if (currentUser.role !== "authority") {
+        window.location.href = "../login.html";
+        return;
+    }
+    const complaints = JSON.parse(localStorage.getItem("complaints")) || [];
+    const assigned = complaints.filter(c => c.assignedTo === currentUser.email && c.status === "ASSIGNED");
+    const container = document.getElementById("assignmentList");
+    if (assigned.length === 0) {
+        container.innerHTML = '<div style="color:var(--text-light);">No new assignments at the moment.</div>';
+        return;
+    }
+    container.innerHTML = assigned.map(c => {
+        return `
+            <div class="case-card" id="case${c.id}">
+                <div class="case-card-header">
+                    <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+                        <div class="case-id-badge">#${c.id}</div>
+                        <div>
+                            <div style="font-size:11px;color:var(--text-light)">Submitted: ${formatDate(c.createdAt)}</div>
+                            <div style="font-size:13px;font-weight:600;color:var(--text)">${c.category || ''}</div>
+                        </div>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+                        <button class="btn btn-success" onclick="acceptAssignment('${c.id}')">Accept</button>
+                        <button class="btn btn-secondary" onclick="declineAssignment('${c.id}')">Decline</button>
+                    </div>
+                </div>
+                <div style="padding-top:10px;">
+                    <div>${c.subject || ''}</div>
+                    <div style="font-size:12px;color:var(--text-light);">${c.description ? c.description.substring(0,80) + '...' : ''}</div>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+function acceptAssignment(id) {
+    const complaints = JSON.parse(localStorage.getItem("complaints")) || [];
+    const comp = complaints.find(c => c.id === id);
+    if (comp) {
+        comp.status = "IN PROGRESS";
+        comp.timeline = comp.timeline || [];
+        comp.timeline.push({status:'In Progress', date:new Date().toISOString(), description:'Authority accepted assignment'});
+        localStorage.setItem("complaints", JSON.stringify(complaints));
+        loadNewAssignments();
+        showToast('Accepted case #' + id, 'success');
+    }
+}
+
+function declineAssignment(id) {
+    if (!confirm('Are you sure you want to decline this assignment?')) return;
+    const complaints = JSON.parse(localStorage.getItem("complaints")) || [];
+    const comp = complaints.find(c => c.id === id);
+    if (comp) {
+        comp.status = "UNDER REVIEW";
+        delete comp.assignedTo;
+        localStorage.setItem("complaints", JSON.stringify(complaints));
+        loadNewAssignments();
+        showToast('Declined case #' + id, 'warning');
+    }
+}
+
 function acceptAll() {
-    document.querySelectorAll("#assignmentList .case-card").forEach(c => {
-        c.style.opacity = "0"; c.style.pointerEvents = "none";
-        setTimeout(() => c.remove(), 300);
-    });
-    showToast("All cases accepted! Redirecting to My Cases...", "success");
-    setTimeout(() => window.location.href = "my-cases.html", 2000);
+    document.querySelectorAll('#assignmentList .case-card button.btn-success').forEach(b => b.click());
 }
 function declineAll() {
-    if (!confirm("Decline all 5 cases? They will be reassigned.")) return;
-    document.querySelectorAll("#assignmentList .case-card").forEach(c => {
-        c.style.opacity = "0"; c.style.pointerEvents = "none";
-        setTimeout(() => c.remove(), 300);
-    });
-    showToast("All cases declined.", "warning");
+    if (!confirm('Decline all assignments?')) return;
+    document.querySelectorAll('#assignmentList .case-card button.btn-secondary').forEach(b => b.click());
 }
-function previewCase(id) {
-    showToast("Loading preview for #" + id, "info");
-    setTimeout(() => window.location.href = "investigate.html", 800);
+
+function formatDate(dateStr) {
+    if (!dateStr) return '';
+    const d = new Date(dateStr);
+    return d.toLocaleDateString('en-US', {year:'numeric',month:'short',day:'numeric'});
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+    loadNewAssignments();
+    updateNavCounts();
+});
+
+// refresh when complaints change elsewhere
+window.addEventListener('storage', function(e) {
+    if (e.key === 'complaints') {
+        loadNewAssignments();
+        updateNavCounts();
+    }
+});
+
+// refresh on focus or periodic poll
+window.addEventListener('focus', function() {
+    loadNewAssignments();
+    updateNavCounts();
+});
+setInterval(function() {
+    loadNewAssignments();
+    updateNavCounts();
+}, 3000);
+
+function updateNavCounts() {
+    const complaints = JSON.parse(localStorage.getItem("complaints")) || [];
+    const currentUser = JSON.parse(localStorage.getItem("currentUser")) || {};
+    if (currentUser.role !== "authority") return;
+    const newCount = complaints.filter(c => c.assignedTo === currentUser.email && c.status === "ASSIGNED").length;
+    const activeCount = complaints.filter(c => c.assignedTo === currentUser.email && (c.status === "ASSIGNED" || c.status === "IN PROGRESS")).length;
+    const nEl = document.getElementById("badgeNewAssignments");
+    const aEl = document.getElementById("badgeActiveCases");
+    if (nEl) nEl.innerText = newCount;
+    if (aEl) aEl.innerText = activeCount;
 }
 
 </script>

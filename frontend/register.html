@@ -245,29 +245,12 @@ opacity:1;
 <h1>Create Account</h1>
 <div class="subtitle">Register for your SafeReport account</div>
 
-<div class="role-options">
-<div class="role-card active" onclick="selectRole(this,'user')">
-<svg viewBox="0 0 24 24" fill="none" stroke-width="2">
-<circle cx="12" cy="7" r="4"/>
-<path d="M5.5 21a6.5 6.5 0 0 1 13 0"/>
-</svg>
-<span class="role-label">User</span>
-</div>
-
-<div class="role-card" onclick="selectRole(this,'admin')">
-<svg viewBox="0 0 24 24" fill="none" stroke-width="2">
-<path d="M12 2L4 7v5c0 5 3.5 8 8 10 4.5-2 8-5 8-10V7l-8-5z"/>
-</svg>
-<span class="role-label">Admin</span>
-</div>
-
-<div class="role-card" onclick="selectRole(this,'authority')">
-<svg viewBox="0 0 24 24" fill="none" stroke-width="2">
-<path d="M12 2L4 7v5c0 5 3.5 8 8 10 4.5-2 8-5 8-10V7l-8-5z"/>
-<path d="M9 12l2 2 4-4"/>
-</svg>
-<span class="role-label">Authority</span>
-</div>
+<!-- only users may sign up through the UI;
+     admin/authority accounts are pre‑provisioned (hardcoded in backend)
+     see QUICKSTART/test-data for the emails and passwords -->
+<div class="note" style="margin-bottom:20px;color:#64748b;font-size:14px;">
+    <strong>Notice:</strong> registration is for users only. Admin and authority
+    credentials are set in the system and cannot be created here.
 </div>
 
 <form id="registerForm">
@@ -333,16 +316,11 @@ Already have an account? <a href="login.html">Login here</a>
 <div class="toast" id="toast"></div>
 
 <script>
-let selectedRole = "user"; // default role (lowercase)
+// role is fixed to "user"; admin/authority accounts are created by the backend
+// hardcoded credentials are documented in QUICKSTART and test-data.html
+const selectedRole = "user"; // registration only creates regular user accounts
 
-/* ================= ROLE SELECTION ================= */
-function selectRole(el, role){
-    document.querySelectorAll(".role-card").forEach(card =>
-        card.classList.remove("active")
-    );
-    el.classList.add("active");
-    selectedRole = role.toLowerCase(); // ensure lowercase
-}
+/* no role selection UI in this page */
 
 /* ================= PASSWORD TOGGLE ================= */
 function togglePassword(){
@@ -430,7 +408,7 @@ document.getElementById("registerForm")
         email,
         phone,
         password,
-        role: selectedRole   // user / admin / authority
+        role: selectedRole   // always "user"
     };
 
     users.push(newUser);

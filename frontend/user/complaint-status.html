@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SafeReport | My Complaints</title>
+    <title>SafeReport | Complaint Status</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     
     <style>
@@ -1868,8 +1868,8 @@
         <!-- Page Header -->
         <div class="page-header">
             <div class="page-header-left">
-                <h1>My Complaints 📋</h1>
-                <p>View and manage all your submitted complaints</p>
+                <h1>Complaint Status 🔍</h1>
+                <p>Track the current status of your complaint (open by ID or from another page)</p>
             </div>
             <div class="header-actions">
                 <button class="btn btn-outline" onclick="exportAll('excel')">
@@ -2152,6 +2152,13 @@
 
             // Load complaints
             loadComplaints();
+
+            // If tracking ID provided via query string, open its details after data loads
+            const params = new URLSearchParams(window.location.search);
+            const trackId = params.get('id');
+            if (trackId) {
+                setTimeout(() => openDetailView(trackId), 500);
+            }
             
             // Setup infinite scroll
             setupInfiniteScroll();
@@ -2833,7 +2840,7 @@
 
         /* ================= TRACK VIEW ================= */
         function openTrackView(complaintId) {
-            // Redirect to tracking page with complaint ID
+            // Redirect to tracking page with complaint ID (self)
             window.location.href = `complaint-status.html?id=${complaintId}`;
         }
 
