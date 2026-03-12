@@ -63,13 +63,13 @@
             <li class="menu-item">
               <a href="new-assignments.html" class="menu-link" onclick="closeMenu()">
                 <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                New Assignments<span class="menu-badge">5</span>
+                New Assignments
               </a>
             </li>
             <li class="menu-item">
               <a href="active-cases.html" class="menu-link" onclick="closeMenu()">
                 <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                Active Investigations<span class="menu-badge">3</span>
+                Active Investigations
               </a>
             </li>
             <li class="menu-item">
@@ -139,10 +139,6 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
       <input type="text" placeholder="Search cases, IDs...">
     </div>
-    <div class="notification-icon">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-      <span class="notification-badge">5</span>
-    </div>
     <div class="user-menu" onclick="toggleUserMenu()">
       <div class="user-avatar js-auth-initials">RA</div>
       <div>
@@ -206,11 +202,7 @@
         <label class="form-label">Select Case <span class="required">*</span></label>
         <select class="form-select" id="reportCase">
           <option value="">— Select a case —</option>
-          <option>#C1042 · Workplace Harassment</option>
-          <option>#C1039 · Verbal Abuse</option>
-          <option>#C1036 · Stalking</option>
-          <option>#C1031 · Discrimination (Closed)</option>
-          <option>All My Cases (Summary)</option>
+          <!-- dynamic case list will be filled here -->
         </select>
       </div>
     </div>
@@ -277,9 +269,9 @@
             <div style="font-size:10px;text-transform:uppercase;letter-spacing:.5px">Official Investigation Report</div>
           </div>
           <div><b>Report Type:</b> Case Investigation Report</div>
-          <div><b>Case ID:</b> #C1042</div>
-          <div><b>Investigator:</b> Rajan Arora</div>
-          <div><b>Department:</b> Dept. of Labour</div>
+          <div><b>Case ID:</b> —</div>
+          <div><b>Investigator:</b> —</div>
+          <div><b>Department:</b> —</div>
           <div><b>Generated:</b> <span id="reportDate"></span></div>
           <div><b>Confidentiality:</b> CONFIDENTIAL</div>
           <hr style="margin:10px 0;border-color:var(--border)">
@@ -290,20 +282,7 @@
     <div class="card" style="animation:fadeInUp 0.5s ease 0.15s both">
       <div class="card-header"><div class="card-title">📂 Recent Reports</div></div>
       <div class="card-body" style="padding:0">
-        <div style="padding:0 20px">
-          <div class="overview-item">
-            <div><div style="font-size:13px;font-weight:600">#C1031 — Final Report</div><div style="font-size:11px;color:var(--text-light)">Jan 10, 2025 · PDF</div></div>
-            <button class="btn btn-outline btn-sm">⬇</button>
-          </div>
-          <div class="overview-item">
-            <div><div style="font-size:13px;font-weight:600">Performance Summary Q4</div><div style="font-size:11px;color:var(--text-light)">Jan 1, 2025 · PDF</div></div>
-            <button class="btn btn-outline btn-sm">⬇</button>
-          </div>
-          <div class="overview-item">
-            <div><div style="font-size:13px;font-weight:600">#C1021 — Evidence Report</div><div style="font-size:11px;color:var(--text-light)">Dec 28, 2024 · PDF</div></div>
-            <button class="btn btn-outline btn-sm">⬇</button>
-          </div>
-        </div>
+        <div style="padding:20px;text-align:center;color:var(--text-light)">No reports generated yet.</div>
       </div>
     </div>
   </div>
@@ -331,7 +310,7 @@ function generateReport() {
     showToast("Report generated and downloading...", "success");
     setTimeout(() => {
         const w = window.open("","_blank");
-        w.document.write("<h2>SafeReport — Investigation Report</h2><p>Case: " + c + "</p><p>Investigator: Rajan Arora</p><p>Generated: " + new Date().toLocaleString() + "</p>");
+        w.document.write("<h2>SafeReport — Investigation Report</h2><p>Case: " + c + "</p><p>Investigator: —</p><p>Generated: " + new Date().toLocaleString() + "</p>");
         w.document.close(); w.focus(); setTimeout(() => w.print(), 300);
     }, 600);
 }

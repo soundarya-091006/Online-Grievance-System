@@ -587,12 +587,6 @@
                 </svg>
                 Audit Logs
             </a></li>
-            <li><a href="notifications.html" data-page="notifications">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 1118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
-                </svg>
-                Notifications
-            </a></li>
             <li><a href="settings.html" data-page="settings">
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
@@ -751,92 +745,90 @@
     </div>
 
     <script>
-        // Check if user is admin
+        const API = "http://localhost:8080/api";
+
         function toggleSidebar() {
-            const sidebar = document.getElementById("sidebar");
-            const hamburger = document.getElementById("hamburgerBtn");
-            sidebar.classList.toggle("hidden");
-            hamburger.classList.toggle("active");
+            document.getElementById("sidebar").classList.toggle("hidden");
+            document.getElementById("hamburgerBtn").classList.toggle("active");
         }
+
+        function getToken() { return localStorage.getItem("token"); }
 
         function checkAdminAccess() {
-            const currentUser = JSON.parse(localStorage.getItem("currentUser")) || {};
-            if (currentUser.role !== "admin") {
-                window.location.href = "../login.html";
+            const role = localStorage.getItem("role");
+            if (!getToken() || role !== "ADMIN") {
+                window.location.href = "../login.html"; return false;
             }
-            document.getElementById("userEmail").innerText = currentUser.email || "Admin";
+            const name = localStorage.getItem("fullName") || "Admin";
+            const emailEl = document.getElementById("userEmail");
+            if (emailEl) emailEl.innerText = name;
+            return true;
         }
 
-        // Load dashboard stats
-        function loadDashboardStats() {
-            const complaints = JSON.parse(localStorage.getItem("complaints")) || [];
-            const users = JSON.parse(localStorage.getItem("users")) || [];
+        async function loadDashboardStats() {
+            try {
+                const res = await fetch(API + "/admin/dashboard", {
+                    headers: { "Authorization": "Bearer " + getToken() }
+                });
+                const json = await res.json();
+                if (!json.success) return;
+                const d = json.data;
 
-            const total = complaints.length;
-            const pending = complaints.filter(c => c.status === "NEW").length;
-            const resolved = complaints.filter(c => c.status === "RESOLVED").length;
-            const overdue = complaints.filter(c => {
-                const createdDate = new Date(c.createdAt);
-                const daysOld = (new Date() - createdDate) / (1000 * 60 * 60 * 24);
-                return daysOld > 30 && c.status !== "RESOLVED";
-            }).length;
+                document.getElementById("totalComplaints").innerText = d.totalComplaints || 0;
+                document.getElementById("pendingCount").innerText    = d.pendingReview   || 0;
+                document.getElementById("resolvedCount").innerText   = d.resolvedComplaints || 0;
+                document.getElementById("overdueCount").innerText    = d.activeInvestigations || 0;
+                const auEl = document.getElementById("activeUsers");
+                if (auEl) auEl.innerText = d.totalUsers || 0;
 
-            document.getElementById("totalComplaints").innerText = total;
-            document.getElementById("pendingCount").innerText = pending;
-            document.getElementById("resolvedCount").innerText = resolved;
-            document.getElementById("overdueCount").innerText = overdue;
-            document.getElementById("activeUsers").innerText = users.filter(u => u.status !== "deactivated").length;
-
-            // Load recent activities
-            loadRecentActivities(complaints);
+                loadRecentComplaints();
+            } catch(e) {
+                console.error("Dashboard error:", e);
+            }
         }
 
-        function loadRecentActivities(complaints) {
-            const recent = complaints.slice(-5).reverse();
-            const container = document.getElementById("recentActivities");
-            container.innerHTML = recent.map(complaint => `
-                <div class="activity-item">
-                    <div class="activity-avatar">📋</div>
-                    <div class="activity-content">
-                        <div class="activity-title">${complaint.subject}</div>
-                        <div class="activity-time">${complaint.updatedAt || complaint.createdAt}</div>
-                    </div>
-                </div>
-            `).join("");
+        async function loadRecentComplaints() {
+            try {
+                const res = await fetch(API + "/complaints?page=0&size=5", {
+                    headers: { "Authorization": "Bearer " + getToken() }
+                });
+                const json = await res.json();
+                if (!json.success) return;
+                const complaints = json.data.content || [];
+                const container  = document.getElementById("recentActivities");
+                if (!container) return;
+                container.innerHTML = complaints.length === 0
+                    ? "<p style='color:#64748b;padding:10px'>No complaints yet.</p>"
+                    : complaints.map(c => `
+                        <div class="activity-item">
+                            <div class="activity-avatar">📋</div>
+                            <div class="activity-content">
+                                <div class="activity-title">${c.title}</div>
+                                <div class="activity-time">${c.trackingId} · ${c.status}</div>
+                            </div>
+                        </div>`).join("");
+            } catch(e) { console.error(e); }
         }
 
         function logout() {
-            localStorage.removeItem("currentUser");
+            ["token","role","userId","fullName","email"].forEach(k => localStorage.removeItem(k));
             window.location.href = "../login.html";
         }
 
-        // Initialize
         window.addEventListener("DOMContentLoaded", () => {
-            checkAdminAccess();
+            if (!checkAdminAccess()) return;
             loadDashboardStats();
-
-            // Close sidebar when clicking on a link on mobile
-            const sidebarLinks = document.querySelectorAll(".sidebar-menu a");
-            sidebarLinks.forEach(link => {
-                link.addEventListener("click", function() {
+            document.querySelectorAll(".sidebar-menu a").forEach(link => {
+                link.addEventListener("click", () => {
                     if (window.innerWidth <= 768) {
-                        const sidebar = document.getElementById("sidebar");
-                        const hamburger = document.getElementById("hamburgerBtn");
-                        sidebar.classList.add("hidden");
-                        hamburger.classList.remove("active");
+                        document.getElementById("sidebar").classList.add("hidden");
+                        document.getElementById("hamburgerBtn").classList.remove("active");
                     }
                 });
             });
         });
 
-        // refresh stats when data changes in other tabs/pages
-        window.addEventListener("storage", function(e) {
-            if (e.key === "complaints" || e.key === "users") {
-                loadDashboardStats();
-            }
-        });
-        window.addEventListener("focus", loadDashboardStats);
-        setInterval(loadDashboardStats, 3000);
+        setInterval(loadDashboardStats, 30000);
     </script>
 </body>
 </html>

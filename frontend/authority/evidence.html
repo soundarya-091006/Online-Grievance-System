@@ -63,13 +63,13 @@
             <li class="menu-item">
               <a href="new-assignments.html" class="menu-link" onclick="closeMenu()">
                 <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                New Assignments<span class="menu-badge">5</span>
+                New Assignments
               </a>
             </li>
             <li class="menu-item">
               <a href="active-cases.html" class="menu-link" onclick="closeMenu()">
                 <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                Active Investigations<span class="menu-badge">3</span>
+                Active Investigations
               </a>
             </li>
             <li class="menu-item">
@@ -139,10 +139,6 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
       <input type="text" placeholder="Search cases, IDs...">
     </div>
-    <div class="notification-icon">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-      <span class="notification-badge">5</span>
-    </div>
     <div class="user-menu" onclick="toggleUserMenu()">
       <div class="user-avatar js-auth-initials">RA</div>
       <div>
@@ -195,7 +191,7 @@
   <button class="filter-chip">🎬 Videos</button>
   <button class="filter-chip">🎵 Audio</button>
   <select class="filter-select">
-    <option>All Cases</option><option>#C1042</option><option>#C1039</option><option>#C1036</option>
+    <option>All Cases</option>
   </select>
 </div>
 
@@ -206,77 +202,13 @@
       <tr><th>File Name</th><th>Case</th><th>Type</th><th>Size</th><th>Uploaded By</th><th>Uploaded On</th><th>Custody Log</th><th>Actions</th></tr>
     </thead>
     <tbody>
-      <tr>
-        <td><div style="display:flex;align-items:center;gap:10px"><div style="width:36px;height:36px;border-radius:9px;background:linear-gradient(135deg,var(--primary),var(--secondary));display:flex;align-items:center;justify-content:center;color:white;font-size:16px;flex-shrink:0">📄</div><div><div style="font-weight:600">complaint_statement.pdf</div><div style="font-size:11px;color:var(--text-light)">Original complainant document</div></div></div></td>
-        <td><b style="color:var(--primary)">#C1042</b></td><td>Document</td><td>284 KB</td>
-        <td>Complainant</td><td>Jan 16, 2025</td>
-        <td><button class="btn btn-outline btn-sm" onclick="viewCustody('C1042-EV001')">View Log</button></td>
-        <td style="display:flex;gap:6px">
-          <button class="btn btn-primary btn-sm" onclick="showToast('Opening file preview...','info')">View</button>
-          <button class="btn btn-outline btn-sm" onclick="showToast('Downloading file...','success')">⬇</button>
-        </td>
-      </tr>
-      <tr>
-        <td><div style="display:flex;align-items:center;gap:10px"><div style="width:36px;height:36px;border-radius:9px;background:linear-gradient(135deg,var(--success),#059669);display:flex;align-items:center;justify-content:center;color:white;font-size:16px;flex-shrink:0">🖼️</div><div><div style="font-weight:600">cctv_screenshot.jpg</div><div style="font-size:11px;color:var(--text-light)">CCTV frame from building security</div></div></div></td>
-        <td><b style="color:var(--primary)">#C1042</b></td><td>Image</td><td>1.2 MB</td>
-        <td>Rajan Arora</td><td>Jan 17, 2025</td>
-        <td><button class="btn btn-outline btn-sm" onclick="viewCustody('C1042-EV002')">View Log</button></td>
-        <td style="display:flex;gap:6px">
-          <button class="btn btn-primary btn-sm">View</button>
-          <button class="btn btn-outline btn-sm">⬇</button>
-        </td>
-      </tr>
-      <tr>
-        <td><div style="display:flex;align-items:center;gap:10px"><div style="width:36px;height:36px;border-radius:9px;background:linear-gradient(135deg,var(--warning),#d97706);display:flex;align-items:center;justify-content:center;color:white;font-size:16px;flex-shrink:0">📁</div><div><div style="font-weight:600">witness_statement.docx</div><div style="font-size:11px;color:var(--text-light)">Witness 1 signed statement</div></div></div></td>
-        <td><b style="color:var(--primary)">#C1042</b></td><td>Document</td><td>98 KB</td>
-        <td>Rajan Arora</td><td>Jan 18, 2025</td>
-        <td><button class="btn btn-outline btn-sm" onclick="viewCustody('C1042-EV003')">View Log</button></td>
-        <td style="display:flex;gap:6px">
-          <button class="btn btn-primary btn-sm">View</button>
-          <button class="btn btn-outline btn-sm">⬇</button>
-        </td>
-      </tr>
-      <tr>
-        <td><div style="display:flex;align-items:center;gap:10px"><div style="width:36px;height:36px;border-radius:9px;background:linear-gradient(135deg,var(--accent),#db2777);display:flex;align-items:center;justify-content:center;color:white;font-size:16px;flex-shrink:0">🎵</div><div><div style="font-weight:600">audio_recording.mp3</div><div style="font-size:11px;color:var(--text-light)">Complainant audio testimony</div></div></div></td>
-        <td><b style="color:var(--primary)">#C1039</b></td><td>Audio</td><td>4.7 MB</td>
-        <td>Complainant</td><td>Jan 14, 2025</td>
-        <td><button class="btn btn-outline btn-sm" onclick="viewCustody('C1039-EV001')">View Log</button></td>
-        <td style="display:flex;gap:6px">
-          <button class="btn btn-primary btn-sm">View</button>
-          <button class="btn btn-outline btn-sm">⬇</button>
-        </td>
-      </tr>
+      <tr><td colspan="8" style="text-align:center;color:var(--text-light);padding:20px">No evidence files available.</td></tr>
     </tbody>
   </table>
 </div>
 
-<!-- CHAIN OF CUSTODY LOG -->
-<div class="card" style="animation:fadeInUp 0.5s ease 0.2s both">
-  <div class="card-header">
-    <div><div class="card-title">🔗 Chain of Custody Log</div><div class="card-subtitle">Full audit trail for all evidence — Evidence ID: C1042-EV001</div></div>
-    <button class="btn btn-outline btn-sm" onclick="showToast('Exporting custody log...','success')">⬇ Export Log</button>
-  </div>
-  <div class="card-body">
-    <div class="timeline">
-      <div class="timeline-item done">
-        <div class="timeline-time">Jan 16, 2025 · 10:22 AM</div>
-        <div class="timeline-card"><h4>📥 Evidence Received</h4><p>File uploaded by complainant via SafeReport portal. Hash verified: SHA-256 a3f9b2c1...</p></div>
-      </div>
-      <div class="timeline-item done">
-        <div class="timeline-time">Jan 16, 2025 · 11:05 AM</div>
-        <div class="timeline-card"><h4>👁 Accessed by Investigator</h4><p>File accessed by Rajan Arora (Auth ID: AUTH-2841) for initial review. No modifications.</p></div>
-      </div>
-      <div class="timeline-item done">
-        <div class="timeline-time">Jan 17, 2025 · 09:30 AM</div>
-        <div class="timeline-card"><h4>🔗 Linked to Case Timeline</h4><p>Evidence linked to Investigation Timeline Entry #3. Case #C1042.</p></div>
-      </div>
-      <div class="timeline-item active">
-        <div class="timeline-time">Jan 20, 2025 · 02:15 PM</div>
-        <div class="timeline-card" style="border-color:rgba(99,102,241,0.3)"><h4>📤 Shared with Hearing Panel</h4><p>Secure access granted to Hearing Panel members for Jan 24 hearing. Access expires Jan 24, 2025.</p></div>
-      </div>
-    </div>
-  </div>
-</div>
+<!-- custody log card removed; it will be populated when a file is selected -->
+<div id="custodyPlaceholder" style="text-align:center;color:var(--text-light);padding:20px">Select an evidence file to view chain-of-custody details.</div>
 
 <!-- CUSTODY MODAL -->
 <div class="modal-overlay" id="custodyModal">
@@ -300,12 +232,8 @@
 function viewCustody(evidenceId) {
     document.getElementById("custodyModalContent").innerHTML =
         "<b>Evidence ID:</b> " + evidenceId + "<br>" +
-        "<b>Hash (SHA-256):</b> a3f9b2c1d4e5f6a7b8c9d0e1f2a3b4c5...<br><br>" +
-        "<b>Access Log:</b><br>" +
-        "Jan 16 · 10:22 AM — Uploaded by complainant<br>" +
-        "Jan 16 · 11:05 AM — Reviewed by Rajan Arora<br>" +
-        "Jan 17 · 09:30 AM — Linked to timeline<br>" +
-        "Jan 20 · 02:15 PM — Shared with hearing panel";
+        "<b>Hash (SHA-256):</b> —<br><br>" +
+        "<b>Access Log:</b><br>No entries available.";
     openModal("custodyModal");
 }
 

@@ -665,14 +665,12 @@
                 <a href="new-assignments.html" class="nav-link">
                     <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
                     <span>New Assignments</span>
-                    <span class="nav-badge">5</span>
                 </a>
             </li>
             <li class="nav-item">
                 <a href="active-cases.html" class="nav-link">
                     <svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
                     <span>Active Investigations</span>
-                    <span class="nav-badge">3</span>
                 </a>
             </li>
             <li class="nav-item">
@@ -776,38 +774,33 @@
             </div>
         </div>
 
-        <!-- OVERDUE ALERT -->
-        <div class="alert alert-warning" id="overdueAlert">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
-                <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
-            </svg>
-            <div><b>1 overdue event!</b> The witness interview for case #C1029 was scheduled on Jan 17 and not completed. Please reschedule or log it as done.</div>
-        </div>
+        <!-- overdue alert will be injected dynamically when necessary -->
+        <div id="overdueAlert" style="display:none"></div>
 
         <!-- STATS -->
         <div class="stats-row">
             <div class="stat-card">
                 <div class="stat-icon" style="background:rgba(99,102,241,.1)">📅</div>
-                <div class="stat-number" id="sTotal">7</div>
+                <div class="stat-number" id="sTotal">0</div>
                 <div class="stat-label">Total Events</div>
             </div>
             <div class="stat-card">
                 <div class="stat-icon" style="background:rgba(245,158,11,.1)">⚡</div>
-                <div class="stat-number" id="sUpcoming">5</div>
+                <div class="stat-number" id="sUpcoming">0</div>
                 <div class="stat-label">Upcoming</div>
             </div>
             <div class="stat-card">
                 <div class="stat-icon" style="background:rgba(16,185,129,.1)">✅</div>
-                <div class="stat-number" id="sCompleted">1</div>
+                <div class="stat-number" id="sCompleted">0</div>
                 <div class="stat-label">Completed</div>
             </div>
             <div class="stat-card">
                 <div class="stat-icon" style="background:rgba(239,68,68,.1)">⏰</div>
-                <div class="stat-number" id="sOverdue">1</div>
+                <div class="stat-number" id="sOverdue">0</div>
                 <div class="stat-label">Overdue</div>
             </div>
         </div>
+        <p id="noEventsMsg" style="text-align:center;color:var(--text-light);margin:16px 0;display:none">No schedule events. Use the button above to add one.</p>
 
         <!-- CALENDAR + SIDE PANELS -->
         <div class="two-col">
@@ -1031,22 +1024,10 @@ const TYPE = {
     review:    { label:'Case Review Meeting', emoji:'📋', color:'var(--primary)', badgeCls:'badge-review'    },
 };
 
-let events = [
-    { id:1, type:'interview', title:'Witness Interview – Witness 1',    caseId:'#C1042', date:'2025-01-20', time:'10:00', duration:'1 hour',    location:'Hearing Room 2',     notes:'First of two scheduled interviews.', status:'upcoming', overdue:false },
-    { id:2, type:'interview', title:'Witness Interview – Witness 2',    caseId:'#C1042', date:'2025-01-22', time:'14:00', duration:'1 hour',    location:'Hearing Room 2',     notes:'Prepare question list.',             status:'upcoming', overdue:false },
-    { id:3, type:'hearing',   title:'Formal Hearing – Case #C1042',     caseId:'#C1042', date:'2025-01-24', time:'10:00', duration:'2 hours',   location:'Conference Hall A',  notes:'Both parties present.',              status:'upcoming', overdue:false },
-    { id:4, type:'sitevisit', title:'Site Visit – Tech Park Perungudi', caseId:'#C1039', date:'2025-01-27', time:'09:00', duration:'Half day',  location:'Tech Park, Chennai', notes:'CCTV access arranged.',              status:'upcoming', overdue:false },
-    { id:5, type:'mediation', title:'Mediation Session – Case #C1036',  caseId:'#C1036', date:'2025-01-29', time:'11:00', duration:'1.5 hours', location:'Room 3B',            notes:'Both parties agreed to attend.',     status:'upcoming', overdue:false },
-    { id:6, type:'interview', title:'Witness Interview – Case #C1029',  caseId:'#C1029', date:'2025-01-17', time:'09:30', duration:'1 hour',    location:'Hearing Room 1',     notes:'OVERDUE – reschedule required.',     status:'overdue',  overdue:true  },
-    { id:7, type:'hearing',   title:'Preliminary Hearing – Case #C1039',caseId:'#C1039', date:'2025-01-10', time:'10:00', duration:'1 hour',    location:'Conference Room B',  notes:'Completed. Minutes filed.',          status:'completed',overdue:false },
-];
+// start with no events or reminders until real data is loaded
+let events = [];
+let reminders = [];
 
-let reminders = [
-    { id:1, title:'Overdue: Case #C1029 Update',      due:'2025-01-17', priority:'high'   },
-    { id:2, title:'Hearing Prep Documents – #C1042',  due:'2025-01-23', priority:'medium' },
-    { id:3, title:'Monthly Performance Report Due',   due:'2025-01-31', priority:'medium' },
-    { id:4, title:'Evidence Review – #C1036',         due:'2025-02-02', priority:'low'    },
-];
 
 let activeFilter = 'all';
 let calYear = 2025, calMonth = 0; // Jan 2025
@@ -1396,6 +1377,8 @@ function updateStats() {
     document.getElementById('sCompleted').textContent = events.filter(e=>e.status==='completed').length;
     document.getElementById('sOverdue').textContent   = events.filter(e=>e.overdue).length;
     renderMonthBreakdown();
+    const msg = document.getElementById('noEventsMsg');
+    if(msg) msg.style.display = events.length ? 'none' : 'block';
 }
 
 /* ── EXPORT ── */

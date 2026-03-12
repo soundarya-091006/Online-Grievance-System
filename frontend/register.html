@@ -365,60 +365,50 @@ function showToast(message){
     setTimeout(()=>toast.classList.remove("show"), 3000);
 }
 
-/* ================= REGISTER USER STORAGE ================= */
+/* ================= REGISTER ================= */
 document.getElementById("registerForm")
-.addEventListener("submit", function(e){
+.addEventListener("submit", async function(e){
 
-    e.preventDefault();
+e.preventDefault();
 
-    const fullname = document.getElementById("fullname").value.trim();
-    const email = document.getElementById("email").value.trim();
-    const phone = document.getElementById("phone").value.trim();
-    const password = document.getElementById("password").value;
-    const confirmPassword = document.getElementById("confirmPassword").value;
+const fullname       = document.getElementById("fullname").value.trim();
+const email          = document.getElementById("email").value.trim();
+const phone          = document.getElementById("phone").value.trim();
+const password       = document.getElementById("password").value;
+const confirmPassword= document.getElementById("confirmPassword").value;
 
-    if(!fullname || !email || !phone || !password){
-        showToast("Please fill all fields");
-        return;
+if(!fullname || !email || !phone || !password){
+    showToast("Please fill all fields"); return;
+}
+if(password !== confirmPassword){
+    showToast("Passwords do not match"); return;
+}
+
+try {
+    const res = await fetch("http://localhost:8080/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            fullName: fullname,
+            email:    email,
+            phone:    phone,
+            password: password,
+            role:     "USER",
+            termsAccepted: true
+        })
+    });
+    const data = await res.json();
+    if (data.success) {
+        showToast("Registration successful! Please login.");
+        setTimeout(() => { window.location.href = "login.html"; }, 1500);
+    } else {
+        showToast(data.message || "Registration failed");
     }
+} catch(err) {
+    showToast("Registration failed. Is the server running?");
+    console.error(err);
+}
 
-    if(!email.includes("@")){
-        showToast("Enter valid email");
-        return;
-    }
-
-    if(password !== confirmPassword){
-        showToast("Passwords do not match");
-        return;
-    }
-
-    let users = JSON.parse(localStorage.getItem("users")) || [];
-
-    const userExists = users.find(user => 
-        user.email.toLowerCase() === email.toLowerCase()
-    );
-
-    if(userExists){
-        showToast("User already registered");
-        return;
-    }
-
-    const newUser = {
-        fullname,
-        email,
-        phone,
-        password,
-        role: selectedRole   // always "user"
-    };
-
-    users.push(newUser);
-    localStorage.setItem("users", JSON.stringify(users));
-
-    showToast("Registration Successful");
-
-    setTimeout(()=>{
-        window.location.href = "login.html";
-    }, 1500);
 });
 </script>
 </body>
