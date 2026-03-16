@@ -26,6 +26,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
     private final AuthenticationManager authenticationManager;
+    private final EmailService emailService;
 
     private static final String AUTHORITY_VERIFICATION_CODE = "AUTH-CODE-001";
 
@@ -61,6 +62,9 @@ public class AuthService {
         userRepository.save(user);
         log.info("New user registered: {} [{}]", user.getEmail(), user.getRole());
 
+        // Send welcome email
+        emailService.sendWelcomeEmail(user);
+
         String token = jwtUtil.generateToken(user);
         return buildAuthResponse(user, token);
     }
@@ -95,8 +99,10 @@ public class AuthService {
         user.setPasswordResetToken(resetToken);
         user.setPasswordResetExpiry(LocalDateTime.now().plusHours(1));
         userRepository.save(user);
-        // TODO: Integrate email service to send reset link
-        log.info("Password reset token for {}: {}", email, resetToken);
+
+        // Send password reset email
+        emailService.sendPasswordResetEmail(user, resetToken);
+        log.info("Password reset email sent to: {}", email);
     }
 
     public void resetPassword(String token, String newPassword, String confirmPassword) {
