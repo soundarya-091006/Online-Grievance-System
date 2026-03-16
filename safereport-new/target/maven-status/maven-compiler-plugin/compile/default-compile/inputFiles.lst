@@ -25,6 +25,7 @@ C:\Users\sound\OneDrive\Desktop\Grievance system\safereport-new\src\main\java\co
 C:\Users\sound\OneDrive\Desktop\Grievance system\safereport-new\src\main\java\com\safereport\dto\request\ChangePasswordRequest.java
 C:\Users\sound\OneDrive\Desktop\Grievance system\safereport-new\src\main\java\com\safereport\dto\request\LoginRequest.java
 C:\Users\sound\OneDrive\Desktop\Grievance system\safereport-new\src\main\java\com\safereport\entity\AuditLog.java
+C:\Users\sound\OneDrive\Desktop\Grievance system\safereport-new\src\main\java\com\safereport\enums\NotificationType.java
 C:\Users\sound\OneDrive\Desktop\Grievance system\safereport-new\src\main\java\com\safereport\dto\request\UpdateStatusRequest.java
 C:\Users\sound\OneDrive\Desktop\Grievance system\safereport-new\src\main\java\com\safereport\dto\response\AuthResponse.java
 C:\Users\sound\OneDrive\Desktop\Grievance system\safereport-new\src\main\java\com\safereport\entity\Notification.java

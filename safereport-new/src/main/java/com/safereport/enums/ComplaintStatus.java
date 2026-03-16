@@ -1,11 +1,6 @@
 package com.safereport.enums;
 
 public enum ComplaintStatus {
-    SUBMITTED,
-    UNDER_REVIEW,
-    ASSIGNED,
-    INVESTIGATING,
-    RESOLVED,
-    CLOSED,
-    REJECTED
+    DRAFT, SUBMITTED, UNDER_REVIEW, VERIFIED,
+    ASSIGNED, INVESTIGATING, RESOLVED, CLOSED, REJECTED
 }

@@ -1,0 +1,6 @@
+package com.safereport.enums;
+
+public enum NotificationType {
+    COMPLAINT_SUBMITTED, COMPLAINT_ASSIGNED, STATUS_UPDATED,
+    EVIDENCE_ADDED, CASE_CLOSED, SYSTEM_ALERT, MESSAGE_RECEIVED
+}

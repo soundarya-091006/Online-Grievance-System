@@ -43,15 +43,16 @@ function checkTokenExpiry() {
 
 /* ── Redirect to login (works from any subfolder) ─────────── */
 function redirectToLogin() {
-    const depth = window.location.pathname.split("/").length - 2;
-    const prefix = depth > 1 ? "../".repeat(depth - 1) : "";
-    window.location.href = prefix + "login.html";
+    window.location.href = "../login.html";
 }
 
 function logout() {
     clearAuth();
     redirectToLogin();
 }
+
+/* Alias used by several user-facing pages */
+function logoutUser() { logout(); }
 
 /* ── Redirect to login if not authenticated ───────────────── */
 function requireAuth(allowedRoles = []) {

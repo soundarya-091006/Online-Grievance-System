@@ -24,6 +24,8 @@ function doLogout() {
     window.location.href = "../login.html";
 }
 
+function logoutAuth() { doLogout(); }
+
 /* ─── API FETCH ─── */
 async function authFetch(path, options = {}) {
     const token = getToken();

@@ -224,7 +224,7 @@
               <line x1="8" y1="2" x2="8" y2="6" />
               <line x1="3" y1="10" x2="21" y2="10" />
             </svg>My Schedule</a>
-          <a href="../login.html" onclick="logoutAuth()" style="color:var(--danger);"><svg viewBox="0 0 24 24" fill="none"
+          <a href="login.html" onclick="logoutAuth()" style="color:var(--danger);"><svg viewBox="0 0 24 24" fill="none"
               stroke="currentColor">
               <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
               <polyline points="16 17 21 12 16 7" />
@@ -384,12 +384,12 @@
       try {
         const data = await authGet("/complaints/authority/assigned?page=0&size=100");
         authorityCases = data.content || data || [];
-      } catch(e) {
+      } catch (e) {
         // fallback: try all complaints endpoint (for AUTHORITY role)
         try {
           const data2 = await authGet("/complaints?page=0&size=100");
           authorityCases = data2.content || data2 || [];
-        } catch(e2) {
+        } catch (e2) {
           showToast("Could not load cases: " + e2.message, "error");
           authorityCases = [];
         }
@@ -400,7 +400,7 @@
       if (el('miniAll')) el('miniAll').textContent = authorityCases.length;
       if (el('miniAssigned')) el('miniAssigned').textContent = authorityCases.filter(c => c.status === 'ASSIGNED').length;
       if (el('miniInProgress')) el('miniInProgress').textContent = authorityCases.filter(c => c.status === 'INVESTIGATING').length;
-      if (el('miniResolved')) el('miniResolved').textContent = authorityCases.filter(c => ['RESOLVED','CLOSED'].includes(c.status)).length;
+      if (el('miniResolved')) el('miniResolved').textContent = authorityCases.filter(c => ['RESOLVED', 'CLOSED'].includes(c.status)).length;
       if (el('miniUnderReview')) el('miniUnderReview').textContent = authorityCases.filter(c => c.status === 'UNDER_REVIEW').length;
 
       populateTable(authorityCases);
@@ -414,15 +414,15 @@
         return;
       }
       tbody.innerHTML = data.map(c => {
-        const priorityCls = { CRITICAL:'badge-urgent', HIGH:'badge-high', MEDIUM:'badge-medium', LOW:'badge-low' };
+        const priorityCls = { CRITICAL: 'badge-urgent', HIGH: 'badge-high', MEDIUM: 'badge-medium', LOW: 'badge-low' };
         const priority = c.priority ? `<span class="badge ${priorityCls[c.priority] || 'badge-medium'}">${c.priority}</span>` : '';
-        const statusCls = { RESOLVED:'badge-resolved', CLOSED:'badge-resolved', INVESTIGATING:'badge-progress', ASSIGNED:'badge-new', UNDER_REVIEW:'badge-pending', SUBMITTED:'badge-pending' };
-        const statusBadge = `<span class="badge ${statusCls[c.status] || 'badge-new'}">${(c.status||'').replace(/_/g,' ')}</span>`;
+        const statusCls = { RESOLVED: 'badge-resolved', CLOSED: 'badge-resolved', INVESTIGATING: 'badge-progress', ASSIGNED: 'badge-new', UNDER_REVIEW: 'badge-pending', SUBMITTED: 'badge-pending' };
+        const statusBadge = `<span class="badge ${statusCls[c.status] || 'badge-new'}">${(c.status || '').replace(/_/g, ' ')}</span>`;
         const date = c.createdAt ? formatDate(c.createdAt) : '';
-        const isActive = ['ASSIGNED','INVESTIGATING','UNDER_REVIEW'].includes(c.status);
+        const isActive = ['ASSIGNED', 'INVESTIGATING', 'UNDER_REVIEW'].includes(c.status);
         return `
         <tr>
-          <td><b style="color:var(--primary)">${c.trackingId || '#'+c.id}</b></td>
+          <td><b style="color:var(--primary)">${c.trackingId || '#' + c.id}</b></td>
           <td>${escHtml(c.title)}</td>
           <td>${c.categoryName || '—'}</td>
           <td>${date}</td>

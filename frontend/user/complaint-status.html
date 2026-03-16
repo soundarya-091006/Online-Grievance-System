@@ -602,7 +602,8 @@
                         <path d="M12 2L4 5V11C4 16 7.5 20 12 22C16.5 20 20 16 20 11V5L12 2Z" fill="url(#g1)" />
                         <path d="M9.5 12.5L11 14L14.5 10.5" stroke="white" stroke-width="2" stroke-linecap="round"
                             stroke-linejoin="round" />
-                    </svg></div>
+                    </svg>
+                </div>
                 <span class="logo-text">SafeReport</span>
             </div>
             <div id="hamburgerDropdown" class="hamburger-menu-dropdown">
@@ -620,7 +621,7 @@
                                 <line x1="12" y1="8" x2="12" y2="16" />
                                 <line x1="8" y1="12" x2="16" y2="12" />
                             </svg>Submit Complaint</a></li>
-                    <li><a href="my-complaints.html" class="menu-link" onclick="closeMenu()"><svg class="menu-icon"
+                    <li><a href="my-complaint.html" class="menu-link" onclick="closeMenu()"><svg class="menu-icon"
                                 viewBox="0 0 24 24" fill="none" stroke="currentColor">
                                 <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
                                 <polyline points="14 2 14 8 20 8" />
@@ -640,7 +641,7 @@
                                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
                                 <circle cx="12" cy="7" r="4" />
                             </svg>My Profile</a></li>
-                    <li><a href="../login.html" class="menu-link" onclick="logoutUser(); return false;"><svg
+                    <li><a href="login.html" class="menu-link" onclick="logoutUser(); return false;"><svg
                                 class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                                 <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
                                 <polyline points="16 17 21 12 16 7" />
@@ -664,7 +665,7 @@
                             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
                             <circle cx="12" cy="7" r="4" />
                         </svg>My Profile</a>
-                    <a href="../login.html" onclick="logoutUser(); return false;"><svg viewBox="0 0 24 24" fill="none"
+                    <a href="login.html" onclick="logoutUser(); return false;"><svg viewBox="0 0 24 24" fill="none"
                             stroke="currentColor">
                             <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
                             <polyline points="16 17 21 12 16 7" />
@@ -794,7 +795,7 @@
                 <div class="timeline">${timelineHtml}</div>
                 ${updatesHtml}
                 <div class="card-footer">
-                    <a href="my-complaints.html" class="btn-sm">← All Complaints</a>
+                    <a href="my-complaint.html" class="btn-sm">← All Complaints</a>
                 </div>
             </div>`;
             }).join("");
