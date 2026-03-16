@@ -304,59 +304,62 @@
     </div>
 
     <script>
+        const API = "http://localhost:8080/api";
+        function getToken() { return localStorage.getItem("token"); }
+        function esc(s) { return (s||'').replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
         function checkAdminAccess() {
-            const currentUser = JSON.parse(localStorage.getItem("currentUser")) || {};
-            if (currentUser.role !== "admin") {
+            const role = localStorage.getItem("role");
+            if (!getToken() || role !== "ADMIN") {
                 window.location.href = "../login.html";
+                return false;
             }
-            document.getElementById("userEmail").innerText = currentUser.email || "Admin";
+            document.getElementById("userEmail").innerText = localStorage.getItem("fullName") || "Admin";
+            return true;
         }
 
-        function loadAuditLogs() {
-            // Mock data for demonstration
-            const mockLogs = [
-                {
-                    timestamp: new Date().toLocaleString(),
-                    user: "admin@safereport.com",
-                    action: "login",
-                    target: "System",
-                    details: "Admin logged in"
-                },
-                {
-                    timestamp: new Date(Date.now() - 3600000).toLocaleString(),
-                    user: "admin@safereport.com",
-                    action: "update",
-                    target: "Complaint #123",
-                    details: "Changed status to RESOLVED"
-                },
-                {
-                    timestamp: new Date(Date.now() - 7200000).toLocaleString(),
-                    user: "authority@dept.gov",
-                    action: "create",
-                    target: "Admin Notes",
-                    details: "Added notes to complaint"
-                }
-            ];
+        async function loadAuditLogs() {
+            try {
+                const res = await fetch(API + "/admin/audit-logs?page=0&size=50", {
+                    headers: { "Authorization": "Bearer " + getToken() }
+                });
+                const json = await res.json();
+                if (!json.success) { console.error(json.message); return; }
+                const logs = json.data.content || json.data || [];
+                const tbody = document.getElementById("logsBody");
 
-            const tbody = document.getElementById("logsBody");
-            tbody.innerHTML = mockLogs.map(log => `
-                <tr>
-                    <td>${log.timestamp}</td>
-                    <td>${log.user}</td>
-                    <td><span class="log-action action-${log.action}">${log.action.charAt(0).toUpperCase() + log.action.slice(1)}</span></td>
-                    <td>${log.target}</td>
-                    <td>${log.details}</td>
-                </tr>
-            `).join("");
+                if (logs.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; padding: 40px; color: var(--text-light);">No audit logs found</td></tr>`;
+                    return;
+                }
+
+                tbody.innerHTML = logs.map(log => {
+                    const actionClass = (log.action || '').toLowerCase().includes('create') ? 'create'
+                        : (log.action || '').toLowerCase().includes('delete') ? 'delete'
+                        : (log.action || '').toLowerCase().includes('login') ? 'login'
+                        : 'update';
+                    return `
+                        <tr>
+                            <td>${log.createdAt ? new Date(log.createdAt).toLocaleString() : '—'}</td>
+                            <td>${esc(log.userEmail || '—')}</td>
+                            <td><span class="log-action action-${actionClass}">${esc(log.action || '—')}</span></td>
+                            <td>${esc(log.entityType || '—')}</td>
+                            <td>${esc(log.details || '—')}</td>
+                        </tr>
+                    `;
+                }).join("");
+            } catch(e) {
+                console.error("Failed to load audit logs:", e);
+            }
         }
 
         function logout() {
-            localStorage.removeItem("currentUser");
+            ["token","role","userId","fullName","email"].forEach(k => localStorage.removeItem(k));
             window.location.href = "../login.html";
         }
 
         window.addEventListener("DOMContentLoaded", () => {
-            checkAdminAccess();
+            if (!checkAdminAccess()) return;
             loadAuditLogs();
         });
     </script>

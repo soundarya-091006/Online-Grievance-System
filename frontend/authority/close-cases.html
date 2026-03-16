@@ -224,8 +224,8 @@
               <line x1="8" y1="2" x2="8" y2="6" />
               <line x1="3" y1="10" x2="21" y2="10" />
             </svg>My Schedule</a>
-          <a href="../login.html" onclick="logoutAuth()" style="color:var(--danger);"><svg viewBox="0 0 24 24" fill="none"
-              stroke="currentColor">
+          <a href="../login.html" onclick="logoutAuth()" style="color:var(--danger);"><svg viewBox="0 0 24 24"
+              fill="none" stroke="currentColor">
               <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
               <polyline points="16 17 21 12 16 7" />
               <line x1="21" y1="12" x2="9" y2="12" />
@@ -416,21 +416,66 @@
   <script src="authority-shared.js"></script>
   <script>
 
-    let selectedCloseCase = null;
 
-    function initClosePage() {
-      const currentUser = JSON.parse(localStorage.getItem("currentUser")) || {};
-      if (currentUser.role !== "authority") { window.location.href = "../login.html"; return; }
-      const complaints = JSON.parse(localStorage.getItem("complaints")) || [];
-      const myCases = complaints.filter(c => c.assignedTo === currentUser.email && (c.status === "IN PROGRESS" || c.status === "ASSIGNED"));
+    const API = "http://localhost:8080/api";
+    function getToken() { return localStorage.getItem("token"); }
+    function requireAuthority() {
+      const token = getToken();
+      const role = localStorage.getItem("role");
+      if (!token || role !== "AUTHORITY") {
+        window.location.href = "../login.html";
+        return false;
+      }
+      return true;
+    }
+    async function authGet(path) {
+      const res = await fetch(API + path, { headers: { "Authorization": "Bearer " + getToken() } });
+      const json = await res.json();
+      if (!json.success) throw new Error(json.message);
+      return json.data;
+    }
+    async function authPost(path, body) {
+      const res = await fetch(API + path, { method: "POST", headers: { "Authorization": "Bearer " + getToken(), "Content-Type": "application/json" }, body: JSON.stringify(body) });
+      const json = await res.json();
+      if (!json.success) throw new Error(json.message);
+      return json.data;
+    }
+    async function authPatch(path, body) {
+      const res = await fetch(API + path, { method: "PATCH", headers: { "Authorization": "Bearer " + getToken(), "Content-Type": "application/json" }, body: JSON.stringify(body) });
+      const json = await res.json();
+      if (!json.success) throw new Error(json.message);
+      return json.data;
+    }
+
+    let selectedCloseCase = null;
+    let allCases = [];
+
+    async function initClosePage() {
+      if (!requireAuthority()) return;
+
+      try {
+        const data = await authGet("/complaints/authority/my-cases?page=0&size=100");
+        allCases = data.content || data || [];
+      } catch (e) {
+        try {
+          const data2 = await authGet("/complaints?page=0&size=100");
+          allCases = data2.content || data2 || [];
+        } catch (e2) {
+          showToast("Could not load cases: " + e2.message, "error");
+          allCases = [];
+        }
+      }
+
+      const activeCases = allCases.filter(c => ['ASSIGNED', 'INVESTIGATING', 'UNDER_REVIEW'].includes(c.status));
       const sel = document.getElementById("closeCaseSelect");
       sel.innerHTML = '<option value="">— Select a case —</option>';
-      myCases.forEach(c => {
+      activeCases.forEach(c => {
         const opt = document.createElement("option");
         opt.value = c.id;
-        opt.textContent = '#' + c.id + ' · ' + (c.subject || c.category || 'Case') + ' · ' + c.status;
+        opt.textContent = (c.trackingId || '#' + c.id) + ' · ' + (c.title || 'Case') + ' · ' + (c.status || '').replace(/_/g, ' ');
         sel.appendChild(opt);
       });
+
       // Auto-select from URL param
       const params = new URLSearchParams(window.location.search);
       const idParam = params.get('id');
@@ -448,39 +493,36 @@
         box.style.display = 'none';
         selectedCloseCase = null;
         sidebar.innerHTML = '<div style="color:var(--text-light);font-size:13px;padding:10px;">Select a case to see summary.</div>';
-        // Update page subtitle
         document.querySelector('.page-subtitle').textContent = 'Select a case to close.';
         return;
       }
-      const complaints = JSON.parse(localStorage.getItem("complaints")) || [];
-      selectedCloseCase = complaints.find(c => String(c.id) === String(caseId));
+
+      selectedCloseCase = allCases.find(c => String(c.id) === String(caseId));
       if (!selectedCloseCase) { box.style.display = 'none'; return; }
 
       box.style.display = 'block';
       box.innerHTML = `
         <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
           <div>
-            <div style="font-size:16px;font-weight:800">Case #${selectedCloseCase.id} — ${selectedCloseCase.subject || selectedCloseCase.category || ''}</div>
-            <div style="font-size:13px;color:var(--text-light);margin-top:4px">${selectedCloseCase.category || ''} · Submitted: ${formatDate(selectedCloseCase.createdAt)}</div>
+            <div style="font-size:16px;font-weight:800">${selectedCloseCase.trackingId || 'Case #' + selectedCloseCase.id} — ${escHtml(selectedCloseCase.title)}</div>
+            <div style="font-size:13px;color:var(--text-light);margin-top:4px">${selectedCloseCase.categoryName || ''} · Submitted: ${formatDate(selectedCloseCase.createdAt)}</div>
           </div>
           <div style="display:flex;gap:8px">
             ${selectedCloseCase.priority ? '<span class="badge badge-urgent">' + selectedCloseCase.priority + '</span>' : ''}
-            <span class="badge badge-progress">${selectedCloseCase.status}</span>
+            <span class="badge badge-progress">${(selectedCloseCase.status || '').replace(/_/g, ' ')}</span>
           </div>
         </div>
     `;
 
-      // Update page subtitle
-      document.querySelector('.page-subtitle').textContent = 'Complete the investigation and formally close Case #' + selectedCloseCase.id + '.';
+      document.querySelector('.page-subtitle').textContent = 'Complete the investigation and formally close ' + (selectedCloseCase.trackingId || 'Case #' + selectedCloseCase.id) + '.';
 
-      // Update sidebar summary
-      const timelineCount = (selectedCloseCase.timeline || []).length;
       const daysOpen = selectedCloseCase.createdAt ? Math.ceil((Date.now() - new Date(selectedCloseCase.createdAt).getTime()) / 86400000) : '—';
+      const updatesCount = (selectedCloseCase.updates || []).length;
       sidebar.innerHTML = `
         <div class="overview-item"><span class="overview-label">Days Open</span><span class="overview-value">${daysOpen} days</span></div>
-        <div class="overview-item"><span class="overview-label">Status</span><span class="overview-value">${selectedCloseCase.status}</span></div>
-        <div class="overview-item"><span class="overview-label">Progress</span><span class="overview-value">${selectedCloseCase.progress || 0}%</span></div>
-        <div class="overview-item"><span class="overview-label">Timeline Entries</span><span class="overview-value">${timelineCount}</span></div>
+        <div class="overview-item"><span class="overview-label">Status</span><span class="overview-value">${(selectedCloseCase.status || '').replace(/_/g, ' ')}</span></div>
+        <div class="overview-item"><span class="overview-label">Priority</span><span class="overview-value">${selectedCloseCase.priority || '—'}</span></div>
+        <div class="overview-item"><span class="overview-label">Updates</span><span class="overview-value">${updatesCount}</span></div>
     `;
     }
 
@@ -495,30 +537,41 @@
       if (unchecked.length > 0) {
         if (!confirm("Some checklist items are incomplete. Proceed anyway?")) return;
       }
-      document.getElementById("confirmModalText").innerHTML = 'You are about to permanently close <b>Case #' + selectedCloseCase.id + '</b>. This action will notify the complainant and archive all case materials. Are you absolutely sure?';
+      const caseLabel = selectedCloseCase.trackingId || 'Case #' + selectedCloseCase.id;
+      document.getElementById("confirmModalText").innerHTML = 'You are about to permanently close <b>' + caseLabel + '</b>. This action will notify the complainant and archive all case materials. Are you absolutely sure?';
       openModal("confirmCloseModal");
     }
 
-    function finalClose() {
+    async function finalClose() {
       closeModal("confirmCloseModal");
-      const complaints = JSON.parse(localStorage.getItem("complaints")) || [];
-      const comp = complaints.find(c => String(c.id) === String(selectedCloseCase.id));
-      if (comp) {
-        comp.status = "RESOLVED";
-        comp.progress = 100;
-        comp.updatedAt = new Date().toISOString();
-        comp.resolution = document.getElementById("resolutionType").value;
-        comp.closeSummary = document.getElementById("summary").value;
-        comp.timeline = comp.timeline || [];
-        comp.timeline.push({
-          status: 'Resolved',
-          date: new Date().toISOString(),
-          description: 'Case closed: ' + comp.resolution + '. ' + comp.closeSummary.substring(0, 100)
+
+      try {
+        const resolution = document.getElementById("resolutionType").value;
+        const summary = document.getElementById("summary").value;
+        const findings = document.getElementById("keyFindings").value;
+        const recommendations = document.getElementById("recommendations").value;
+
+        // Add final investigation note with resolution details
+        const closureNote = 'CASE CLOSURE\n\nResolution: ' + resolution +
+          '\n\nSummary: ' + summary +
+          (findings ? '\n\nFindings: ' + findings : '') +
+          (recommendations ? '\n\nRecommendations: ' + recommendations : '');
+
+        await authPost("/complaints/" + selectedCloseCase.id + "/investigation-update", {
+          description: closureNote,
+          updateType: 'CASE_CLOSURE',
+          notifyComplainant: true
         });
-        localStorage.setItem("complaints", JSON.stringify(complaints));
+
+        // Update status to RESOLVED
+        await authPatch("/complaints/" + selectedCloseCase.id + "/status", { status: "RESOLVED", description: summary, notifyComplainant: true });
+
+        const caseLabel = selectedCloseCase.trackingId || 'Case #' + selectedCloseCase.id;
+        showToast(caseLabel + " has been officially closed.", "success");
+        setTimeout(() => window.location.href = "my-cases.html", 2000);
+      } catch (e) {
+        showToast("Failed to close case: " + e.message, "error");
       }
-      showToast("Case #" + selectedCloseCase.id + " has been officially closed and archived.", "success");
-      setTimeout(() => window.location.href = "closed-cases.html", 2000);
     }
 
     window.addEventListener('DOMContentLoaded', initClosePage);

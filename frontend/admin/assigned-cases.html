@@ -287,125 +287,127 @@
     </div>
 
     <script>
+        const API = "http://localhost:8080/api";
+        let allAuthorities = [];
+
+        function getToken() { return localStorage.getItem("token"); }
+        function esc(s) { return (s||'').replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
         function checkAdminAccess() {
-            const currentUser = JSON.parse(localStorage.getItem("currentUser")) || {};
-            if (currentUser.role !== "admin") {
+            const role = localStorage.getItem("role");
+            if (!getToken() || role !== "ADMIN") {
                 window.location.href = "../login.html";
+                return false;
             }
-            document.getElementById("userEmail").innerText = currentUser.email || "Admin";
+            document.getElementById("userEmail").innerText = localStorage.getItem("fullName") || "Admin";
+            return true;
         }
 
-        function loadAssignedCases() {
-            const users = JSON.parse(localStorage.getItem("users")) || [];
-            const authorities = users.filter(u => u.role === "authority");
-            const complaints = JSON.parse(localStorage.getItem("complaints")) || [];
+        async function loadUnassignedCases() {
+            try {
+                // Fetch complaints with UNDER_REVIEW status (ready to be assigned)
+                const res = await fetch(API + "/complaints?status=UNDER_REVIEW&page=0&size=100", {
+                    headers: { "Authorization": "Bearer " + getToken() }
+                });
+                const json = await res.json();
+                if (!json.success) { console.error(json.message); return; }
+                const unassigned = json.data.content || json.data || [];
+                const list = document.getElementById("unassignedList");
 
-            const grid = document.getElementById("casesGrid");
-            if (authorities.length === 0) {
-                grid.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-light);">No authorities found. Create authorities first from Authority Management.</div>';
-                return;
+                if (unassigned.length === 0) {
+                    list.innerHTML = '<div style="color:var(--text-light);">No cases waiting for assignment.</div>';
+                    return;
+                }
+
+                const opts = allAuthorities.map(a =>
+                    `<option value="${a.id}">${esc(a.fullName)} (${esc(a.email)})</option>`
+                ).join('');
+
+                list.innerHTML = unassigned.map(c => `
+                    <div class="authority-card" style="border-left:4px solid var(--warning);">
+                        <div><strong>${esc(c.trackingId || '#'+c.id)}</strong> ${esc(c.title || '')}</div>
+                        <div style="margin:6px 0;">Status: ${(c.status||'').replace(/_/g,' ')} | Priority: ${c.priority||'—'} | Category: ${c.categoryName||'—'}</div>
+                        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+                            <select id="sel-${c.id}" style="padding:6px 10px;border:1px solid var(--border);border-radius:4px;font-family:Inter,sans-serif;font-size:13px;">${opts.length ? opts : '<option value="">No authorities available</option>'}</select>
+                            <button class="btn" onclick="assignTo(${c.id})">Assign</button>
+                        </div>
+                    </div>
+                `).join('');
+            } catch(e) {
+                console.error("Failed to load unassigned cases:", e);
             }
-            grid.innerHTML = authorities.map(authority => {
-                const assigned = complaints.filter(c => c.assignedTo === authority.email && c.status !== "RESOLVED");
-                const resolved = complaints.filter(c => c.assignedTo === authority.email && c.status === "RESOLVED");
-                const total = assigned.length + resolved.length;
-                const workload = total > 10 ? "High" : total > 5 ? "Medium" : "Low";
+        }
 
-                return `
+        async function loadAssignedCases() {
+            try {
+                // Show each authority and their case count
+                const grid = document.getElementById("casesGrid");
+                if (allAuthorities.length === 0) {
+                    grid.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-light);">No authorities found. Create authorities first from Authority Management.</div>';
+                    return;
+                }
+
+                grid.innerHTML = allAuthorities.map(a => `
                     <div class="authority-card">
                         <div class="authority-header">
-                            <div class="authority-name">${authority.fullname || authority.name}</div>
-                            <div class="workload-badge">${workload} Workload</div>
+                            <div class="authority-name">${esc(a.fullName)}</div>
+                            <div class="workload-badge"><span style="color:${a.active ? 'var(--success)' : 'var(--danger)'}">${a.active ? 'Active' : 'Disabled'}</span></div>
                         </div>
-                        <div class="case-count">
-                            <div class="count-item">
-                                <div class="count-number">${assigned.length}</div>
-                                <div class="count-label">Assigned</div>
-                            </div>
-                            <div class="count-item">
-                                <div class="count-number">${resolved.length}</div>
-                                <div class="count-label">Resolved</div>
-                            </div>
+                        <div style="font-size:13px;color:var(--text-light);margin:8px 0;">
+                            <div>${esc(a.email)}</div>
+                            <div>${esc(a.phone ||'—')}</div>
                         </div>
                     </div>
-                `;
-            }).join("");
-        }
-
-        function viewCases(authorityId) {
-            alert("View cases for authority: " + authorityId);
-        }
-
-        function reassignCases(authorityId) {
-            alert("Reassign cases feature coming soon");
-        }
-
-        function logout() {
-            localStorage.removeItem("currentUser");
-            window.location.href = "../login.html";
-        }
-
-        // simple toast fallback
-        function showToast(msg, type = 'success') {
-            alert(msg);
-        }
-
-        function loadUnassignedCases() {
-            const complaints = JSON.parse(localStorage.getItem("complaints")) || [];
-            const users = JSON.parse(localStorage.getItem("users")) || [];
-            const authorities = users.filter(u => u.role === "authority");
-            const list = document.getElementById("unassignedList");
-            const unassigned = complaints.filter(c => c.status === "UNDER REVIEW");
-            if (unassigned.length === 0) {
-                list.innerHTML = '<div style="color:var(--text-light);">No cases waiting for assignment.</div>';
-                return;
+                `).join("");
+            } catch(e) {
+                console.error("Failed to display assigned cases:", e);
             }
-            list.innerHTML = unassigned.map(c => {
-                const opts = authorities.map(a =>
-                    `<option value="${a.email}">${a.fullname || a.name} (${a.department || 'N/A'})</option>`
-                ).join('');
-                return `
-                    <div class="authority-card" style="border-left:4px solid var(--warning);">
-                        <div><strong>#${c.id}</strong> ${c.subject || ''}</div>
-                        <div style="margin:6px 0;">Status: ${c.status}</div>
-                        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-                            <select id="sel-${c.id}">${opts.length ? opts : '<option value="">No authorities available</option>'}</select>
-                            <button class="btn" onclick="assignTo('${c.id}')">Assign</button>
-                        </div>
-                    </div>
-                `;
-            }).join('');
         }
 
-        function assignTo(complaintId) {
+        async function assignTo(complaintId) {
             const sel = document.getElementById(`sel-${complaintId}`);
             if (!sel || !sel.value) {
                 alert('Please select an authority');
                 return;
             }
-            const complaints = JSON.parse(localStorage.getItem("complaints")) || [];
-            const comp = complaints.find(c => String(c.id) === String(complaintId));
-            if (comp) {
-                comp.status = "ASSIGNED";
-                comp.assignedTo = sel.value;
-                comp.timeline = comp.timeline || [];
-                comp.timeline.push({
-                    status: 'Assigned',
-                    date: new Date().toISOString(),
-                    description: 'Assigned by admin to ' + sel.value
+            try {
+                const res = await fetch(API + "/complaints/" + complaintId + "/assign", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer " + getToken()
+                    },
+                    body: JSON.stringify({ authorityId: parseInt(sel.value) })
                 });
-                comp.updatedAt = new Date().toISOString();
-                localStorage.setItem("complaints", JSON.stringify(complaints));
-                loadUnassignedCases();
-                loadAssignedCases();
-                alert('✅ Complaint #' + complaintId + ' assigned successfully!');
-            } else {
-                alert('❌ Error: Complaint not found. Please refresh and try again.');
+                const json = await res.json();
+                if (json.success) {
+                    alert('✅ Complaint assigned successfully!');
+                    loadUnassignedCases();
+                    loadAssignedCases();
+                } else {
+                    alert('❌ ' + json.message);
+                }
+            } catch(e) {
+                alert('❌ Error: ' + e.message);
             }
         }
 
-        window.addEventListener("DOMContentLoaded", () => {
-            checkAdminAccess();
+        function logout() {
+            ["token","role","userId","fullName","email"].forEach(k => localStorage.removeItem(k));
+            window.location.href = "../login.html";
+        }
+
+        window.addEventListener("DOMContentLoaded", async () => {
+            if (!checkAdminAccess()) return;
+            // Load authorities first (needed for dropdown)
+            try {
+                const res = await fetch(API + "/admin/authorities", {
+                    headers: { "Authorization": "Bearer " + getToken() }
+                });
+                const json = await res.json();
+                if (json.success) allAuthorities = json.data || [];
+            } catch(e) { console.error(e); }
+
             loadUnassignedCases();
             loadAssignedCases();
         });

@@ -323,11 +323,13 @@
       </select>
       <select class="filter-select" id="categoryFilter" onchange="filterTable()">
         <option value="">All Categories</option>
-        <option>Sexual Harassment</option>
-        <option>Verbal Abuse</option>
-        <option>Physical Assault</option>
+        <option>Domestic Violence</option>
+        <option>Workplace Harassment</option>
+        <option>Cyberbullying</option>
+        <option>Public Harassment</option>
+        <option>Sexual Assault</option>
         <option>Stalking</option>
-        <option>Discrimination</option>
+        <option>Other</option>
       </select>
       <button class="btn btn-outline btn-sm" onclick="resetFilters()">Reset</button>
     </div>
@@ -376,22 +378,30 @@
 
     let authorityCases = [];
 
-    function loadAuthorityCases() {
-      const currentUser = JSON.parse(localStorage.getItem("currentUser")) || {};
-      if (currentUser.role !== "authority") {
-        window.location.href = "../login.html";
-        return;
+    async function loadAuthorityCases() {
+      if (!requireAuthority()) return;
+
+      try {
+        const data = await authGet("/complaints/authority/assigned?page=0&size=100");
+        authorityCases = data.content || data || [];
+      } catch(e) {
+        // fallback: try all complaints endpoint (for AUTHORITY role)
+        try {
+          const data2 = await authGet("/complaints?page=0&size=100");
+          authorityCases = data2.content || data2 || [];
+        } catch(e2) {
+          showToast("Could not load cases: " + e2.message, "error");
+          authorityCases = [];
+        }
       }
-      const complaints = JSON.parse(localStorage.getItem("complaints")) || [];
-      authorityCases = complaints.filter(c => c.assignedTo === currentUser.email);
 
       // Update mini stats dynamically
       const el = (id) => document.getElementById(id);
       if (el('miniAll')) el('miniAll').textContent = authorityCases.length;
       if (el('miniAssigned')) el('miniAssigned').textContent = authorityCases.filter(c => c.status === 'ASSIGNED').length;
-      if (el('miniInProgress')) el('miniInProgress').textContent = authorityCases.filter(c => c.status === 'IN PROGRESS').length;
-      if (el('miniResolved')) el('miniResolved').textContent = authorityCases.filter(c => c.status === 'RESOLVED').length;
-      if (el('miniUnderReview')) el('miniUnderReview').textContent = authorityCases.filter(c => c.status === 'UNDER REVIEW').length;
+      if (el('miniInProgress')) el('miniInProgress').textContent = authorityCases.filter(c => c.status === 'INVESTIGATING').length;
+      if (el('miniResolved')) el('miniResolved').textContent = authorityCases.filter(c => ['RESOLVED','CLOSED'].includes(c.status)).length;
+      if (el('miniUnderReview')) el('miniUnderReview').textContent = authorityCases.filter(c => c.status === 'UNDER_REVIEW').length;
 
       populateTable(authorityCases);
     }
@@ -404,42 +414,42 @@
         return;
       }
       tbody.innerHTML = data.map(c => {
-        const priority = c.priority ? `<span class="badge badge-urgent">${c.priority}</span>` : '';
-        const statusClass = c.status === 'RESOLVED' ? 'badge-resolved' : c.status === 'IN PROGRESS' ? 'badge-progress' : c.status === 'ASSIGNED' ? 'badge-new' : 'badge-pending';
-        const statusBadge = `<span class="badge ${statusClass}">${c.status}</span>`;
-        const date = c.createdAt ? new Date(c.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '';
-        const isActive = c.status === 'ASSIGNED' || c.status === 'IN PROGRESS';
-        const row = `
+        const priorityCls = { CRITICAL:'badge-urgent', HIGH:'badge-high', MEDIUM:'badge-medium', LOW:'badge-low' };
+        const priority = c.priority ? `<span class="badge ${priorityCls[c.priority] || 'badge-medium'}">${c.priority}</span>` : '';
+        const statusCls = { RESOLVED:'badge-resolved', CLOSED:'badge-resolved', INVESTIGATING:'badge-progress', ASSIGNED:'badge-new', UNDER_REVIEW:'badge-pending', SUBMITTED:'badge-pending' };
+        const statusBadge = `<span class="badge ${statusCls[c.status] || 'badge-new'}">${(c.status||'').replace(/_/g,' ')}</span>`;
+        const date = c.createdAt ? formatDate(c.createdAt) : '';
+        const isActive = ['ASSIGNED','INVESTIGATING','UNDER_REVIEW'].includes(c.status);
+        return `
         <tr>
-          <td><b style="color:var(--primary)">#${c.id}</b></td>
-          <td>${c.subject || ''}</td>
-          <td>${c.category || ''}</td>
+          <td><b style="color:var(--primary)">${c.trackingId || '#'+c.id}</b></td>
+          <td>${escHtml(c.title)}</td>
+          <td>${c.categoryName || '—'}</td>
           <td>${date}</td>
           <td>${priority}</td>
           <td>${statusBadge}</td>
-          <td>${c.isAnonymous ? 'Anonymous' : (c.userEmail || 'Anonymous')}</td>
+          <td>${c.complainantName || 'Anonymous'}</td>
           <td style="display:flex;gap:6px;flex-wrap:wrap">
             ${isActive ? '<a href="add-update.html?id=' + c.id + '" class="btn btn-primary btn-sm">Update</a>' : ''}
             ${isActive ? '<a href="close-cases.html?id=' + c.id + '" class="btn btn-outline btn-sm">Close</a>' : ''}
-            ${!isActive ? '<a href="closed-cases.html" class="btn btn-outline btn-sm">View</a>' : ''}
+            ${!isActive ? '<a href="add-update.html?id=' + c.id + '" class="btn btn-outline btn-sm">View</a>' : ''}
           </td>
         </tr>`;
-        return row;
       }).join('');
       document.getElementById('rowCount').innerText = data.length;
     }
 
     function filterTable() {
       const search = document.getElementById("searchInput").value.toLowerCase();
-      const status = document.getElementById("statusFilter").value.toLowerCase();
-      const priority = document.getElementById("priorityFilter").value.toLowerCase();
+      const status = document.getElementById("statusFilter").value;
+      const priority = document.getElementById("priorityFilter").value;
       const category = document.getElementById("categoryFilter").value.toLowerCase();
       let filtered = authorityCases.filter(c => {
-        if (search && !(c.id && c.id.toString().includes(search)) &&
-          !(c.subject && c.subject.toLowerCase().includes(search))) return false;
-        if (status && c.status.toLowerCase() !== status) return false;
-        if (priority && c.priority && c.priority.toLowerCase() !== priority) return false;
-        if (category && c.category && c.category.toLowerCase() !== category) return false;
+        if (search && !(c.trackingId && c.trackingId.toLowerCase().includes(search)) &&
+          !(c.title && c.title.toLowerCase().includes(search))) return false;
+        if (status && c.status !== status) return false;
+        if (priority && c.priority !== priority) return false;
+        if (category && c.categoryName && !c.categoryName.toLowerCase().includes(category)) return false;
         return true;
       });
       populateTable(filtered);
@@ -461,16 +471,6 @@
 
     // initialize
     window.addEventListener('DOMContentLoaded', loadAuthorityCases);
-
-    // watch for complaint updates from other tabs/pages
-    window.addEventListener('storage', function (e) {
-      if (e.key === 'complaints') {
-        loadAuthorityCases();
-      }
-    });
-    // also refresh on visibility or focus
-    window.addEventListener('focus', loadAuthorityCases);
-    setInterval(loadAuthorityCases, 3000);
 
   </script>
 </body>

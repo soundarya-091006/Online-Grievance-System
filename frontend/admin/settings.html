@@ -385,21 +385,25 @@
     </div>
 
     <script>
+        function getToken() { return localStorage.getItem("token"); }
+
         function checkAdminAccess() {
-            const currentUser = JSON.parse(localStorage.getItem("currentUser")) || {};
-            if (currentUser.role !== "admin") {
+            const role = localStorage.getItem("role");
+            if (!getToken() || role !== "ADMIN") {
                 window.location.href = "../login.html";
+                return false;
             }
-            document.getElementById("userEmail").innerText = currentUser.email || "Admin";
+            document.getElementById("userEmail").innerText = localStorage.getItem("fullName") || "Admin";
+            return true;
         }
 
         function logout() {
-            localStorage.removeItem("currentUser");
+            ["token","role","userId","fullName","email"].forEach(k => localStorage.removeItem(k));
             window.location.href = "../login.html";
         }
 
         window.addEventListener("DOMContentLoaded", () => {
-            checkAdminAccess();
+            if (!checkAdminAccess()) return;
         });
     </script>
 </body>

@@ -1,383 +1,923 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <style>body{visibility:hidden}</style>
+    <style>
+        body {
+            visibility: hidden
+        }
+    </style>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SafeReport | My Profile</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
     <style>
-        :root { --primary:#6366f1; --secondary:#8b5cf6; --success:#10b981; --warning:#f59e0b; --danger:#ef4444; --text:#1e293b; --text-light:#64748b; --border:#e2e8f0; --bg:#f8fafc; --white:#ffffff; }
-        * { margin:0; padding:0; box-sizing:border-box; }
-        body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text); }
-        .topbar { position:fixed; top:0; left:0; right:0; height:70px; background:rgba(255,255,255,0.95); backdrop-filter:blur(20px); border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; padding:0 30px; z-index:1000; gap:20px; }
-        .hamburger-menu { display:flex; align-items:center; gap:15px; position:relative; }
-        .hamburger-btn { display:flex; background:none; border:none; cursor:pointer; padding:8px; border-radius:8px; }
-        .hamburger-btn svg { width:24px; height:24px; stroke:var(--text); stroke-width:2; }
-        .logo-text { font-size:20px; font-weight:800; background:linear-gradient(135deg,var(--primary),var(--secondary)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
-        .logo-section { display:flex; align-items:center; gap:12px; }
-        .hamburger-menu-dropdown { position:absolute; top:100%; left:0; background:var(--white); border:1px solid var(--border); border-radius:12px; min-width:220px; margin-top:8px; box-shadow:0 10px 30px rgba(0,0,0,0.12); display:none; z-index:2000; overflow:hidden; }
-        .hamburger-menu-dropdown.active { display:block; }
-        .hamburger-menu-dropdown .menu-link { display:flex; align-items:center; gap:12px; padding:14px 20px; color:var(--text); text-decoration:none; font-size:14px; transition:all 0.2s; }
-        .hamburger-menu-dropdown .menu-link:hover { background:var(--bg); padding-left:22px; }
-        .hamburger-menu-dropdown .menu-link.active { background:rgba(99,102,241,0.1); color:var(--primary); }
-        .menu-icon { width:18px; height:18px; stroke-width:2; flex-shrink:0; }
-        .topbar-right { display:flex; align-items:center; }
-        .user-menu { display:flex; align-items:center; gap:12px; padding:8px 15px; border-radius:12px; background:var(--white); border:1px solid var(--border); cursor:pointer; position:relative; }
-        .user-avatar { width:38px; height:38px; border-radius:10px; background:linear-gradient(135deg,var(--primary),var(--secondary)); display:flex; align-items:center; justify-content:center; color:white; font-weight:700; font-size:14px; }
-        .user-info { display:flex; flex-direction:column; }
-        .user-name { font-size:14px; font-weight:600; }
-        .user-role { font-size:12px; color:var(--text-light); }
-        .user-menu-dropdown { position:absolute; top:100%; right:0; background:var(--white); border:1px solid var(--border); border-radius:12px; min-width:190px; margin-top:8px; box-shadow:0 10px 30px rgba(0,0,0,0.12); display:none; z-index:2000; overflow:hidden; }
-        .user-menu-dropdown.active { display:block; }
-        .user-menu-dropdown a { display:flex; align-items:center; gap:12px; padding:14px 18px; color:var(--text); text-decoration:none; font-size:14px; border-bottom:1px solid var(--border); transition:all 0.2s; }
-        .user-menu-dropdown a:last-child { border-bottom:none; }
-        .user-menu-dropdown a:hover { background:var(--bg); }
-        .user-menu-dropdown svg { width:16px; height:16px; stroke:var(--text-light); }
-        .main-content { margin-top:70px; padding:30px; max-width:800px; margin-left:auto; margin-right:auto; }
-        .page-title { font-size:28px; font-weight:800; margin-bottom:6px; }
-        .page-subtitle { font-size:15px; color:var(--text-light); margin-bottom:30px; }
+        :root {
+            --primary: #6366f1;
+            --secondary: #8b5cf6;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+            --bg: #f8fafc;
+            --white: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        .topbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+            z-index: 1000;
+            gap: 20px;
+        }
+
+        .hamburger-menu {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            position: relative;
+        }
+
+        .hamburger-btn {
+            display: flex;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 8px;
+        }
+
+        .hamburger-btn svg {
+            width: 24px;
+            height: 24px;
+            stroke: var(--text);
+            stroke-width: 2;
+        }
+
+        .logo-text {
+            font-size: 20px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .hamburger-menu-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            min-width: 220px;
+            margin-top: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+            display: none;
+            z-index: 2000;
+            overflow: hidden;
+        }
+
+        .hamburger-menu-dropdown.active {
+            display: block;
+        }
+
+        .hamburger-menu-dropdown .menu-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 20px;
+            color: var(--text);
+            text-decoration: none;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .hamburger-menu-dropdown .menu-link:hover {
+            background: var(--bg);
+            padding-left: 22px;
+        }
+
+        .hamburger-menu-dropdown .menu-link.active {
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--primary);
+        }
+
+        .menu-icon {
+            width: 18px;
+            height: 18px;
+            stroke-width: 2;
+            flex-shrink: 0;
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 15px;
+            border-radius: 12px;
+            background: var(--white);
+            border: 1px solid var(--border);
+            cursor: pointer;
+            position: relative;
+        }
+
+        .user-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .user-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .user-name {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .user-role {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .user-menu-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            min-width: 190px;
+            margin-top: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+            display: none;
+            z-index: 2000;
+            overflow: hidden;
+        }
+
+        .user-menu-dropdown.active {
+            display: block;
+        }
+
+        .user-menu-dropdown a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 18px;
+            color: var(--text);
+            text-decoration: none;
+            font-size: 14px;
+            border-bottom: 1px solid var(--border);
+            transition: all 0.2s;
+        }
+
+        .user-menu-dropdown a:last-child {
+            border-bottom: none;
+        }
+
+        .user-menu-dropdown a:hover {
+            background: var(--bg);
+        }
+
+        .user-menu-dropdown svg {
+            width: 16px;
+            height: 16px;
+            stroke: var(--text-light);
+        }
+
+        .main-content {
+            margin-top: 70px;
+            padding: 30px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .page-title {
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 6px;
+        }
+
+        .page-subtitle {
+            font-size: 15px;
+            color: var(--text-light);
+            margin-bottom: 30px;
+        }
+
         /* Profile hero */
-        .profile-hero { background:var(--white); border:1px solid var(--border); border-radius:20px; padding:32px; margin-bottom:24px; display:flex; align-items:center; gap:24px; }
+        .profile-hero {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 32px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
         .profile-avatar-lg {
-            width:80px; height:80px; border-radius:20px; flex-shrink:0;
-            background:linear-gradient(135deg,var(--primary),var(--secondary));
-            display:flex; align-items:center; justify-content:center;
-            color:white; font-weight:800; font-size:28px;
+            width: 80px;
+            height: 80px;
+            border-radius: 20px;
+            flex-shrink: 0;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 800;
+            font-size: 28px;
         }
-        .profile-hero-info .profile-name { font-size:22px; font-weight:800; margin-bottom:4px; }
-        .profile-hero-info .profile-email { font-size:14px; color:var(--text-light); margin-bottom:8px; }
-        .profile-hero-info .profile-meta { display:flex; gap:12px; flex-wrap:wrap; }
-        .profile-badge { padding:4px 12px; border-radius:8px; font-size:12px; font-weight:600; background:rgba(99,102,241,0.1); color:var(--primary); }
-        .profile-badge.success { background:rgba(16,185,129,0.1); color:var(--success); }
+
+        .profile-hero-info .profile-name {
+            font-size: 22px;
+            font-weight: 800;
+            margin-bottom: 4px;
+        }
+
+        .profile-hero-info .profile-email {
+            font-size: 14px;
+            color: var(--text-light);
+            margin-bottom: 8px;
+        }
+
+        .profile-hero-info .profile-meta {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .profile-badge {
+            padding: 4px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--primary);
+        }
+
+        .profile-badge.success {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+
         /* Cards */
-        .card { background:var(--white); border:1px solid var(--border); border-radius:20px; padding:28px; margin-bottom:24px; }
-        .card-title { font-size:16px; font-weight:700; margin-bottom:20px; display:flex; align-items:center; gap:10px; }
-        .card-title svg { width:18px; height:18px; stroke:var(--primary); }
-        .form-row { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
-        .form-group { margin-bottom:20px; }
-        .form-group:last-child { margin-bottom:0; }
-        label { display:block; font-size:13px; font-weight:600; color:var(--text); margin-bottom:8px; }
-        input[type=text], input[type=email], input[type=tel], input[type=password] {
-            width:100%; padding:12px 16px; border:1.5px solid var(--border);
-            border-radius:12px; font-size:14px; font-family:'Inter',sans-serif;
-            transition:all 0.3s; color:var(--text); background:var(--white);
+        .card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 28px;
+            margin-bottom: 24px;
         }
-        input:focus { outline:none; border-color:var(--primary); box-shadow:0 0 0 3px rgba(99,102,241,0.1); }
-        input[readonly] { background:var(--bg); color:var(--text-light); cursor:not-allowed; }
-        .btn-row { display:flex; gap:12px; justify-content:flex-end; margin-top:24px; }
-        .btn-save { padding:12px 32px; border:none; border-radius:12px; background:linear-gradient(135deg,var(--primary),var(--secondary)); color:white; font-size:15px; font-weight:700; cursor:pointer; transition:all 0.3s; box-shadow:0 6px 20px rgba(99,102,241,0.3); }
-        .btn-save:hover { transform:translateY(-2px); box-shadow:0 10px 28px rgba(99,102,241,0.4); }
-        .btn-save:disabled { opacity:0.6; cursor:not-allowed; transform:none; }
-        .btn-outline { padding:12px 24px; border:1.5px solid var(--border); border-radius:12px; background:var(--white); color:var(--text); font-size:14px; font-weight:600; cursor:pointer; transition:all 0.3s; }
-        .btn-outline:hover { border-color:var(--primary); color:var(--primary); }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-title svg {
+            width: 18px;
+            height: 18px;
+            stroke: var(--primary);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group:last-child {
+            margin-bottom: 0;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+
+        input[type=text],
+        input[type=email],
+        input[type=tel],
+        input[type=password] {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1.5px solid var(--border);
+            border-radius: 12px;
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s;
+            color: var(--text);
+            background: var(--white);
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        input[readonly] {
+            background: var(--bg);
+            color: var(--text-light);
+            cursor: not-allowed;
+        }
+
+        .btn-row {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            margin-top: 24px;
+        }
+
+        .btn-save {
+            padding: 12px 32px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-save:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 28px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-save:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-outline {
+            padding: 12px 24px;
+            border: 1.5px solid var(--border);
+            border-radius: 12px;
+            background: var(--white);
+            color: var(--text);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-outline:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
         /* Stats bar */
-        .stats-row { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:24px; }
-        .stat-box { background:var(--white); border:1px solid var(--border); border-radius:16px; padding:20px; text-align:center; }
-        .stat-box .stat-num { font-size:28px; font-weight:800; color:var(--primary); }
-        .stat-box .stat-label { font-size:13px; color:var(--text-light); margin-top:4px; }
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-box {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .stat-box .stat-num {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        .stat-box .stat-label {
+            font-size: 13px;
+            color: var(--text-light);
+            margin-top: 4px;
+        }
+
         /* Password strength */
-        .pw-strength { margin-top:8px; display:none; }
-        .pw-strength.visible { display:block; }
-        .strength-bar { height:4px; border-radius:2px; background:var(--border); margin-bottom:6px; }
-        .strength-fill { height:100%; border-radius:2px; transition:all 0.3s; }
-        .strength-text { font-size:12px; color:var(--text-light); }
-        .pw-rules { list-style:none; font-size:12px; color:var(--text-light); margin-top:6px; }
-        .pw-rules li.ok { color:var(--success); }
+        .pw-strength {
+            margin-top: 8px;
+            display: none;
+        }
+
+        .pw-strength.visible {
+            display: block;
+        }
+
+        .strength-bar {
+            height: 4px;
+            border-radius: 2px;
+            background: var(--border);
+            margin-bottom: 6px;
+        }
+
+        .strength-fill {
+            height: 100%;
+            border-radius: 2px;
+            transition: all 0.3s;
+        }
+
+        .strength-text {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .pw-rules {
+            list-style: none;
+            font-size: 12px;
+            color: var(--text-light);
+            margin-top: 6px;
+        }
+
+        .pw-rules li.ok {
+            color: var(--success);
+        }
+
         /* Error/success inline */
-        .inline-msg { font-size:13px; padding:10px 14px; border-radius:8px; margin-top:12px; display:none; }
-        .inline-msg.error { background:rgba(239,68,68,0.08); color:var(--danger); border:1px solid rgba(239,68,68,0.2); }
-        .inline-msg.success { background:rgba(16,185,129,0.08); color:var(--success); border:1px solid rgba(16,185,129,0.2); }
-        .api-error { background:rgba(239,68,68,0.08); border:1px solid rgba(239,68,68,0.2); border-radius:12px; padding:14px 18px; font-size:14px; color:var(--danger); margin-bottom:20px; display:none; }
-        @media(max-width:640px) { .form-row { grid-template-columns:1fr; } .stats-row { grid-template-columns:1fr 1fr; } .profile-hero { flex-direction:column; text-align:center; } }
+        .inline-msg {
+            font-size: 13px;
+            padding: 10px 14px;
+            border-radius: 8px;
+            margin-top: 12px;
+            display: none;
+        }
+
+        .inline-msg.error {
+            background: rgba(239, 68, 68, 0.08);
+            color: var(--danger);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        .inline-msg.success {
+            background: rgba(16, 185, 129, 0.08);
+            color: var(--success);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .api-error {
+            background: rgba(239, 68, 68, 0.08);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            border-radius: 12px;
+            padding: 14px 18px;
+            font-size: 14px;
+            color: var(--danger);
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        @media(max-width:640px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-row {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .profile-hero {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
     </style>
 </head>
+
 <body>
 
-<div class="topbar">
-    <div class="hamburger-menu">
-        <button class="hamburger-btn" onclick="toggleMenu()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
-        <div class="logo-section">
-            <div style="width:45px;height:45px;border-radius:12px;display:flex;align-items:center;justify-content:center;"><svg width="45" height="45" viewBox="0 0 24 24" fill="none"><defs><linearGradient id="g1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#6366f1"/><stop offset="100%" stop-color="#8b5cf6"/></linearGradient></defs><path d="M12 2L4 5V11C4 16 7.5 20 12 22C16.5 20 20 16 20 11V5L12 2Z" fill="url(#g1)"/><path d="M9.5 12.5L11 14L14.5 10.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-            <span class="logo-text">SafeReport</span>
-        </div>
-        <div id="hamburgerDropdown" class="hamburger-menu-dropdown">
-            <ul style="list-style:none;padding:8px 0;">
-                <li><a href="user-dashboard.html" class="menu-link" onclick="closeMenu()"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>Dashboard</a></li>
-                <li><a href="submit-complaint.html" class="menu-link" onclick="closeMenu()"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>Submit Complaint</a></li>
-                <li><a href="my-complaints.html" class="menu-link" onclick="closeMenu()"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>My Complaints</a></li>
-                <li><a href="complaint-status.html" class="menu-link" onclick="closeMenu()"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke-linecap="round" stroke-linejoin="round"/></svg>Track Status</a></li>
-                <li><a href="notifications.html" class="menu-link" onclick="closeMenu()"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>Notifications</a></li>
-                <li><a href="user-profile.html" class="menu-link active" onclick="closeMenu()"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>My Profile</a></li>
-                <li><a href="../login.html" class="menu-link" onclick="logoutUser(); return false;"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Logout</a></li>
-            </ul>
-        </div>
-    </div>
-    <div class="topbar-right">
-        <div class="user-menu" onclick="toggleUserMenu()">
-            <div class="user-avatar">--</div>
-            <div class="user-info"><div class="user-name">…</div><div class="user-role">user</div></div>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-            <div id="userMenuDropdown" class="user-menu-dropdown">
-                <a href="user-profile.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>My Profile</a>
-                <a href="../login.html" onclick="logoutUser(); return false;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Logout</a>
+    <div class="topbar">
+        <div class="hamburger-menu">
+            <button class="hamburger-btn" onclick="toggleMenu()"><svg viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor">
+                    <line x1="3" y1="6" x2="21" y2="6" />
+                    <line x1="3" y1="12" x2="21" y2="12" />
+                    <line x1="3" y1="18" x2="21" y2="18" />
+                </svg></button>
+            <div class="logo-section">
+                <div
+                    style="width:45px;height:45px;border-radius:12px;display:flex;align-items:center;justify-content:center;">
+                    <svg width="45" height="45" viewBox="0 0 24 24" fill="none">
+                        <defs>
+                            <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
+                                <stop offset="0%" stop-color="#6366f1" />
+                                <stop offset="100%" stop-color="#8b5cf6" />
+                            </linearGradient>
+                        </defs>
+                        <path d="M12 2L4 5V11C4 16 7.5 20 12 22C16.5 20 20 16 20 11V5L12 2Z" fill="url(#g1)" />
+                        <path d="M9.5 12.5L11 14L14.5 10.5" stroke="white" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg></div>
+                <span class="logo-text">SafeReport</span>
             </div>
-        </div>
-    </div>
-</div>
-
-<div class="main-content">
-    <h1 class="page-title">My Profile 👤</h1>
-    <p class="page-subtitle">Manage your personal information and security settings</p>
-
-    <div id="apiError" class="api-error"></div>
-
-    <!-- Hero -->
-    <div class="profile-hero">
-        <div class="profile-avatar-lg" id="heroAvatar">--</div>
-        <div class="profile-hero-info">
-            <div class="profile-name" id="heroName">Loading…</div>
-            <div class="profile-email" id="heroEmail">…</div>
-            <div class="profile-meta">
-                <span class="profile-badge">USER</span>
-                <span class="profile-badge success" id="heroStatus">Active</span>
-                <span style="font-size:12px;color:var(--text-light);" id="heroJoined"></span>
-            </div>
-        </div>
-    </div>
-
-    <!-- Stats -->
-    <div class="stats-row">
-        <div class="stat-box"><div class="stat-num" id="statTotal">—</div><div class="stat-label">Total Complaints</div></div>
-        <div class="stat-box"><div class="stat-num" id="statResolved">—</div><div class="stat-label">Resolved</div></div>
-        <div class="stat-box"><div class="stat-num" id="statPending">—</div><div class="stat-label">Pending</div></div>
-    </div>
-
-    <!-- Personal Info -->
-    <div class="card">
-        <div class="card-title">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-            Personal Information
-        </div>
-        <div class="form-row">
-            <div class="form-group">
-                <label>Full Name</label>
-                <input type="text" id="profileName" placeholder="Your full name">
-            </div>
-            <div class="form-group">
-                <label>Email Address</label>
-                <input type="email" id="profileEmail" readonly>
-            </div>
-        </div>
-        <div class="form-row">
-            <div class="form-group">
-                <label>Phone Number</label>
-                <input type="tel" id="profilePhone" placeholder="Your phone number">
-            </div>
-            <div class="form-group">
-                <label>Role</label>
-                <input type="text" id="profileRole" readonly value="USER">
-            </div>
-        </div>
-        <div id="profileMsg" class="inline-msg"></div>
-        <div class="btn-row">
-            <button class="btn-save" id="saveProfileBtn" onclick="saveProfile()">Save Changes</button>
-        </div>
-    </div>
-
-    <!-- Change Password -->
-    <div class="card">
-        <div class="card-title">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-            Change Password
-        </div>
-        <div class="form-group">
-            <label>Current Password</label>
-            <input type="password" id="currentPw" placeholder="Enter current password">
-        </div>
-        <div class="form-group">
-            <label>New Password</label>
-            <input type="password" id="newPw" placeholder="Enter new password" oninput="checkPwStrength()">
-            <div class="pw-strength" id="pwStrength">
-                <div class="strength-bar"><div class="strength-fill" id="strengthFill"></div></div>
-                <div class="strength-text" id="strengthText">Password strength</div>
-                <ul class="pw-rules">
-                    <li id="ruleLen">At least 8 characters</li>
-                    <li id="ruleUpper">At least 1 uppercase letter</li>
-                    <li id="ruleNum">At least 1 number</li>
-                    <li id="ruleSpc">At least 1 special character</li>
+            <div id="hamburgerDropdown" class="hamburger-menu-dropdown">
+                <ul style="list-style:none;padding:8px 0;">
+                    <li><a href="user-dashboard.html" class="menu-link" onclick="closeMenu()"><svg class="menu-icon"
+                                viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <rect x="3" y="3" width="7" height="7" />
+                                <rect x="14" y="3" width="7" height="7" />
+                                <rect x="14" y="14" width="7" height="7" />
+                                <rect x="3" y="14" width="7" height="7" />
+                            </svg>Dashboard</a></li>
+                    <li><a href="submit-complaint.html" class="menu-link" onclick="closeMenu()"><svg class="menu-icon"
+                                viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <circle cx="12" cy="12" r="10" />
+                                <line x1="12" y1="8" x2="12" y2="16" />
+                                <line x1="8" y1="12" x2="16" y2="12" />
+                            </svg>Submit Complaint</a></li>
+                    <li><a href="my-complaints.html" class="menu-link" onclick="closeMenu()"><svg class="menu-icon"
+                                viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                                <polyline points="14 2 14 8 20 8" />
+                            </svg>My Complaints</a></li>
+                    <li><a href="complaint-status.html" class="menu-link" onclick="closeMenu()"><svg class="menu-icon"
+                                viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke-linecap="round"
+                                    stroke-linejoin="round" />
+                            </svg>Track Status</a></li>
+                    <li><a href="notifications.html" class="menu-link" onclick="closeMenu()"><svg class="menu-icon"
+                                viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+                                <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+                            </svg>Notifications</a></li>
+                    <li><a href="user-profile.html" class="menu-link active" onclick="closeMenu()"><svg
+                                class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                                <circle cx="12" cy="7" r="4" />
+                            </svg>My Profile</a></li>
+                    <li><a href="../login.html" class="menu-link" onclick="logoutUser(); return false;"><svg
+                                class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                                <polyline points="16 17 21 12 16 7" />
+                                <line x1="21" y1="12" x2="9" y2="12" />
+                            </svg>Logout</a></li>
                 </ul>
             </div>
         </div>
-        <div class="form-group">
-            <label>Confirm New Password</label>
-            <input type="password" id="confirmPw" placeholder="Re-enter new password">
-        </div>
-        <div id="pwMsg" class="inline-msg"></div>
-        <div class="btn-row">
-            <button class="btn-save" id="changePwBtn" onclick="changePassword()">Update Password</button>
+        <div class="topbar-right">
+            <div class="user-menu" onclick="toggleUserMenu()">
+                <div class="user-avatar">--</div>
+                <div class="user-info">
+                    <div class="user-name">…</div>
+                    <div class="user-role">user</div>
+                </div>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="6 9 12 15 18 9" />
+                </svg>
+                <div id="userMenuDropdown" class="user-menu-dropdown">
+                    <a href="user-profile.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                            <circle cx="12" cy="7" r="4" />
+                        </svg>My Profile</a>
+                    <a href="../login.html" onclick="logoutUser(); return false;"><svg viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                            <polyline points="16 17 21 12 16 7" />
+                            <line x1="21" y1="12" x2="9" y2="12" />
+                        </svg>Logout</a>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- Danger Zone -->
-    <div class="card" style="border-color:rgba(239,68,68,0.2);">
-        <div class="card-title" style="color:var(--danger);">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke:var(--danger);"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-            Account Actions
+    <div class="main-content">
+        <h1 class="page-title">My Profile 👤</h1>
+        <p class="page-subtitle">Manage your personal information and security settings</p>
+
+        <div id="apiError" class="api-error"></div>
+
+        <!-- Hero -->
+        <div class="profile-hero">
+            <div class="profile-avatar-lg" id="heroAvatar">--</div>
+            <div class="profile-hero-info">
+                <div class="profile-name" id="heroName">Loading…</div>
+                <div class="profile-email" id="heroEmail">…</div>
+                <div class="profile-meta">
+                    <span class="profile-badge">USER</span>
+                    <span class="profile-badge success" id="heroStatus">Active</span>
+                    <span style="font-size:12px;color:var(--text-light);" id="heroJoined"></span>
+                </div>
+            </div>
         </div>
-        <p style="font-size:14px;color:var(--text-light);margin-bottom:20px;">Sign out of your account on this device.</p>
-        <button class="btn-outline" onclick="logoutUser()" style="border-color:rgba(239,68,68,0.3);color:var(--danger);">Sign Out</button>
+
+        <!-- Stats -->
+        <div class="stats-row">
+            <div class="stat-box">
+                <div class="stat-num" id="statTotal">—</div>
+                <div class="stat-label">Total Complaints</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-num" id="statResolved">—</div>
+                <div class="stat-label">Resolved</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-num" id="statPending">—</div>
+                <div class="stat-label">Pending</div>
+            </div>
+        </div>
+
+        <!-- Personal Info -->
+        <div class="card">
+            <div class="card-title">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                    <circle cx="12" cy="7" r="4" />
+                </svg>
+                Personal Information
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="profileName" placeholder="Your full name">
+                </div>
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" id="profileEmail" readonly>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Phone Number</label>
+                    <input type="tel" id="profilePhone" placeholder="Your phone number">
+                </div>
+                <div class="form-group">
+                    <label>Role</label>
+                    <input type="text" id="profileRole" readonly value="USER">
+                </div>
+            </div>
+            <div id="profileMsg" class="inline-msg"></div>
+            <div class="btn-row">
+                <button class="btn-save" id="saveProfileBtn" onclick="saveProfile()">Save Changes</button>
+            </div>
+        </div>
+
+        <!-- Change Password -->
+        <div class="card">
+            <div class="card-title">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <rect x="3" y="11" width="18" height="11" rx="2" />
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                </svg>
+                Change Password
+            </div>
+            <div class="form-group">
+                <label>Current Password</label>
+                <input type="password" id="currentPw" placeholder="Enter current password">
+            </div>
+            <div class="form-group">
+                <label>New Password</label>
+                <input type="password" id="newPw" placeholder="Enter new password" oninput="checkPwStrength()">
+                <div class="pw-strength" id="pwStrength">
+                    <div class="strength-bar">
+                        <div class="strength-fill" id="strengthFill"></div>
+                    </div>
+                    <div class="strength-text" id="strengthText">Password strength</div>
+                    <ul class="pw-rules">
+                        <li id="ruleLen">At least 8 characters</li>
+                        <li id="ruleUpper">At least 1 uppercase letter</li>
+                        <li id="ruleNum">At least 1 number</li>
+                        <li id="ruleSpc">At least 1 special character</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Confirm New Password</label>
+                <input type="password" id="confirmPw" placeholder="Re-enter new password">
+            </div>
+            <div id="pwMsg" class="inline-msg"></div>
+            <div class="btn-row">
+                <button class="btn-save" id="changePwBtn" onclick="changePassword()">Update Password</button>
+            </div>
+        </div>
+
+        <!-- Danger Zone -->
+        <div class="card" style="border-color:rgba(239,68,68,0.2);">
+            <div class="card-title" style="color:var(--danger);">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke:var(--danger);">
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="12" y1="8" x2="12" y2="12" />
+                    <line x1="12" y1="16" x2="12.01" y2="16" />
+                </svg>
+                Account Actions
+            </div>
+            <p style="font-size:14px;color:var(--text-light);margin-bottom:20px;">Sign out of your account on this
+                device.</p>
+            <button class="btn-outline" onclick="logoutUser()"
+                style="border-color:rgba(239,68,68,0.3);color:var(--danger);">Sign Out</button>
+        </div>
     </div>
-</div>
 
-<script src="../api.js"></script>
-<script>
-    window.addEventListener("load", async () => {
-        if (!requireAuth()) return;
-        document.body.style.visibility = "visible";
-        initMenus();
-        populateTopbar();
-        await loadProfile();
-        await loadStats();
-    });
+    <script src="../api.js"></script>
+    <script>
+        window.addEventListener("load", async () => {
+            if (!requireAuth()) return;
+            document.body.style.visibility = "visible";
+            initMenus();
+            populateTopbar();
+            await loadProfile();
+            await loadStats();
+        });
 
-    /* ── Load profile from backend ── */
-    async function loadProfile() {
-        try {
-            const res = await apiFetch("/users/profile");
-            if (!res.ok) throw new Error(res.status);
-            const p = await res.json();
+        /* ── Load profile from backend ── */
+        async function loadProfile() {
+            try {
+                const res = await apiFetch("/user/profile");
+                if (!res.ok) throw new Error(res.status);
+                const _pj = await res.json();
+                const p = _pj.data || _pj;
 
-            // Populate form fields
-            document.getElementById("profileName").value  = p.name  || "";
-            document.getElementById("profileEmail").value = p.email || "";
-            document.getElementById("profilePhone").value = p.phone || "";
-            document.getElementById("profileRole").value  = p.role  || "USER";
+                // Populate form fields
+                document.getElementById("profileName").value = p.fullName || "";
+                document.getElementById("profileEmail").value = p.email || "";
+                document.getElementById("profilePhone").value = p.phone || "";
+                document.getElementById("profileRole").value = p.role || "USER";
 
-            // Hero section
-            const initials = (p.name||"U").split(" ").map(n=>n[0]).join("").toUpperCase().slice(0,2);
-            document.getElementById("heroAvatar").textContent = initials;
-            document.getElementById("heroName").textContent   = p.name  || "—";
-            document.getElementById("heroEmail").textContent  = p.email || "—";
-            if (p.createdAt) document.getElementById("heroJoined").textContent = "Member since " + formatDate(p.createdAt);
+                // Hero section
+                const initials = (p.fullName || "U").split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2);
+                document.getElementById("heroAvatar").textContent = initials;
+                document.getElementById("heroName").textContent = p.fullName || "—";
+                document.getElementById("heroEmail").textContent = p.email || "—";
+                if (p.createdAt) document.getElementById("heroJoined").textContent = "Member since " + formatDate(p.createdAt);
 
-            // Update sessionStorage to keep in sync
-            const u = getUser();
-            if (u) { u.name = p.name; sessionStorage.setItem("sr_user", JSON.stringify(u)); }
-        } catch {
-            document.getElementById("apiError").textContent = "⚠️ Could not load profile.";
-            document.getElementById("apiError").style.display = "block";
+                // Update sessionStorage to keep in sync
+                const u = getUser();
+                if (u) { u.name = p.fullName; sessionStorage.setItem("sr_user", JSON.stringify(u)); }
+            } catch {
+                document.getElementById("apiError").textContent = "⚠️ Could not load profile.";
+                document.getElementById("apiError").style.display = "block";
+            }
         }
-    }
 
-    /* ── Load complaint stats ── */
-    async function loadStats() {
-        try {
-            const res = await apiFetch("/complaints/my");
-            if (!res.ok) return;
-            let data = await res.json();
-            const list = data.content || data;
-            document.getElementById("statTotal").textContent    = list.length;
-            document.getElementById("statResolved").textContent = list.filter(c => ["RESOLVED","CLOSED"].includes(c.status)).length;
-            document.getElementById("statPending").textContent  = list.filter(c => !["RESOLVED","CLOSED"].includes(c.status)).length;
-        } catch { /* silent — stats are non-critical */ }
-    }
+        /* ── Load complaint stats ── */
+        async function loadStats() {
+            try {
+                const res = await apiFetch("/complaints/my");
+                if (!res.ok) return;
+                const _sj = await res.json();
+                const list = _sj.data?.content || _sj.data || [];
+                document.getElementById("statTotal").textContent = list.length;
+                document.getElementById("statResolved").textContent = list.filter(c => ["RESOLVED", "CLOSED"].includes(c.status)).length;
+                document.getElementById("statPending").textContent = list.filter(c => !["RESOLVED", "CLOSED"].includes(c.status)).length;
+            } catch { /* silent — stats are non-critical */ }
+        }
 
-    /* ── Save profile ── */
-    async function saveProfile() {
-        const btn  = document.getElementById("saveProfileBtn");
-        const name  = document.getElementById("profileName").value.trim();
-        const phone = document.getElementById("profilePhone").value.trim();
-        if (!name) { showMsg("profileMsg", "Name cannot be empty.", "error"); return; }
+        /* ── Save profile ── */
+        async function saveProfile() {
+            const btn = document.getElementById("saveProfileBtn");
+            const name = document.getElementById("profileName").value.trim();
+            const phone = document.getElementById("profilePhone").value.trim();
+            if (!name) { showMsg("profileMsg", "Name cannot be empty.", "error"); return; }
 
-        btn.disabled = true; btn.textContent = "Saving…";
-        try {
-            const res  = await apiFetch("/users/profile", {
-                method: "PUT",
-                body: JSON.stringify({ name, phone })
-            });
-            const data = await res.json();
-            if (!res.ok) { showMsg("profileMsg", data.message || "Failed to save.", "error"); return; }
+            btn.disabled = true; btn.textContent = "Saving…";
+            try {
+                const res = await apiFetch("/users/profile", {
+                    method: "PUT",
+                    body: JSON.stringify({ name, phone })
+                });
+                const data = await res.json();
+                if (!res.ok) { showMsg("profileMsg", data.message || "Failed to save.", "error"); return; }
 
-            showMsg("profileMsg", "Profile updated successfully!", "success");
-            // Sync hero + topbar
-            document.getElementById("heroName").textContent = name;
-            const initials = name.split(" ").map(n=>n[0]).join("").toUpperCase().slice(0,2);
-            document.getElementById("heroAvatar").textContent = initials;
-            document.querySelectorAll(".user-avatar").forEach(el => el.textContent = initials);
-            document.querySelectorAll(".user-name").forEach(el  => el.textContent = name);
-            const u = getUser(); if (u) { u.name = name; sessionStorage.setItem("sr_user", JSON.stringify(u)); }
-            showToast("Profile saved!");
-        } catch { showMsg("profileMsg", "Server error. Please try again.", "error"); }
-        finally   { btn.disabled = false; btn.textContent = "Save Changes"; }
-    }
+                showMsg("profileMsg", "Profile updated successfully!", "success");
+                // Sync hero + topbar
+                document.getElementById("heroName").textContent = name;
+                const initials = name.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2);
+                document.getElementById("heroAvatar").textContent = initials;
+                document.querySelectorAll(".user-avatar").forEach(el => el.textContent = initials);
+                document.querySelectorAll(".user-name").forEach(el => el.textContent = name);
+                const u = getUser(); if (u) { u.name = name; sessionStorage.setItem("sr_user", JSON.stringify(u)); }
+                showToast("Profile saved!");
+            } catch { showMsg("profileMsg", "Server error. Please try again.", "error"); }
+            finally { btn.disabled = false; btn.textContent = "Save Changes"; }
+        }
 
-    /* ── Change password ── */
-    async function changePassword() {
-        const btn       = document.getElementById("changePwBtn");
-        const current   = document.getElementById("currentPw").value;
-        const newPw     = document.getElementById("newPw").value;
-        const confirmPw = document.getElementById("confirmPw").value;
+        /* ── Change password ── */
+        async function changePassword() {
+            const btn = document.getElementById("changePwBtn");
+            const current = document.getElementById("currentPw").value;
+            const newPw = document.getElementById("newPw").value;
+            const confirmPw = document.getElementById("confirmPw").value;
 
-        if (!current || !newPw || !confirmPw) { showMsg("pwMsg", "All password fields are required.", "error"); return; }
-        if (newPw !== confirmPw)              { showMsg("pwMsg", "New passwords do not match.", "error"); return; }
-        if (newPw.length < 8)                 { showMsg("pwMsg", "Password must be at least 8 characters.", "error"); return; }
+            if (!current || !newPw || !confirmPw) { showMsg("pwMsg", "All password fields are required.", "error"); return; }
+            if (newPw !== confirmPw) { showMsg("pwMsg", "New passwords do not match.", "error"); return; }
+            if (newPw.length < 8) { showMsg("pwMsg", "Password must be at least 8 characters.", "error"); return; }
 
-        btn.disabled = true; btn.textContent = "Updating…";
-        try {
-            const res  = await apiFetch("/users/change-password", {
-                method: "POST",
-                body: JSON.stringify({ currentPassword: current, newPassword: newPw, confirmPassword: confirmPw })
-            });
-            const data = await res.json();
-            if (!res.ok) { showMsg("pwMsg", data.message || "Incorrect current password.", "error"); return; }
-            showMsg("pwMsg", "Password changed successfully! Please log in again.", "success");
-            document.getElementById("currentPw").value = "";
-            document.getElementById("newPw").value     = "";
-            document.getElementById("confirmPw").value = "";
-            showToast("Password updated!");
-            setTimeout(logoutUser, 2500);
-        } catch { showMsg("pwMsg", "Server error. Please try again.", "error"); }
-        finally   { btn.disabled = false; btn.textContent = "Update Password"; }
-    }
+            btn.disabled = true; btn.textContent = "Updating…";
+            try {
+                const res = await apiFetch("/user/change-password", {
+                    method: "POST",
+                    body: JSON.stringify({ currentPassword: current, newPassword: newPw, confirmPassword: confirmPw })
+                });
+                const data = await res.json();
+                if (!res.ok) { showMsg("pwMsg", data.message || "Incorrect current password.", "error"); return; }
+                showMsg("pwMsg", "Password changed successfully! Please log in again.", "success");
+                document.getElementById("currentPw").value = "";
+                document.getElementById("newPw").value = "";
+                document.getElementById("confirmPw").value = "";
+                showToast("Password updated!");
+                setTimeout(logoutUser, 2500);
+            } catch { showMsg("pwMsg", "Server error. Please try again.", "error"); }
+            finally { btn.disabled = false; btn.textContent = "Update Password"; }
+        }
 
-    /* ── Password strength ── */
-    function checkPwStrength() {
-        const pw  = document.getElementById("newPw").value;
-        const str = document.getElementById("pwStrength");
-        str.classList.toggle("visible", pw.length > 0);
-        if (!pw.length) return;
+        /* ── Password strength ── */
+        function checkPwStrength() {
+            const pw = document.getElementById("newPw").value;
+            const str = document.getElementById("pwStrength");
+            str.classList.toggle("visible", pw.length > 0);
+            if (!pw.length) return;
 
-        const checks = [pw.length >= 8, /[A-Z]/.test(pw), /[0-9]/.test(pw), /[^A-Za-z0-9]/.test(pw)];
-        document.getElementById("ruleLen").classList.toggle("ok",   checks[0]);
-        document.getElementById("ruleUpper").classList.toggle("ok", checks[1]);
-        document.getElementById("ruleNum").classList.toggle("ok",   checks[2]);
-        document.getElementById("ruleSpc").classList.toggle("ok",   checks[3]);
+            const checks = [pw.length >= 8, /[A-Z]/.test(pw), /[0-9]/.test(pw), /[^A-Za-z0-9]/.test(pw)];
+            document.getElementById("ruleLen").classList.toggle("ok", checks[0]);
+            document.getElementById("ruleUpper").classList.toggle("ok", checks[1]);
+            document.getElementById("ruleNum").classList.toggle("ok", checks[2]);
+            document.getElementById("ruleSpc").classList.toggle("ok", checks[3]);
 
-        const score = checks.filter(Boolean).length;
-        const fill  = document.getElementById("strengthFill");
-        const text  = document.getElementById("strengthText");
-        const levels = [
-            { pct:"25%", color:"#ef4444", label:"Weak" },
-            { pct:"50%", color:"#f59e0b", label:"Fair" },
-            { pct:"75%", color:"#6366f1", label:"Good" },
-            { pct:"100%",color:"#10b981", label:"Strong" },
-        ];
-        const lvl = levels[score - 1] || levels[0];
-        fill.style.width      = lvl.pct;
-        fill.style.background = lvl.color;
-        text.textContent      = lvl.label;
-        text.style.color      = lvl.color;
-    }
+            const score = checks.filter(Boolean).length;
+            const fill = document.getElementById("strengthFill");
+            const text = document.getElementById("strengthText");
+            const levels = [
+                { pct: "25%", color: "#ef4444", label: "Weak" },
+                { pct: "50%", color: "#f59e0b", label: "Fair" },
+                { pct: "75%", color: "#6366f1", label: "Good" },
+                { pct: "100%", color: "#10b981", label: "Strong" },
+            ];
+            const lvl = levels[score - 1] || levels[0];
+            fill.style.width = lvl.pct;
+            fill.style.background = lvl.color;
+            text.textContent = lvl.label;
+            text.style.color = lvl.color;
+        }
 
-    /* ── Helpers ── */
-    function showMsg(id, msg, type) {
-        const el = document.getElementById(id);
-        el.textContent  = msg;
-        el.className    = `inline-msg ${type}`;
-        el.style.display = "block";
-        setTimeout(() => { el.style.display = "none"; }, 5000);
-    }
-</script>
+        /* ── Helpers ── */
+        function showMsg(id, msg, type) {
+            const el = document.getElementById(id);
+            el.textContent = msg;
+            el.className = `inline-msg ${type}`;
+            el.style.display = "block";
+            setTimeout(() => { el.style.display = "none"; }, 5000);
+        }
+    </script>
 </body>
+
 </html>

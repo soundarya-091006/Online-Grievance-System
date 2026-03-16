@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SafeReport | Login</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
     <style>
         :root {
             --primary: #6366f1;
@@ -19,228 +21,372 @@
             --bg: #f8fafc;
             --white: #ffffff;
         }
-        * { margin:0; padding:0; box-sizing:border-box; }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            /*background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);*/
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 20px;
         }
+
         .auth-card {
             background: var(--white);
             border-radius: 24px;
             padding: 50px 45px;
             width: 100%;
             max-width: 440px;
-            box-shadow: 0 30px 80px rgba(0,0,0,0.2);
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.2);
             animation: slideUp 0.5s ease;
         }
+
         @keyframes slideUp {
-            from { opacity:0; transform:translateY(30px); }
-            to   { opacity:1; transform:translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
-        .logo { display:flex; align-items:center; gap:12px; margin-bottom:35px; justify-content:center; }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 35px;
+            justify-content: center;
+        }
+
         .logo-icon {
-            width:48px; height:48px; border-radius:14px;
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
             background: linear-gradient(135deg, var(--primary), var(--secondary));
-            display:flex; align-items:center; justify-content:center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-        .logo-icon svg { width:26px; height:26px; }
-        .logo-text { font-size:22px; font-weight:800; background:linear-gradient(135deg,var(--primary),var(--secondary)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
-        h1 { font-size:26px; font-weight:800; color:var(--text); margin-bottom:8px; }
-        .subtitle { font-size:14px; color:var(--text-light); margin-bottom:30px; }
 
-        .role-tabs { display:flex; gap:8px; margin-bottom:28px; background:var(--bg); padding:6px; border-radius:12px; }
+        .logo-icon svg {
+            width: 26px;
+            height: 26px;
+        }
+
+        .logo-text {
+            font-size: 22px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        h1 {
+            font-size: 26px;
+            font-weight: 800;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            color: var(--text-light);
+            margin-bottom: 30px;
+        }
+
+        .role-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 28px;
+            background: var(--bg);
+            padding: 6px;
+            border-radius: 12px;
+        }
+
         .role-tab {
-            flex:1; padding:10px; border:none; border-radius:8px;
-            font-size:13px; font-weight:600; cursor:pointer;
-            background:transparent; color:var(--text-light); transition:all 0.3s;
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            background: transparent;
+            color: var(--text-light);
+            transition: all 0.3s;
         }
-        .role-tab.active { background:var(--white); color:var(--primary); box-shadow:0 2px 8px rgba(0,0,0,0.08); }
 
-        .form-group { margin-bottom:20px; }
-        label { display:block; font-size:13px; font-weight:600; color:var(--text); margin-bottom:8px; }
-        input, select {
-            width:100%; padding:13px 16px; border:1.5px solid var(--border);
-            border-radius:12px; font-size:14px; font-family:'Inter',sans-serif;
-            transition:all 0.3s; color:var(--text); background:var(--white);
+        .role-tab.active {
+            background: var(--white);
+            color: var(--primary);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
         }
-        input:focus, select:focus { outline:none; border-color:var(--primary); box-shadow:0 0 0 3px rgba(99,102,241,0.1); }
 
-        .password-wrapper { position:relative; }
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 13px 16px;
+            border: 1.5px solid var(--border);
+            border-radius: 12px;
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s;
+            color: var(--text);
+            background: var(--white);
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .password-wrapper {
+            position: relative;
+        }
+
         .toggle-pw {
-            position:absolute; right:14px; top:50%; transform:translateY(-50%);
-            background:none; border:none; cursor:pointer; color:var(--text-light);
-            display:flex; align-items:center;
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
         }
 
         .btn-primary {
-            width:100%; padding:15px; border:none; border-radius:12px;
-            background:linear-gradient(135deg,var(--primary),var(--secondary));
-            color:white; font-size:16px; font-weight:700; cursor:pointer;
-            transition:all 0.3s; margin-top:8px;
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 8px;
         }
-        .btn-primary:hover { transform:translateY(-2px); box-shadow:0 8px 25px rgba(99,102,241,0.4); }
-        .btn-primary:disabled { opacity:0.6; cursor:not-allowed; transform:none; }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
 
         .error-box {
-            background:rgba(239,68,68,0.08); border:1px solid rgba(239,68,68,0.2);
-            border-radius:10px; padding:12px 16px; font-size:13px; color:var(--danger);
-            margin-bottom:20px; display:none;
-        }
-        .success-box {
-            background:rgba(16,185,129,0.08); border:1px solid rgba(16,185,129,0.2);
-            border-radius:10px; padding:12px 16px; font-size:13px; color:var(--success);
-            margin-bottom:20px; display:none;
+            background: rgba(239, 68, 68, 0.08);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            border-radius: 10px;
+            padding: 12px 16px;
+            font-size: 13px;
+            color: var(--danger);
+            margin-bottom: 20px;
+            display: none;
         }
 
-        .switch-link { text-align:center; margin-top:20px; font-size:14px; color:var(--text-light); }
-        .switch-link a { color:var(--primary); font-weight:600; text-decoration:none; }
+        .success-box {
+            background: rgba(16, 185, 129, 0.08);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            border-radius: 10px;
+            padding: 12px 16px;
+            font-size: 13px;
+            color: var(--success);
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .switch-link {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: var(--text-light);
+        }
+
+        .switch-link a {
+            color: var(--primary);
+            font-weight: 600;
+            text-decoration: none;
+        }
     </style>
 </head>
+
 <body>
-<div class="auth-card">
-    <div class="logo">
-        <div class="logo-icon">
-            <svg viewBox="0 0 24 24" fill="none">
-                <path d="M12 2L4 5V11C4 16 7.5 20 12 22C16.5 20 20 16 20 11V5L12 2Z" fill="white"/>
-                <path d="M9.5 12.5L11 14L14.5 10.5" stroke="#6366f1" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-        </div>
-        <span class="logo-text">SafeReport</span>
-    </div>
-
-    <h1>Welcome back</h1>
-    <p class="subtitle">Sign in to your SafeReport account</p>
-
-    <!-- Role Tabs -->
-    <div class="role-tabs">
-        <button class="role-tab active" onclick="setRole('USER', this)">User</button>
-        <button class="role-tab" onclick="setRole('ADMIN', this)">Admin</button>
-        <button class="role-tab" onclick="setRole('AUTHORITY', this)">Authority</button>
-    </div>
-
-    <div id="errorBox" class="error-box"></div>
-    <div id="successBox" class="success-box"></div>
-
-    <div class="form-group">
-        <label>Email Address</label>
-        <input type="email" id="email" placeholder="you@example.com" autocomplete="email">
-    </div>
-    <div class="form-group">
-        <label>Password</label>
-        <div class="password-wrapper">
-            <input type="password" id="password" placeholder="••••••••" autocomplete="current-password">
-            <button class="toggle-pw" onclick="togglePw()">
-                <svg id="eyeIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                    <circle cx="12" cy="12" r="3"/>
+    <div class="auth-card">
+        <div class="logo">
+            <div class="logo-icon">
+                <svg viewBox="0 0 24 24" fill="none">
+                    <path d="M12 2L4 5V11C4 16 7.5 20 12 22C16.5 20 20 16 20 11V5L12 2Z" fill="white" />
+                    <path d="M9.5 12.5L11 14L14.5 10.5" stroke="#6366f1" stroke-width="2.5" stroke-linecap="round"
+                        stroke-linejoin="round" />
                 </svg>
-            </button>
+            </div>
+            <span class="logo-text">SafeReport</span>
+        </div>
+
+        <h1>Welcome back</h1>
+        <p class="subtitle">Sign in to your SafeReport account</p>
+
+        <!-- Role Tabs -->
+        <div class="role-tabs">
+            <button class="role-tab active" onclick="setRole('USER', this)">User</button>
+            <button class="role-tab" onclick="setRole('ADMIN', this)">Admin</button>
+            <button class="role-tab" onclick="setRole('AUTHORITY', this)">Authority</button>
+        </div>
+
+        <div id="errorBox" class="error-box"></div>
+        <div id="successBox" class="success-box"></div>
+
+        <div class="form-group">
+            <label>Email Address</label>
+            <input type="email" id="email" placeholder="you@example.com" autocomplete="email">
+        </div>
+        <div class="form-group">
+            <label>Password</label>
+            <div class="password-wrapper">
+                <input type="password" id="password" placeholder="••••••••" autocomplete="current-password">
+                <button class="toggle-pw" onclick="togglePw()">
+                    <svg id="eyeIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                        <circle cx="12" cy="12" r="3" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <button class="btn-primary" id="loginBtn" onclick="doLogin()">Sign In</button>
+
+        <div class="switch-link">
+            Don't have an account? <a href="register.html">Create one</a>
         </div>
     </div>
 
-    <button class="btn-primary" id="loginBtn" onclick="doLogin()">Sign In</button>
+    <script>
+        let selectedRole = "USER";
 
-    <div class="switch-link">
-        Don't have an account? <a href="register.html">Create one</a>
-    </div>
-</div>
+        function setRole(role, el) {
+            selectedRole = role;
+            document.querySelectorAll(".role-tab").forEach(t => t.classList.remove("active"));
+            el.classList.add("active");
+        }
 
-<script>
-    let selectedRole = "USER";
+        function togglePw() {
+            const input = document.getElementById("password");
+            input.type = input.type === "password" ? "text" : "password";
+        }
 
-    function setRole(role, el) {
-        selectedRole = role;
-        document.querySelectorAll(".role-tab").forEach(t => t.classList.remove("active"));
-        el.classList.add("active");
-    }
+        function showError(msg) {
+            const el = document.getElementById("errorBox");
+            el.textContent = msg;
+            el.style.display = "block";
+            document.getElementById("successBox").style.display = "none";
+        }
 
-    function togglePw() {
-        const input = document.getElementById("password");
-        input.type = input.type === "password" ? "text" : "password";
-    }
+        function showSuccess(msg) {
+            const el = document.getElementById("successBox");
+            el.textContent = msg;
+            el.style.display = "block";
+            document.getElementById("errorBox").style.display = "none";
+        }
 
-    function showError(msg) {
-        const el = document.getElementById("errorBox");
-        el.textContent = msg;
-        el.style.display = "block";
-        document.getElementById("successBox").style.display = "none";
-    }
+        async function doLogin() {
+            const email = document.getElementById("email").value.trim();
+            const password = document.getElementById("password").value;
+            const btn = document.getElementById("loginBtn");
 
-    function showSuccess(msg) {
-        const el = document.getElementById("successBox");
-        el.textContent = msg;
-        el.style.display = "block";
-        document.getElementById("errorBox").style.display = "none";
-    }
+            if (!email || !password) { showError("Please fill in all fields."); return; }
 
-    async function doLogin() {
-        const email    = document.getElementById("email").value.trim();
-        const password = document.getElementById("password").value;
-        const btn      = document.getElementById("loginBtn");
+            btn.disabled = true;
+            btn.textContent = "Signing in…";
 
-        if (!email || !password) { showError("Please fill in all fields."); return; }
+            try {
+                const res = await fetch("http://localhost:8080/api/auth/login", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email, password, role: selectedRole })
+                });
 
-        btn.disabled   = true;
-        btn.textContent = "Signing in…";
+                const data = await res.json();
 
-        try {
-            const res = await fetch("http://localhost:8080/api/auth/login", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email, password, role: selectedRole })
-            });
+                if (!data.success) {
+                    showError(data.message || "Invalid credentials.");
+                    return;
+                }
 
-            const data = await res.json();
+                // ✅ Save JWT + user info to localStorage
+                const d = data.data;
+                localStorage.setItem("token", d.accessToken);
+                localStorage.setItem("role", d.role);
+                localStorage.setItem("userId", d.userId);
+                localStorage.setItem("fullName", d.fullName);
+                localStorage.setItem("email", d.email);
 
-            if (!data.success) {
-                showError(data.message || "Invalid credentials.");
-                return;
+                showSuccess("Login successful! Redirecting…");
+
+                setTimeout(() => {
+                    if (d.role === "ADMIN") window.location.replace("admin/admin-dashboard.html");
+                    else if (d.role === "AUTHORITY") window.location.replace("authority/authority-dashboard.html");
+                    else window.location.replace("user/user-dashboard.html");
+                }, 800);
+
+            } catch (err) {
+                showError("Cannot connect to server. Make sure the backend is running.");
+            } finally {
+                btn.disabled = false;
+                btn.textContent = "Sign In";
             }
-
-            // ✅ Save JWT + user info to localStorage
-            const d = data.data;
-            localStorage.setItem("token",    d.accessToken);
-            localStorage.setItem("role",     d.role);
-            localStorage.setItem("userId",   d.userId);
-            localStorage.setItem("fullName", d.fullName);
-            localStorage.setItem("email",    d.email);
-
-            showSuccess("Login successful! Redirecting…");
-
-            setTimeout(() => {
-                if (d.role === "ADMIN")          window.location.replace("admin/admin-dashboard.html");
-                else if (d.role === "AUTHORITY") window.location.replace("authority/authority-dashboard.html");
-                else                             window.location.replace("user/user-dashboard.html");
-            }, 800);
-
-        } catch (err) {
-            showError("Cannot connect to server. Make sure the backend is running.");
-        } finally {
-            btn.disabled   = false;
-            btn.textContent = "Sign In";
         }
-    }
 
-    // Allow Enter key
-    document.addEventListener("keydown", e => {
-        if (e.key === "Enter") doLogin();
-    });
+        // Allow Enter key
+        document.addEventListener("keydown", e => {
+            if (e.key === "Enter") doLogin();
+        });
 
-    // If already logged in, redirect
-    window.addEventListener("load", () => {
-        const token = localStorage.getItem("token");
-        const role  = localStorage.getItem("role");
-        if (token && role) {
-            if (role === "ADMIN")          window.location.replace("admin/admin-dashboard.html");
-            else if (role === "AUTHORITY") window.location.replace("authority/authority-dashboard.html");
-            else                           window.location.replace("user/user-dashboard.html");
-        }
-    });
-</script>
+        // If already logged in, redirect
+        window.addEventListener("load", () => {
+            const token = localStorage.getItem("token");
+            const role = localStorage.getItem("role");
+            if (token && role) {
+                if (role === "ADMIN") window.location.replace("admin/admin-dashboard.html");
+                else if (role === "AUTHORITY") window.location.replace("authority/authority-dashboard.html");
+                else window.location.replace("user/user-dashboard.html");
+            }
+        });
+    </script>
 </body>
+
 </html>

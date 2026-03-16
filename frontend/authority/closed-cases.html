@@ -224,8 +224,8 @@
               <line x1="8" y1="2" x2="8" y2="6" />
               <line x1="3" y1="10" x2="21" y2="10" />
             </svg>My Schedule</a>
-          <a href="../login.html" onclick="logoutAuth()" style="color:var(--danger);"><svg viewBox="0 0 24 24" fill="none"
-              stroke="currentColor">
+          <a href="../login.html" onclick="logoutAuth()" style="color:var(--danger);"><svg viewBox="0 0 24 24"
+              fill="none" stroke="currentColor">
               <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
               <polyline points="16 17 21 12 16 7" />
               <line x1="21" y1="12" x2="9" y2="12" />
@@ -321,21 +321,39 @@
 
   <script src="authority-shared.js"></script>
   <script>
-
+    const API = "http://localhost:8080/api";
     let closedCases = [];
 
-    function loadClosedCases() {
-      const currentUser = JSON.parse(localStorage.getItem("currentUser")) || {};
-      if (currentUser.role !== "authority") { window.location.href = "../login.html"; return; }
-      const complaints = JSON.parse(localStorage.getItem("complaints")) || [];
-      closedCases = complaints.filter(c => c.assignedTo === currentUser.email && c.status === "RESOLVED");
+    function getToken() { return localStorage.getItem("token"); }
 
-      // Update stats
-      document.getElementById("statTotalClosed").textContent = closedCases.length;
-      if (closedCases.length > 0) {
-        const allMyCases = complaints.filter(c => c.assignedTo === currentUser.email);
-        const rate = allMyCases.length > 0 ? Math.round((closedCases.length / allMyCases.length) * 100) : 0;
-        document.getElementById("statResolutionRate").textContent = rate + '%';
+    async function loadClosedCases() {
+      const token = getToken();
+      const role = localStorage.getItem("role");
+      if (!token || role !== "AUTHORITY") { window.location.href = "../login.html"; return; }
+
+      try {
+        const res = await fetch(API + "/complaints/authority/my-cases?page=0&size=100&status=RESOLVED", {
+          headers: { "Authorization": "Bearer " + token }
+        });
+        const json = await res.json();
+        closedCases = json.data?.content || json.data || [];
+
+        // Stats
+        document.getElementById("statTotalClosed").textContent = closedCases.length;
+
+        // Resolution rate - fetch all cases
+        try {
+          const allRes = await fetch(API + "/complaints/authority/my-cases?page=0&size=100", {
+            headers: { "Authorization": "Bearer " + token }
+          });
+          const allJson = await allRes.json();
+          const allCases = allJson.data?.content || allJson.data || [];
+          const rate = allCases.length > 0 ? Math.round((closedCases.length / allCases.length) * 100) : 0;
+          const rateEl = document.getElementById("statResolutionRate");
+          if (rateEl) rateEl.textContent = rate + "%";
+        } catch (e) { }
+
+        // Avg days
         let totalDays = 0, countWithDates = 0;
         closedCases.forEach(c => {
           if (c.createdAt && c.updatedAt) {
@@ -343,63 +361,63 @@
             if (days >= 0) { totalDays += days; countWithDates++; }
           }
         });
-        document.getElementById("statAvgDays").textContent = countWithDates > 0 ? Math.round(totalDays / countWithDates) + ' days' : '—';
+        const avgEl = document.getElementById("statAvgDays");
+        if (avgEl) avgEl.textContent = countWithDates > 0 ? Math.round(totalDays / countWithDates) + " days" : "—";
+
+        const sub = document.querySelector(".page-subtitle");
+        if (sub) sub.textContent = closedCases.length + " case" + (closedCases.length !== 1 ? "s" : "") + " have been resolved and archived.";
+
+        renderClosedCases();
+      } catch (e) {
+        console.error(e);
+        const errEl = document.getElementById("apiError");
+        if (errEl) { errEl.textContent = "⚠️ Could not load closed cases."; errEl.style.display = "block"; }
       }
-
-      // Update subtitle
-      const sub = document.querySelector('.page-subtitle');
-      if (sub) sub.textContent = closedCases.length + ' case' + (closedCases.length !== 1 ? 's' : '') + ' have been resolved and archived.';
-
-      renderClosedCases();
     }
 
     function renderClosedCases() {
-      const search = (document.getElementById("closedSearchInput")?.value || '').toLowerCase();
+      const search = (document.getElementById("closedSearchInput")?.value || "").toLowerCase();
       let cases = closedCases;
       if (search) {
         cases = cases.filter(c =>
-          (c.id && c.id.toString().includes(search)) ||
-          (c.subject && c.subject.toLowerCase().includes(search)) ||
-          (c.category && c.category.toLowerCase().includes(search))
+          (c.trackingId || "").toLowerCase().includes(search) ||
+          (c.title || "").toLowerCase().includes(search) ||
+          (c.categoryName || "").toLowerCase().includes(search)
         );
       }
-      const tbody = document.getElementById("closedCasesBody");
-      if (cases.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:30px;color:var(--text-light)">No closed cases found.</td></tr>';
+      const tbody = document.querySelector("tbody") || document.getElementById("closedCasesBody");
+      if (!tbody) return;
+      if (!cases.length) {
+        tbody.innerHTML = "<tr><td colspan='6' style='text-align:center;padding:40px;color:#64748b;'>No closed cases found.</td></tr>";
         return;
       }
       tbody.innerHTML = cases.map(c => `
         <tr>
-            <td><b style="color:var(--primary)">#${c.id}</b></td>
-            <td>${c.subject || '—'}</td>
-            <td>${c.category || '—'}</td>
-            <td>${formatDate(c.updatedAt || c.createdAt)}</td>
-            <td>${c.resolution || '<span style="color:var(--success);font-weight:600">Resolved</span>'}</td>
-            <td style="display:flex;gap:6px">
-                <button class="btn btn-sm" style="background:rgba(245,158,11,0.1);color:var(--warning);border:1px solid rgba(245,158,11,0.3)" onclick="reopenCase('${c.id}')">🔄 Reopen</button>
-            </td>
+          <td><b style="color:var(--primary)">${c.trackingId || "#" + c.id}</b></td>
+          <td>${esc(c.title)}</td>
+          <td>${c.categoryName || "—"}</td>
+          <td>${fmtDate(c.updatedAt)}</td>
+          <td><span class="badge badge-RESOLVED">RESOLVED</span></td>
+          <td><a href="add-updates.html?id=${c.id}" class="btn btn-outline btn-sm">View</a></td>
         </tr>
-    `).join('');
+      `).join("");
     }
 
+    function esc(s) { return (s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+    function fmtDate(iso) { if (!iso) return "—"; return new Date(iso).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" }); }
+
+    window.addEventListener("load", loadClosedCases);
+    document.getElementById("closedSearchInput")?.addEventListener("input", renderClosedCases);
+    // Also handle reopen from localStorage-based old code
     function reopenCase(caseId) {
-      if (!confirm('Are you sure you want to reopen Case #' + caseId + '?')) return;
-      const complaints = JSON.parse(localStorage.getItem("complaints")) || [];
-      const comp = complaints.find(c => String(c.id) === String(caseId));
-      if (comp) {
-        comp.status = "IN PROGRESS";
-        comp.progress = Math.max((comp.progress || 100) - 20, 50);
-        comp.updatedAt = new Date().toISOString();
-        comp.timeline = comp.timeline || [];
-        comp.timeline.push({ status: 'Reopened', date: new Date().toISOString(), description: 'Case reopened for further investigation.' });
-        localStorage.setItem("complaints", JSON.stringify(complaints));
-        showToast("Case #" + caseId + " has been reopened.", "success");
-        loadClosedCases();
-      }
+      fetch(API + "/complaints/" + caseId + "/reopen", {
+        method: "POST",
+        headers: { "Authorization": "Bearer " + getToken(), "Content-Type": "application/json" }
+      }).then(r => r.json()).then(j => {
+        if (j.success) { loadClosedCases(); }
+        else alert(j.message || "Could not reopen case.");
+      }).catch(e => alert("Error: " + e.message));
     }
-
-    window.addEventListener('DOMContentLoaded', loadClosedCases);
-
   </script>
 </body>
 

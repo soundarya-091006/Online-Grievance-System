@@ -1,513 +1,1169 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SafeReport | Authority Dashboard</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
   <style>
     :root {
-      --primary:#6366f1; --secondary:#8b5cf6; --success:#10b981;
-      --warning:#f59e0b; --danger:#ef4444;
-      --text:#1e293b; --text-light:#64748b; --border:#e2e8f0;
-      --bg:#f8fafc; --white:#ffffff;
+      --primary: #6366f1;
+      --secondary: #8b5cf6;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --text: #1e293b;
+      --text-light: #64748b;
+      --border: #e2e8f0;
+      --bg: #f8fafc;
+      --white: #ffffff;
     }
-    *{margin:0;padding:0;box-sizing:border-box;}
-    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;}
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
+    }
 
     /* ── Topbar ── */
-    .topbar{
-      position:fixed;top:0;left:0;right:0;height:70px;
-      background:rgba(255,255,255,0.95);backdrop-filter:blur(20px);
-      border-bottom:1px solid var(--border);display:flex;
-      align-items:center;justify-content:space-between;
-      padding:0 30px;z-index:1000;box-shadow:0 4px 20px rgba(0,0,0,0.03);gap:20px;
+    .topbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 70px;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 30px;
+      z-index: 1000;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+      gap: 20px;
     }
-    .hamburger-menu{display:flex;align-items:center;gap:15px;position:relative;}
-    .hamburger-btn{display:flex;background:none;border:none;cursor:pointer;padding:8px;border-radius:8px;transition:all 0.3s;align-items:center;justify-content:center;}
-    .hamburger-btn:hover{background:var(--bg);}
-    .hamburger-btn svg{width:24px;height:24px;stroke:var(--text);stroke-width:2;}
-    .logo-section{display:flex;align-items:center;gap:10px;text-decoration:none;}
-    .logo-icon{width:42px;height:42px;border-radius:11px;display:flex;align-items:center;justify-content:center;}
-    .logo-text{font-size:19px;font-weight:800;background:linear-gradient(135deg,var(--primary),var(--secondary));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-    .logo-badge{font-size:10px;font-weight:700;background:linear-gradient(135deg,var(--primary),var(--secondary));color:white;padding:3px 8px;border-radius:20px;letter-spacing:0.5px;}
 
-    .nav-dropdown{
-      position:absolute;top:100%;left:0;background:var(--white);
-      border:1px solid var(--border);border-radius:14px;min-width:240px;
-      margin-top:8px;box-shadow:0 10px 30px rgba(0,0,0,0.12);
-      display:none;z-index:2000;overflow:hidden;
+    .hamburger-menu {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      position: relative;
     }
-    .nav-dropdown.active{display:block;}
-    .nav-user-box{padding:16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
-    .nav-avatar{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,var(--primary),var(--secondary));display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:14px;flex-shrink:0;}
-    .nav-user-name{font-size:14px;font-weight:700;}
-    .nav-user-role{font-size:12px;color:var(--text-light);}
-    .nav-section{padding:6px 0;}
-    .nav-label{font-size:10px;font-weight:700;color:var(--text-light);letter-spacing:1px;padding:8px 18px 4px;text-transform:uppercase;}
-    .nav-link{display:flex;align-items:center;gap:12px;padding:11px 18px;color:var(--text);text-decoration:none;font-size:14px;transition:all 0.2s;}
-    .nav-link:hover{background:var(--bg);padding-left:22px;}
-    .nav-link.active{background:rgba(99,102,241,0.08);color:var(--primary);}
-    .nav-link svg{width:17px;height:17px;stroke-width:2;flex-shrink:0;}
-    .nav-link.danger{color:var(--danger);}
 
-    .topbar-right{display:flex;align-items:center;gap:16px;}
-    .user-menu{display:flex;align-items:center;gap:10px;padding:8px 14px;border-radius:12px;background:var(--white);border:1px solid var(--border);cursor:pointer;transition:all 0.3s;position:relative;}
-    .user-menu:hover{background:var(--bg);}
-    .user-avatar{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--primary),var(--secondary));display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:13px;}
-    .user-name{font-size:14px;font-weight:600;}
-    .user-role-tag{font-size:11px;color:var(--text-light);}
-    .user-dropdown{position:absolute;top:110%;right:0;background:var(--white);border:1px solid var(--border);border-radius:12px;min-width:180px;box-shadow:0 10px 30px rgba(0,0,0,0.12);display:none;z-index:2000;overflow:hidden;}
-    .user-dropdown.active{display:block;}
-    .user-dropdown a{display:flex;align-items:center;gap:10px;padding:13px 16px;color:var(--text);text-decoration:none;font-size:14px;transition:all 0.2s;border-bottom:1px solid var(--border);}
-    .user-dropdown a:last-child{border-bottom:none;}
-    .user-dropdown a:hover{background:var(--bg);}
-    .user-dropdown svg{width:15px;height:15px;stroke:var(--text-light);}
+    .hamburger-btn {
+      display: flex;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 8px;
+      transition: all 0.3s;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .hamburger-btn:hover {
+      background: var(--bg);
+    }
+
+    .hamburger-btn svg {
+      width: 24px;
+      height: 24px;
+      stroke: var(--text);
+      stroke-width: 2;
+    }
+
+    .logo-section {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .logo-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 11px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .logo-text {
+      font-size: 19px;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .logo-badge {
+      font-size: 10px;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      padding: 3px 8px;
+      border-radius: 20px;
+      letter-spacing: 0.5px;
+    }
+
+    .nav-dropdown {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      min-width: 240px;
+      margin-top: 8px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+      display: none;
+      z-index: 2000;
+      overflow: hidden;
+    }
+
+    .nav-dropdown.active {
+      display: block;
+    }
+
+    .nav-user-box {
+      padding: 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .nav-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 800;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
+    .nav-user-name {
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .nav-user-role {
+      font-size: 12px;
+      color: var(--text-light);
+    }
+
+    .nav-section {
+      padding: 6px 0;
+    }
+
+    .nav-label {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--text-light);
+      letter-spacing: 1px;
+      padding: 8px 18px 4px;
+      text-transform: uppercase;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 11px 18px;
+      color: var(--text);
+      text-decoration: none;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+
+    .nav-link:hover {
+      background: var(--bg);
+      padding-left: 22px;
+    }
+
+    .nav-link.active {
+      background: rgba(99, 102, 241, 0.08);
+      color: var(--primary);
+    }
+
+    .nav-link svg {
+      width: 17px;
+      height: 17px;
+      stroke-width: 2;
+      flex-shrink: 0;
+    }
+
+    .nav-link.danger {
+      color: var(--danger);
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .user-menu {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 14px;
+      border-radius: 12px;
+      background: var(--white);
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: all 0.3s;
+      position: relative;
+    }
+
+    .user-menu:hover {
+      background: var(--bg);
+    }
+
+    .user-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 700;
+      font-size: 13px;
+    }
+
+    .user-name {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .user-role-tag {
+      font-size: 11px;
+      color: var(--text-light);
+    }
+
+    .user-dropdown {
+      position: absolute;
+      top: 110%;
+      right: 0;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      min-width: 180px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+      display: none;
+      z-index: 2000;
+      overflow: hidden;
+    }
+
+    .user-dropdown.active {
+      display: block;
+    }
+
+    .user-dropdown a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 13px 16px;
+      color: var(--text);
+      text-decoration: none;
+      font-size: 14px;
+      transition: all 0.2s;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .user-dropdown a:last-child {
+      border-bottom: none;
+    }
+
+    .user-dropdown a:hover {
+      background: var(--bg);
+    }
+
+    .user-dropdown svg {
+      width: 15px;
+      height: 15px;
+      stroke: var(--text-light);
+    }
 
     /* ── Main ── */
-    .main-content{margin-top:70px;padding:30px;min-height:calc(100vh - 70px);}
-    .page-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:30px;flex-wrap:wrap;gap:15px;}
-    .page-title{font-size:28px;font-weight:800;margin-bottom:6px;}
-    .page-subtitle{font-size:14px;color:var(--text-light);}
-    .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;transition:all 0.3s;border:none;text-decoration:none;}
-    .btn-primary{background:linear-gradient(135deg,var(--primary),var(--secondary));color:white;}
-    .btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(99,102,241,0.35);}
-    .btn-outline{background:var(--white);color:var(--text);border:1px solid var(--border);}
-    .btn-outline:hover{border-color:var(--primary);color:var(--primary);}
-    .btn svg{width:16px;height:16px;}
+    .main-content {
+      margin-top: 70px;
+      padding: 30px;
+      min-height: calc(100vh - 70px);
+    }
+
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    .page-title {
+      font-size: 28px;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+
+    .page-subtitle {
+      font-size: 14px;
+      color: var(--text-light);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      border: none;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(99, 102, 241, 0.35);
+    }
+
+    .btn-outline {
+      background: var(--white);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-outline:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .btn svg {
+      width: 16px;
+      height: 16px;
+    }
 
     /* ── Stats ── */
-    .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;margin-bottom:28px;}
-    .stat-card{background:var(--white);border-radius:18px;padding:24px;border:1px solid var(--border);transition:all 0.3s;animation:fadeUp 0.5s ease both;}
-    .stat-card:hover{transform:translateY(-5px);box-shadow:0 15px 35px rgba(0,0,0,0.08);}
-    .stat-card:nth-child(1){animation-delay:0.05s;} .stat-card:nth-child(2){animation-delay:0.1s;}
-    .stat-card:nth-child(3){animation-delay:0.15s;} .stat-card:nth-child(4){animation-delay:0.2s;}
-    .stat-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;}
-    .stat-icon{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;}
-    .stat-number{font-size:34px;font-weight:800;line-height:1;margin-bottom:4px;}
-    .stat-label{font-size:13px;color:var(--text-light);font-weight:500;}
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 22px;
+      margin-bottom: 28px;
+    }
+
+    .stat-card {
+      background: var(--white);
+      border-radius: 18px;
+      padding: 24px;
+      border: 1px solid var(--border);
+      transition: all 0.3s;
+      animation: fadeUp 0.5s ease both;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+    }
+
+    .stat-card:nth-child(1) {
+      animation-delay: 0.05s;
+    }
+
+    .stat-card:nth-child(2) {
+      animation-delay: 0.1s;
+    }
+
+    .stat-card:nth-child(3) {
+      animation-delay: 0.15s;
+    }
+
+    .stat-card:nth-child(4) {
+      animation-delay: 0.2s;
+    }
+
+    .stat-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .stat-icon {
+      width: 46px;
+      height: 46px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+    }
+
+    .stat-number {
+      font-size: 34px;
+      font-weight: 800;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .stat-label {
+      font-size: 13px;
+      color: var(--text-light);
+      font-weight: 500;
+    }
 
     /* ── Layout ── */
-    .grid-layout{display:grid;grid-template-columns:1fr 340px;gap:22px;}
+    .grid-layout {
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 22px;
+    }
 
     /* ── Table ── */
-    .card{background:var(--white);border-radius:18px;border:1px solid var(--border);animation:fadeUp 0.5s ease 0.2s both;}
-    .card-header{padding:20px 24px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
-    .card-title{font-size:16px;font-weight:700;}
-    .card-subtitle{font-size:13px;color:var(--text-light);margin-top:2px;}
-    table{width:100%;border-collapse:collapse;}
-    thead{background:var(--bg);}
-    th{padding:14px 20px;text-align:left;font-size:12px;font-weight:600;color:var(--text-light);text-transform:uppercase;letter-spacing:0.5px;}
-    td{padding:16px 20px;border-top:1px solid var(--border);font-size:14px;}
-    tbody tr{transition:all 0.2s;}
-    tbody tr:hover{background:var(--bg);}
-    .case-id{font-weight:700;color:var(--primary);}
+    .card {
+      background: var(--white);
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      animation: fadeUp 0.5s ease 0.2s both;
+    }
+
+    .card-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .card-title {
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .card-subtitle {
+      font-size: 13px;
+      color: var(--text-light);
+      margin-top: 2px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    thead {
+      background: var(--bg);
+    }
+
+    th {
+      padding: 14px 20px;
+      text-align: left;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-light);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    td {
+      padding: 16px 20px;
+      border-top: 1px solid var(--border);
+      font-size: 14px;
+    }
+
+    tbody tr {
+      transition: all 0.2s;
+    }
+
+    tbody tr:hover {
+      background: var(--bg);
+    }
+
+    .case-id {
+      font-weight: 700;
+      color: var(--primary);
+    }
 
     /* ── Badges ── */
-    .badge{display:inline-block;padding:4px 10px;border-radius:7px;font-size:11px;font-weight:700;letter-spacing:0.3px;}
-    .badge-SUBMITTED    {background:rgba(59,130,246,0.1);color:#1e40af;}
-    .badge-UNDER_REVIEW {background:rgba(245,158,11,0.1);color:#92400e;}
-    .badge-ASSIGNED     {background:rgba(139,92,246,0.1);color:#5b21b6;}
-    .badge-INVESTIGATING{background:rgba(245,158,11,0.1);color:#92400e;}
-    .badge-RESOLVED     {background:rgba(16,185,129,0.1);color:#065f46;}
-    .badge-CLOSED       {background:rgba(100,116,139,0.1);color:#475569;}
-    .badge-HIGH    {background:rgba(239,68,68,0.1);color:#b91c1c;}
-    .badge-CRITICAL{background:rgba(124,58,237,0.1);color:#5b21b6;}
-    .badge-MEDIUM  {background:rgba(245,158,11,0.1);color:#92400e;}
-    .badge-LOW     {background:rgba(100,116,139,0.1);color:#475569;}
-    .btn-sm{padding:5px 12px;font-size:12px;border-radius:7px;}
+    .badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 7px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+    }
+
+    .badge-SUBMITTED {
+      background: rgba(59, 130, 246, 0.1);
+      color: #1e40af;
+    }
+
+    .badge-UNDER_REVIEW {
+      background: rgba(245, 158, 11, 0.1);
+      color: #92400e;
+    }
+
+    .badge-ASSIGNED {
+      background: rgba(139, 92, 246, 0.1);
+      color: #5b21b6;
+    }
+
+    .badge-INVESTIGATING {
+      background: rgba(245, 158, 11, 0.1);
+      color: #92400e;
+    }
+
+    .badge-RESOLVED {
+      background: rgba(16, 185, 129, 0.1);
+      color: #065f46;
+    }
+
+    .badge-CLOSED {
+      background: rgba(100, 116, 139, 0.1);
+      color: #475569;
+    }
+
+    .badge-HIGH {
+      background: rgba(239, 68, 68, 0.1);
+      color: #b91c1c;
+    }
+
+    .badge-CRITICAL {
+      background: rgba(124, 58, 237, 0.1);
+      color: #5b21b6;
+    }
+
+    .badge-MEDIUM {
+      background: rgba(245, 158, 11, 0.1);
+      color: #92400e;
+    }
+
+    .badge-LOW {
+      background: rgba(100, 116, 139, 0.1);
+      color: #475569;
+    }
+
+    .btn-sm {
+      padding: 5px 12px;
+      font-size: 12px;
+      border-radius: 7px;
+    }
 
     /* ── Sidebar widgets ── */
-    .widgets{display:flex;flex-direction:column;gap:18px;}
-    .widget{background:var(--white);border-radius:18px;border:1px solid var(--border);overflow:hidden;animation:fadeUp 0.5s ease both;}
-    .widget:nth-child(1){animation-delay:0.25s;} .widget:nth-child(2){animation-delay:0.3s;} .widget:nth-child(3){animation-delay:0.35s;}
-    .widget-header{padding:16px 20px;border-bottom:1px solid var(--border);font-size:15px;font-weight:700;}
-    .widget-body{padding:16px 20px;}
-    .overview-item{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);}
-    .overview-item:last-child{border-bottom:none;}
-    .overview-label{font-size:13px;color:var(--text-light);}
-    .overview-value{font-size:15px;font-weight:700;}
-    .progress-row{margin-bottom:14px;}
-    .progress-label{display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px;}
-    .progress-bar{height:7px;background:var(--border);border-radius:99px;overflow:hidden;}
-    .progress-fill{height:100%;border-radius:99px;transition:width 1s ease;}
-    .fill-success{background:linear-gradient(90deg,var(--success),#34d399);}
-    .fill-warning{background:linear-gradient(90deg,var(--warning),#fbbf24);}
-    .fill-primary{background:linear-gradient(90deg,var(--primary),var(--secondary));}
-    .quick-btns{display:flex;flex-direction:column;gap:8px;padding:16px 20px;}
+    .widgets {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .widget {
+      background: var(--white);
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      animation: fadeUp 0.5s ease both;
+    }
+
+    .widget:nth-child(1) {
+      animation-delay: 0.25s;
+    }
+
+    .widget:nth-child(2) {
+      animation-delay: 0.3s;
+    }
+
+    .widget:nth-child(3) {
+      animation-delay: 0.35s;
+    }
+
+    .widget-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .widget-body {
+      padding: 16px 20px;
+    }
+
+    .overview-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .overview-item:last-child {
+      border-bottom: none;
+    }
+
+    .overview-label {
+      font-size: 13px;
+      color: var(--text-light);
+    }
+
+    .overview-value {
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .progress-row {
+      margin-bottom: 14px;
+    }
+
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      margin-bottom: 6px;
+    }
+
+    .progress-bar {
+      height: 7px;
+      background: var(--border);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      border-radius: 99px;
+      transition: width 1s ease;
+    }
+
+    .fill-success {
+      background: linear-gradient(90deg, var(--success), #34d399);
+    }
+
+    .fill-warning {
+      background: linear-gradient(90deg, var(--warning), #fbbf24);
+    }
+
+    .fill-primary {
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+    }
+
+    .quick-btns {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 16px 20px;
+    }
 
     /* ── Error ── */
-    .api-error{background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);border-radius:12px;padding:14px 18px;font-size:14px;color:var(--danger);margin-bottom:20px;display:none;}
-
-    .empty-row td{text-align:center;padding:40px;color:var(--text-light);}
-
-    @keyframes fadeUp{from{opacity:0;transform:translateY(25px);}to{opacity:1;transform:translateY(0);}}
-    @media(max-width:1100px){.grid-layout{grid-template-columns:1fr;} .stats-grid{grid-template-columns:repeat(2,1fr);}}
-    @media(max-width:600px){.stats-grid{grid-template-columns:1fr;} .topbar{padding:0 15px;} .main-content{padding:15px;}}
-  </style>
-</head>
-<body>
-
-<!-- TOPBAR -->
-<div class="topbar">
-  <div class="hamburger-menu">
-    <button class="hamburger-btn" onclick="toggleNav()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-    </button>
-    <a href="authority-dashboard.html" class="logo-section">
-      <div class="logo-icon">
-        <svg width="42" height="42" viewBox="0 0 24 24" fill="none">
-          <defs><linearGradient id="sg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#6366f1"/><stop offset="100%" stop-color="#8b5cf6"/></linearGradient></defs>
-          <path d="M12 2L4 5V11C4 16 7.5 20 12 22C16.5 20 20 16 20 11V5L12 2Z" fill="url(#sg)"/>
-          <path d="M9.5 12.5L11 14L14.5 10.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </div>
-      <span class="logo-text">SafeReport</span>
-      <span class="logo-badge">AUTHORITY</span>
-    </a>
-
-    <!-- Side Nav Dropdown -->
-    <div id="navDropdown" class="nav-dropdown">
-      <div class="nav-user-box">
-        <div class="nav-avatar" id="navInitials">?</div>
-        <div>
-          <div class="nav-user-name" id="navName">Loading…</div>
-          <div class="nav-user-role">Authority Officer</div>
-        </div>
-      </div>
-      <div class="nav-section">
-        <div class="nav-label">Overview</div>
-        <a href="authority-dashboard.html" class="nav-link active">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-          Dashboard
-        </a>
-      </div>
-      <div class="nav-section">
-        <div class="nav-label">Cases</div>
-        <a href="my-cases.html" class="nav-link">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg>
-          My Cases
-        </a>
-        <a href="new-assignment.html" class="nav-link">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/></svg>
-          New Assignments
-        </a>
-        <a href="active-cases.html" class="nav-link">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-          Active Investigations
-        </a>
-        <a href="investigation.html" class="nav-link">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-          Investigation Panel
-        </a>
-      </div>
-      <div class="nav-section">
-        <div class="nav-label">Actions</div>
-        <a href="add-update.html" class="nav-link">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-          Add Update
-        </a>
-        <a href="close-cases.html" class="nav-link">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-          Close Case
-        </a>
-        <a href="evidence.html" class="nav-link">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 7v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2H9l-2-2H5a2 2 0 0 0-2 2z"/></svg>
-          Evidence Manager
-        </a>
-      </div>
-      <div class="nav-section">
-        <div class="nav-label">Account</div>
-        <a href="profile.html" class="nav-link">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-          My Profile
-        </a>
-        <a href="#" class="nav-link danger" onclick="doLogout(); return false;">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-          Sign Out
-        </a>
-      </div>
-    </div>
-  </div>
-
-  <div class="topbar-right">
-    <div class="user-menu" onclick="toggleUserMenu()">
-      <div class="user-avatar" id="topAvatar">?</div>
-      <div>
-        <div class="user-name" id="topName">Loading…</div>
-        <div class="user-role-tag">Authority</div>
-      </div>
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-      <div id="userDropdown" class="user-dropdown">
-        <a href="profile.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>My Profile</a>
-        <a href="#" onclick="doLogout(); return false;" style="color:var(--danger)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Sign Out</a>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- MAIN -->
-<div class="main-content">
-
-  <div class="page-header">
-    <div>
-      <h1 class="page-title">Authority Dashboard 📊</h1>
-      <p class="page-subtitle">Welcome back — here is your investigative overview for today.</p>
-    </div>
-    <div style="display:flex;gap:10px;">
-      <a href="new-assignment.html" class="btn btn-outline">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-        New Assignments
-      </a>
-      <a href="generate-report.html" class="btn btn-primary">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-        Generate Report
-      </a>
-    </div>
-  </div>
-
-  <div id="apiError" class="api-error"></div>
-
-  <!-- STATS -->
-  <div class="stats-grid">
-    <div class="stat-card">
-      <div class="stat-top">
-        <div class="stat-icon" style="background:linear-gradient(135deg,rgba(99,102,241,0.12),rgba(139,92,246,0.12))">📋</div>
-      </div>
-      <div class="stat-number" id="statTotal">–</div>
-      <div class="stat-label">My Total Cases</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-top">
-        <div class="stat-icon" style="background:linear-gradient(135deg,rgba(245,158,11,0.12),rgba(251,191,36,0.12))">⚡</div>
-      </div>
-      <div class="stat-number" id="statActive">–</div>
-      <div class="stat-label">Active Investigations</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-top">
-        <div class="stat-icon" style="background:linear-gradient(135deg,rgba(239,68,68,0.12),rgba(220,38,38,0.12))">🔔</div>
-      </div>
-      <div class="stat-number" id="statNew">–</div>
-      <div class="stat-label">New Assignments</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-top">
-        <div class="stat-icon" style="background:linear-gradient(135deg,rgba(16,185,129,0.12),rgba(5,150,105,0.12))">✅</div>
-      </div>
-      <div class="stat-number" id="statResolved">–</div>
-      <div class="stat-label">Cases Resolved</div>
-    </div>
-  </div>
-
-  <!-- GRID -->
-  <div class="grid-layout">
-
-    <!-- Recent Cases Table -->
-    <div class="card">
-      <div class="card-header">
-        <div>
-          <div class="card-title">Recent Cases</div>
-          <div class="card-subtitle">Your latest assigned investigations</div>
-        </div>
-        <a href="my-cases.html" class="btn btn-outline btn-sm">View All</a>
-      </div>
-      <table>
-        <thead>
-          <tr>
-            <th>Case ID</th>
-            <th>Title</th>
-            <th>Category</th>
-            <th>Priority</th>
-            <th>Status</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody id="casesBody">
-          <tr class="empty-row"><td colspan="6">Loading…</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <!-- Sidebar Widgets -->
-    <div class="widgets">
-
-      <!-- Pending Actions -->
-      <div class="widget">
-        <div class="widget-header">⚠️ Pending Actions</div>
-        <div class="widget-body" style="padding:0 20px;">
-          <div class="overview-item">
-            <span class="overview-label">🔴 New assignments</span>
-            <span class="overview-value" id="wNew" style="color:var(--danger)">–</span>
-          </div>
-          <div class="overview-item">
-            <span class="overview-label">⚡ Active cases</span>
-            <span class="overview-value" id="wActive">–</span>
-          </div>
-          <div class="overview-item">
-            <span class="overview-label">✅ Resolved</span>
-            <span class="overview-value" id="wResolved" style="color:var(--success)">–</span>
-          </div>
-          <div class="overview-item">
-            <span class="overview-label">📋 Total assigned</span>
-            <span class="overview-value" id="wTotal">–</span>
-          </div>
-        </div>
-        <div style="padding:14px 20px;border-top:1px solid var(--border);">
-          <a href="my-cases.html" class="btn btn-primary" style="width:100%;justify-content:center;">View My Cases</a>
-        </div>
-      </div>
-
-      <!-- Performance -->
-      <div class="widget">
-        <div class="widget-header">📈 My Performance</div>
-        <div class="widget-body">
-          <div class="progress-row">
-            <div class="progress-label">
-              <span>Resolution Rate</span>
-              <span id="resolveRate">0%</span>
-            </div>
-            <div class="progress-bar"><div class="progress-fill fill-success" id="resolveBar" style="width:0%"></div></div>
-          </div>
-          <div class="progress-row">
-            <div class="progress-label">
-              <span>Active vs Total</span>
-              <span id="activeRate">0%</span>
-            </div>
-            <div class="progress-bar"><div class="progress-fill fill-warning" id="activeBar" style="width:0%"></div></div>
-          </div>
-          <div class="progress-row">
-            <div class="progress-label">
-              <span>New Assignments</span>
-              <span id="newRate">0%</span>
-            </div>
-            <div class="progress-bar"><div class="progress-fill fill-primary" id="newBar" style="width:0%"></div></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Quick Actions -->
-      <div class="widget">
-        <div class="widget-header">⚡ Quick Actions</div>
-        <div class="quick-btns">
-          <a href="add-update.html" class="btn btn-primary" style="justify-content:center">➕ Add Case Update</a>
-          <a href="evidence.html" class="btn btn-outline" style="justify-content:center">📁 Upload Evidence</a>
-          <a href="close-cases.html" class="btn btn-outline" style="justify-content:center;color:var(--success);border-color:var(--success)">✅ Close a Case</a>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</div>
-
-<script>
-  const API = "http://localhost:8080/api";
-
-  function getToken() { return localStorage.getItem("token"); }
-
-  /* ── Auth check ── */
-  function requireAuth() {
-    const token = getToken();
-    const role  = localStorage.getItem("role");
-    if (!token || role !== "AUTHORITY") {
-      window.location.href = "../login.html";
-      return false;
+    .api-error {
+      background: rgba(239, 68, 68, 0.08);
+      border: 1px solid rgba(239, 68, 68, 0.2);
+      border-radius: 12px;
+      padding: 14px 18px;
+      font-size: 14px;
+      color: var(--danger);
+      margin-bottom: 20px;
+      display: none;
     }
-    return true;
-  }
 
-  /* ── Init ── */
-  window.addEventListener("load", async () => {
-    if (!requireAuth()) return;
+    .empty-row td {
+      text-align: center;
+      padding: 40px;
+      color: var(--text-light);
+    }
 
-    const name = localStorage.getItem("fullName") || "Officer";
-    const initials = name.split(" ").map(w => w[0]).join("").toUpperCase().slice(0,2);
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(25px);
+      }
 
-    document.getElementById("topName").textContent    = name;
-    document.getElementById("topAvatar").textContent  = initials;
-    document.getElementById("navName").textContent    = name;
-    document.getElementById("navInitials").textContent= initials;
-
-    await loadCases();
-  });
-
-  /* ── Load cases ── */
-  async function loadCases() {
-    try {
-      const res  = await fetch(API + "/complaints/authority/my-cases", {
-        headers: { "Authorization": "Bearer " + getToken() }
-      });
-      const json = await res.json();
-      if (!json.success) throw new Error(json.message);
-
-      const cases = json.data.content || json.data || [];
-      updateStats(cases);
-      renderTable(cases.slice(0, 5));
-    } catch(e) {
-      // fallback: try complaints endpoint
-      try {
-        const res2  = await fetch(API + "/complaints?page=0&size=20", {
-          headers: { "Authorization": "Bearer " + getToken() }
-        });
-        const json2 = await res2.json();
-        if (!json2.success) throw new Error(json2.message);
-        const cases = json2.data.content || json2.data || [];
-        updateStats(cases);
-        renderTable(cases.slice(0, 5));
-      } catch(e2) {
-        showError("Could not load cases: " + e2.message);
-        renderTable([]);
+      to {
+        opacity: 1;
+        transform: translateY(0);
       }
     }
-  }
 
-  /* ── Update stats ── */
-  function updateStats(cases) {
-    const total    = cases.length;
-    const newOnes  = cases.filter(c => c.status === "ASSIGNED").length;
-    const active   = cases.filter(c => ["ASSIGNED","INVESTIGATING","UNDER_REVIEW"].includes(c.status)).length;
-    const resolved = cases.filter(c => ["RESOLVED","CLOSED"].includes(c.status)).length;
+    @media(max-width:1100px) {
+      .grid-layout {
+        grid-template-columns: 1fr;
+      }
 
-    document.getElementById("statTotal").textContent   = total;
-    document.getElementById("statNew").textContent     = newOnes;
-    document.getElementById("statActive").textContent  = active;
-    document.getElementById("statResolved").textContent= resolved;
-
-    document.getElementById("wTotal").textContent   = total;
-    document.getElementById("wNew").textContent     = newOnes;
-    document.getElementById("wActive").textContent  = active;
-    document.getElementById("wResolved").textContent= resolved;
-
-    // Performance bars
-    const resolveRate = total > 0 ? Math.round((resolved / total) * 100) : 0;
-    const activeRate  = total > 0 ? Math.round((active   / total) * 100) : 0;
-    const newRate     = total > 0 ? Math.round((newOnes  / total) * 100) : 0;
-
-    document.getElementById("resolveRate").textContent = resolveRate + "%";
-    document.getElementById("activeRate").textContent  = activeRate  + "%";
-    document.getElementById("newRate").textContent     = newRate     + "%";
-
-    setTimeout(() => {
-      document.getElementById("resolveBar").style.width = resolveRate + "%";
-      document.getElementById("activeBar").style.width  = activeRate  + "%";
-      document.getElementById("newBar").style.width     = newRate     + "%";
-    }, 300);
-  }
-
-  /* ── Render table ── */
-  function renderTable(cases) {
-    const tbody = document.getElementById("casesBody");
-    if (!cases.length) {
-      tbody.innerHTML = '<tr class="empty-row"><td colspan="6">No cases assigned to you yet.</td></tr>';
-      return;
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
     }
-    tbody.innerHTML = cases.map(c => `
+
+    @media(max-width:600px) {
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .topbar {
+        padding: 0 15px;
+      }
+
+      .main-content {
+        padding: 15px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="hamburger-menu">
+      <button class="hamburger-btn" onclick="toggleNav()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <line x1="3" y1="6" x2="21" y2="6" />
+          <line x1="3" y1="12" x2="21" y2="12" />
+          <line x1="3" y1="18" x2="21" y2="18" />
+        </svg>
+      </button>
+      <a href="authority-dashboard.html" class="logo-section">
+        <div class="logo-icon">
+          <svg width="42" height="42" viewBox="0 0 24 24" fill="none">
+            <defs>
+              <linearGradient id="sg" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#6366f1" />
+                <stop offset="100%" stop-color="#8b5cf6" />
+              </linearGradient>
+            </defs>
+            <path d="M12 2L4 5V11C4 16 7.5 20 12 22C16.5 20 20 16 20 11V5L12 2Z" fill="url(#sg)" />
+            <path d="M9.5 12.5L11 14L14.5 10.5" stroke="white" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round" />
+          </svg>
+        </div>
+        <span class="logo-text">SafeReport</span>
+        <span class="logo-badge">AUTHORITY</span>
+      </a>
+
+      <!-- Side Nav Dropdown -->
+      <div id="navDropdown" class="nav-dropdown">
+        <div class="nav-user-box">
+          <div class="nav-avatar" id="navInitials">?</div>
+          <div>
+            <div class="nav-user-name" id="navName">Loading…</div>
+            <div class="nav-user-role">Authority Officer</div>
+          </div>
+        </div>
+        <div class="nav-section">
+          <div class="nav-label">Overview</div>
+          <a href="authority-dashboard.html" class="nav-link active">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <rect x="3" y="3" width="7" height="7" />
+              <rect x="14" y="3" width="7" height="7" />
+              <rect x="14" y="14" width="7" height="7" />
+              <rect x="3" y="14" width="7" height="7" />
+            </svg>
+            Dashboard
+          </a>
+        </div>
+        <div class="nav-section">
+          <div class="nav-label">Cases</div>
+          <a href="my-cases.html" class="nav-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+            </svg>
+            My Cases
+          </a>
+          <a href="new-assignment.html" class="nav-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+            </svg>
+            New Assignments
+          </a>
+          <a href="active-cases.html" class="nav-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+            </svg>
+            Active Investigations
+          </a>
+          <a href="investigation.html" class="nav-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <circle cx="11" cy="11" r="8" />
+              <path d="M21 21l-4.35-4.35" />
+            </svg>
+            Investigation Panel
+          </a>
+        </div>
+        <div class="nav-section">
+          <div class="nav-label">Actions</div>
+          <a href="add-update.html" class="nav-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+            </svg>
+            Add Update
+          </a>
+          <a href="close-cases.html" class="nav-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+            </svg>
+            Close Case
+          </a>
+          <a href="evidence.html" class="nav-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="M3 7v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2H9l-2-2H5a2 2 0 0 0-2 2z" />
+            </svg>
+            Evidence Manager
+          </a>
+        </div>
+        <div class="nav-section">
+          <div class="nav-label">Account</div>
+          <a href="profile.html" class="nav-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
+            </svg>
+            My Profile
+          </a>
+          <a href="login.html" class="nav-link danger" onclick="doLogout(); return false;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+              <polyline points="16 17 21 12 16 7" />
+              <line x1="21" y1="12" x2="9" y2="12" />
+            </svg>
+            Sign Out
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="topbar-right">
+      <div class="user-menu" onclick="toggleUserMenu()">
+        <div class="user-avatar" id="topAvatar">?</div>
+        <div>
+          <div class="user-name" id="topName">Loading…</div>
+          <div class="user-role-tag">Authority</div>
+        </div>
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="6 9 12 15 18 9" />
+        </svg>
+        <div id="userDropdown" class="user-dropdown">
+          <a href="profile.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
+            </svg>My Profile</a>
+          <a href="login.html" onclick="doLogout(); return false;" style="color:var(--danger)"><svg viewBox="0 0 24 24"
+              fill="none" stroke="currentColor">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+              <polyline points="16 17 21 12 16 7" />
+              <line x1="21" y1="12" x2="9" y2="12" />
+            </svg>Sign Out</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main-content">
+
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Authority Dashboard 📊</h1>
+        <p class="page-subtitle">Welcome back — here is your investigative overview for today.</p>
+      </div>
+      <div style="display:flex;gap:10px;">
+        <a href="new-assignment.html" class="btn btn-outline">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+            <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+          </svg>
+          New Assignments
+        </a>
+        <a href="generate-report.html" class="btn btn-primary">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+            <polyline points="14 2 14 8 20 8" />
+          </svg>
+          Generate Report
+        </a>
+      </div>
+    </div>
+
+    <div id="apiError" class="api-error"></div>
+
+    <!-- STATS -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-top">
+          <div class="stat-icon" style="background:linear-gradient(135deg,rgba(99,102,241,0.12),rgba(139,92,246,0.12))">
+            📋</div>
+        </div>
+        <div class="stat-number" id="statTotal">–</div>
+        <div class="stat-label">My Total Cases</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-top">
+          <div class="stat-icon" style="background:linear-gradient(135deg,rgba(245,158,11,0.12),rgba(251,191,36,0.12))">
+            ⚡</div>
+        </div>
+        <div class="stat-number" id="statActive">–</div>
+        <div class="stat-label">Active Investigations</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-top">
+          <div class="stat-icon" style="background:linear-gradient(135deg,rgba(239,68,68,0.12),rgba(220,38,38,0.12))">🔔
+          </div>
+        </div>
+        <div class="stat-number" id="statNew">–</div>
+        <div class="stat-label">New Assignments</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-top">
+          <div class="stat-icon" style="background:linear-gradient(135deg,rgba(16,185,129,0.12),rgba(5,150,105,0.12))">✅
+          </div>
+        </div>
+        <div class="stat-number" id="statResolved">–</div>
+        <div class="stat-label">Cases Resolved</div>
+      </div>
+    </div>
+
+    <!-- GRID -->
+    <div class="grid-layout">
+
+      <!-- Recent Cases Table -->
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Recent Cases</div>
+            <div class="card-subtitle">Your latest assigned investigations</div>
+          </div>
+          <a href="my-cases.html" class="btn btn-outline btn-sm">View All</a>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Case ID</th>
+              <th>Title</th>
+              <th>Category</th>
+              <th>Priority</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="casesBody">
+            <tr class="empty-row">
+              <td colspan="6">Loading…</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Sidebar Widgets -->
+      <div class="widgets">
+
+        <!-- Pending Actions -->
+        <div class="widget">
+          <div class="widget-header">⚠️ Pending Actions</div>
+          <div class="widget-body" style="padding:0 20px;">
+            <div class="overview-item">
+              <span class="overview-label">🔴 New assignments</span>
+              <span class="overview-value" id="wNew" style="color:var(--danger)">–</span>
+            </div>
+            <div class="overview-item">
+              <span class="overview-label">⚡ Active cases</span>
+              <span class="overview-value" id="wActive">–</span>
+            </div>
+            <div class="overview-item">
+              <span class="overview-label">✅ Resolved</span>
+              <span class="overview-value" id="wResolved" style="color:var(--success)">–</span>
+            </div>
+            <div class="overview-item">
+              <span class="overview-label">📋 Total assigned</span>
+              <span class="overview-value" id="wTotal">–</span>
+            </div>
+          </div>
+          <div style="padding:14px 20px;border-top:1px solid var(--border);">
+            <a href="my-cases.html" class="btn btn-primary" style="width:100%;justify-content:center;">View My Cases</a>
+          </div>
+        </div>
+
+        <!-- Performance -->
+        <div class="widget">
+          <div class="widget-header">📈 My Performance</div>
+          <div class="widget-body">
+            <div class="progress-row">
+              <div class="progress-label">
+                <span>Resolution Rate</span>
+                <span id="resolveRate">0%</span>
+              </div>
+              <div class="progress-bar">
+                <div class="progress-fill fill-success" id="resolveBar" style="width:0%"></div>
+              </div>
+            </div>
+            <div class="progress-row">
+              <div class="progress-label">
+                <span>Active vs Total</span>
+                <span id="activeRate">0%</span>
+              </div>
+              <div class="progress-bar">
+                <div class="progress-fill fill-warning" id="activeBar" style="width:0%"></div>
+              </div>
+            </div>
+            <div class="progress-row">
+              <div class="progress-label">
+                <span>New Assignments</span>
+                <span id="newRate">0%</span>
+              </div>
+              <div class="progress-bar">
+                <div class="progress-fill fill-primary" id="newBar" style="width:0%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="widget">
+          <div class="widget-header">⚡ Quick Actions</div>
+          <div class="quick-btns">
+            <a href="add-update.html" class="btn btn-primary" style="justify-content:center">➕ Add Case Update</a>
+            <a href="evidence.html" class="btn btn-outline" style="justify-content:center">📁 Upload Evidence</a>
+            <a href="close-cases.html" class="btn btn-outline"
+              style="justify-content:center;color:var(--success);border-color:var(--success)">✅ Close a Case</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API = "http://localhost:8080/api";
+
+    function getToken() { return localStorage.getItem("token"); }
+
+    /* ── Auth check ── */
+    function requireAuth() {
+      const token = getToken();
+      const role = localStorage.getItem("role");
+      if (!token || role !== "AUTHORITY") {
+        window.location.href = "../login.html";
+        return false;
+      }
+      return true;
+    }
+
+    /* ── Init ── */
+    window.addEventListener("load", async () => {
+      if (!requireAuth()) return;
+
+      const name = localStorage.getItem("fullName") || "Officer";
+      const initials = name.split(" ").map(w => w[0]).join("").toUpperCase().slice(0, 2);
+
+      document.getElementById("topName").textContent = name;
+      document.getElementById("topAvatar").textContent = initials;
+      document.getElementById("navName").textContent = name;
+      document.getElementById("navInitials").textContent = initials;
+
+      await loadCases();
+    });
+
+    /* ── Load cases ── */
+    async function loadCases() {
+      try {
+        const res = await fetch(API + "/complaints/authority/assigned?page=0&size=20", {
+          headers: { "Authorization": "Bearer " + getToken() }
+        });
+        const json = await res.json();
+        if (!json.success) throw new Error(json.message);
+
+        const cases = json.data.content || json.data || [];
+        updateStats(cases);
+        renderTable(cases.slice(0, 5));
+      } catch (e) {
+        // fallback: try complaints endpoint
+        try {
+          const res2 = await fetch(API + "/complaints?page=0&size=20", {
+            headers: { "Authorization": "Bearer " + getToken() }
+          });
+          const json2 = await res2.json();
+          if (!json2.success) throw new Error(json2.message);
+          const cases = json2.data.content || json2.data || [];
+          updateStats(cases);
+          renderTable(cases.slice(0, 5));
+        } catch (e2) {
+          showError("Could not load cases: " + e2.message);
+          renderTable([]);
+        }
+      }
+    }
+
+    /* ── Update stats ── */
+    function updateStats(cases) {
+      const total = cases.length;
+      const newOnes = cases.filter(c => c.status === "ASSIGNED").length;
+      const active = cases.filter(c => ["ASSIGNED", "INVESTIGATING", "UNDER_REVIEW"].includes(c.status)).length;
+      const resolved = cases.filter(c => ["RESOLVED", "CLOSED"].includes(c.status)).length;
+
+      document.getElementById("statTotal").textContent = total;
+      document.getElementById("statNew").textContent = newOnes;
+      document.getElementById("statActive").textContent = active;
+      document.getElementById("statResolved").textContent = resolved;
+
+      document.getElementById("wTotal").textContent = total;
+      document.getElementById("wNew").textContent = newOnes;
+      document.getElementById("wActive").textContent = active;
+      document.getElementById("wResolved").textContent = resolved;
+
+      // Performance bars
+      const resolveRate = total > 0 ? Math.round((resolved / total) * 100) : 0;
+      const activeRate = total > 0 ? Math.round((active / total) * 100) : 0;
+      const newRate = total > 0 ? Math.round((newOnes / total) * 100) : 0;
+
+      document.getElementById("resolveRate").textContent = resolveRate + "%";
+      document.getElementById("activeRate").textContent = activeRate + "%";
+      document.getElementById("newRate").textContent = newRate + "%";
+
+      setTimeout(() => {
+        document.getElementById("resolveBar").style.width = resolveRate + "%";
+        document.getElementById("activeBar").style.width = activeRate + "%";
+        document.getElementById("newBar").style.width = newRate + "%";
+      }, 300);
+    }
+
+    /* ── Render table ── */
+    function renderTable(cases) {
+      const tbody = document.getElementById("casesBody");
+      if (!cases.length) {
+        tbody.innerHTML = '<tr class="empty-row"><td colspan="6">No cases assigned to you yet.</td></tr>';
+        return;
+      }
+      tbody.innerHTML = cases.map(c => `
       <tr>
         <td class="case-id">${c.trackingId || "#" + c.id}</td>
         <td>${esc(c.title)}</td>
         <td>${c.categoryName || "—"}</td>
         <td><span class="badge badge-${c.priority}">${c.priority}</span></td>
-        <td><span class="badge badge-${c.status}">${c.status.replace(/_/g," ")}</span></td>
+        <td><span class="badge badge-${c.status}">${c.status.replace(/_/g, " ")}</span></td>
         <td>
           <a href="add-update.html?id=${c.id}" class="btn ${c.status === 'RESOLVED' || c.status === 'CLOSED' ? 'btn-outline' : 'btn-primary'} btn-sm">
             ${c.status === 'RESOLVED' || c.status === 'CLOSED' ? 'View' : 'Investigate'}
@@ -515,37 +1171,38 @@
         </td>
       </tr>
     `).join("");
-  }
+    }
 
-  /* ── Menu toggles ── */
-  function toggleNav() {
-    document.getElementById("navDropdown").classList.toggle("active");
-  }
-  function toggleUserMenu() {
-    document.getElementById("userDropdown").classList.toggle("active");
-  }
+    /* ── Menu toggles ── */
+    function toggleNav() {
+      document.getElementById("navDropdown").classList.toggle("active");
+    }
+    function toggleUserMenu() {
+      document.getElementById("userDropdown").classList.toggle("active");
+    }
 
-  /* ── Logout ── */
-  function doLogout() {
-    ["token","role","userId","fullName","email"].forEach(k => localStorage.removeItem(k));
-    window.location.href = "../login.html";
-  }
+    /* ── Logout ── */
+    function doLogout() {
+      ["token", "role", "userId", "fullName", "email"].forEach(k => localStorage.removeItem(k));
+      window.location.href = "../login.html";
+    }
 
-  /* ── Helpers ── */
-  function showError(msg) {
-    const el = document.getElementById("apiError");
-    el.textContent = "⚠️ " + msg;
-    el.style.display = "block";
-  }
-  function esc(s) {
-    return (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
-  }
+    /* ── Helpers ── */
+    function showError(msg) {
+      const el = document.getElementById("apiError");
+      el.textContent = "⚠️ " + msg;
+      el.style.display = "block";
+    }
+    function esc(s) {
+      return (s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
 
-  // Close dropdowns on outside click
-  document.addEventListener("click", e => {
-    if (!e.target.closest(".hamburger-menu")) document.getElementById("navDropdown").classList.remove("active");
-    if (!e.target.closest(".user-menu"))      document.getElementById("userDropdown").classList.remove("active");
-  });
-</script>
+    // Close dropdowns on outside click
+    document.addEventListener("click", e => {
+      if (!e.target.closest(".hamburger-menu")) document.getElementById("navDropdown").classList.remove("active");
+      if (!e.target.closest(".user-menu")) document.getElementById("userDropdown").classList.remove("active");
+    });
+  </script>
 </body>
+
 </html>

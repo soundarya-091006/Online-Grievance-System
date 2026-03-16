@@ -555,9 +555,12 @@
                     <label class="filter-label">Category</label>
                     <select id="categoryFilter" onchange="applyFilters()">
                         <option value="">All Categories</option>
-                        <option value="Harassment">Harassment</option>
-                        <option value="Discrimination">Discrimination</option>
-                        <option value="Safety">Safety</option>
+                        <option value="Domestic Violence">Domestic Violence</option>
+                        <option value="Workplace Harassment">Workplace Harassment</option>
+                        <option value="Cyberbullying">Cyberbullying</option>
+                        <option value="Public Harassment">Public Harassment</option>
+                        <option value="Sexual Assault">Sexual Assault</option>
+                        <option value="Stalking">Stalking</option>
                         <option value="Other">Other</option>
                     </select>
                 </div>
@@ -605,50 +608,54 @@
     </div>
 
     <script>
+        const API = "http://localhost:8080/api";
         let allComplaints = [];
         let filteredComplaints = [];
         const itemsPerPage = 10;
         let currentPage = 1;
 
+        function getToken() { return localStorage.getItem("token"); }
+
         function checkAdminAccess() {
-            const currentUser = JSON.parse(localStorage.getItem("currentUser")) || {};
-            if (currentUser.role !== "admin") {
+            const role = localStorage.getItem("role");
+            if (!getToken() || role !== "ADMIN") {
                 window.location.href = "../login.html";
+                return false;
             }
-            document.getElementById("userEmail").innerText = currentUser.email || "Admin";
+            const name = localStorage.getItem("fullName") || "Admin";
+            document.getElementById("userEmail").innerText = name;
+            return true;
         }
 
-        function loadComplaints() {
-            const complaints = JSON.parse(localStorage.getItem("complaints")) || [];
-            const users = JSON.parse(localStorage.getItem("users")) || [];
-
-            allComplaints = complaints.map(complaint => {
-                const user = users.find(u => u.email === complaint.userEmail);
-                return {
-                    ...complaint,
-                    userName: user?.name || 'Unknown',
-                    userPhone: user?.phone || 'N/A'
-                };
-            });
-
-            filteredComplaints = [...allComplaints];
-            displayComplaints();
+        async function loadComplaints() {
+            try {
+                const res = await fetch(API + "/complaints?page=0&size=200", {
+                    headers: { "Authorization": "Bearer " + getToken() }
+                });
+                const json = await res.json();
+                if (!json.success) { console.error(json.message); return; }
+                allComplaints = json.data.content || json.data || [];
+                filteredComplaints = [...allComplaints];
+                displayComplaints();
+            } catch(e) {
+                console.error("Failed to load complaints:", e);
+            }
         }
 
         function applyFilters() {
             const searchTerm = document.getElementById("searchInput").value.toLowerCase();
             const status = document.getElementById("statusFilter").value;
-            const category = document.getElementById("categoryFilter").value;
+            const category = document.getElementById("categoryFilter").value.toLowerCase();
             const priority = document.getElementById("priorityFilter").value;
 
             filteredComplaints = allComplaints.filter(complaint => {
                 const matchSearch = !searchTerm || 
-                    complaint.id.toString().includes(searchTerm) ||
-                    complaint.subject.toLowerCase().includes(searchTerm) ||
-                    complaint.userEmail.toLowerCase().includes(searchTerm);
+                    (complaint.trackingId || '').toLowerCase().includes(searchTerm) ||
+                    (complaint.title || '').toLowerCase().includes(searchTerm) ||
+                    (complaint.complainantName || '').toLowerCase().includes(searchTerm);
 
                 const matchStatus = !status || complaint.status === status;
-                const matchCategory = !category || complaint.category === category;
+                const matchCategory = !category || (complaint.categoryName || '').toLowerCase().includes(category);
                 const matchPriority = !priority || complaint.priority === priority;
 
                 return matchSearch && matchStatus && matchCategory && matchPriority;
@@ -658,26 +665,28 @@
             displayComplaints();
         }
 
+        function esc(s) { return (s||'').replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
         function displayComplaints() {
             const start = (currentPage - 1) * itemsPerPage;
             const end = start + itemsPerPage;
             const paginatedComplaints = filteredComplaints.slice(start, end);
 
             const tbody = document.getElementById("complaintsList");
-            tbody.innerHTML = paginatedComplaints.map(complaint => `
+            tbody.innerHTML = paginatedComplaints.map(c => `
                 <tr>
-                    <td><input type="checkbox" class="checkbox complaint-checkbox" value="${complaint.id}"></td>
-                    <td>#${complaint.id}</td>
-                    <td>${complaint.subject}</td>
-                    <td>${complaint.userEmail}</td>
-                    <td><span class="status-badge status-${complaint.status.toLowerCase().replace(' ', '-')}">${complaint.status}</span></td>
-                    <td>${complaint.priority}</td>
-                    <td>${complaint.category}</td>
-                    <td>${complaint.createdAt.split(' ')[0]}</td>
+                    <td><input type="checkbox" class="checkbox complaint-checkbox" value="${c.id}"></td>
+                    <td style="color:var(--primary);font-weight:600">${esc(c.trackingId || '#'+c.id)}</td>
+                    <td>${esc(c.title)}</td>
+                    <td>${c.anonymous ? 'Anonymous' : esc(c.complainantName || '—')}</td>
+                    <td><span class="status-badge status-${(c.status||'').toLowerCase().replace(/_/g, '-')}">${(c.status||'').replace(/_/g,' ')}</span></td>
+                    <td>${c.priority || '—'}</td>
+                    <td>${c.categoryName || '—'}</td>
+                    <td>${c.createdAt ? new Date(c.createdAt).toLocaleDateString() : '—'}</td>
                     <td>
                         <div class="action-buttons">
-                            <button class="action-btn-small" onclick="reviewComplaint('${complaint.id}')">Review</button>
-                            <button class="action-btn-small" onclick="viewDetails('${complaint.id}')">View</button>
+                            <button class="action-btn-small" onclick="reviewComplaint('${c.id}')">Review</button>
+                            <button class="action-btn-small" onclick="viewDetails('${c.id}')">View</button>
                         </div>
                     </td>
                 </tr>
@@ -737,26 +746,17 @@
             window.location.href = `review-complaint.html?id=${complaintId}`;
         }
 
-        function bulkApprove() {
-            const selected = Array.from(document.querySelectorAll(".complaint-checkbox:checked")).map(cb => cb.value);
-            if (selected.length === 0) {
-                alert("Please select at least one complaint");
-                return;
-            }
-            alert(`Approved ${selected.length} complaint(s)`);
-            loadComplaints();
-        }
-
         function exportAsCSV() {
-            const headers = ["ID", "Subject", "Email", "Status", "Priority", "Category", "Date"];
+            const headers = ["ID", "Tracking ID", "Title", "Complainant", "Status", "Priority", "Category", "Date"];
             const rows = filteredComplaints.map(c => [
                 c.id,
-                c.subject,
-                c.userEmail,
-                c.status,
-                c.priority,
-                c.category,
-                c.createdAt
+                c.trackingId || '',
+                c.title || '',
+                c.anonymous ? 'Anonymous' : (c.complainantName || ''),
+                c.status || '',
+                c.priority || '',
+                c.categoryName || '',
+                c.createdAt || ''
             ]);
 
             let csv = headers.join(",") + "\n";
@@ -769,12 +769,12 @@
         }
 
         function logout() {
-            localStorage.removeItem("currentUser");
+            ["token","role","userId","fullName","email"].forEach(k => localStorage.removeItem(k));
             window.location.href = "../login.html";
         }
 
         window.addEventListener("DOMContentLoaded", () => {
-            checkAdminAccess();
+            if (!checkAdminAccess()) return;
             loadComplaints();
         });
     </script>

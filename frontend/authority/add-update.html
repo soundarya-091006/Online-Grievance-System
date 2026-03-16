@@ -182,7 +182,7 @@
         <div class="nav-divider"></div>
         <ul class="sidebar-menu" style="margin-bottom:12px;">
           <li class="menu-item">
-            <a href="../login.html" class="menu-link" onclick="logoutAuth()" style="color:var(--danger);">
+            <a href="login.html" class="menu-link" onclick="logoutAuth()" style="color:var(--danger);">
               <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"
                 stroke-linejoin="round">
                 <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
@@ -224,7 +224,7 @@
               <line x1="8" y1="2" x2="8" y2="6" />
               <line x1="3" y1="10" x2="21" y2="10" />
             </svg>My Schedule</a>
-          <a href="../login.html" onclick="logoutAuth()" style="color:var(--danger);"><svg viewBox="0 0 24 24" fill="none"
+          <a href="login.html" onclick="logoutAuth()" style="color:var(--danger);"><svg viewBox="0 0 24 24" fill="none"
               stroke="currentColor">
               <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
               <polyline points="16 17 21 12 16 7" />
@@ -409,6 +409,7 @@
   <script>
 
     let selectedComplaint = null;
+    let allCases = [];
 
     function toggleNotify() {
       const on = document.getElementById("notifyToggle").checked;
@@ -416,107 +417,120 @@
       document.getElementById("notifyThumb").style.left = on ? "27px" : "3px";
     }
 
-    function initPage() {
-      const currentUser = JSON.parse(localStorage.getItem("currentUser")) || {};
-      if (currentUser.role !== "authority") { window.location.href = "../login.html"; return; }
-      const complaints = JSON.parse(localStorage.getItem("complaints")) || [];
-      const myCases = complaints.filter(c => c.assignedTo === currentUser.email && (c.status === "ASSIGNED" || c.status === "IN PROGRESS"));
+    async function initPage() {
+      if (!requireAuthority()) return;
+
+      try {
+        const data = await authGet("/complaints/authority/assigned?page=0&size=100");
+        allCases = data.content || data || [];
+      } catch (e) {
+        try {
+          const data2 = await authGet("/complaints?page=0&size=100");
+          allCases = data2.content || data2 || [];
+        } catch (e2) {
+          showToast("Could not load cases: " + e2.message, "error");
+          allCases = [];
+        }
+      }
+
+      const activeCases = allCases.filter(c => ['ASSIGNED', 'INVESTIGATING', 'UNDER_REVIEW'].includes(c.status));
       const sel = document.getElementById("caseSelect");
       sel.innerHTML = '<option value="">— Select a case —</option>';
-      myCases.forEach(c => {
+      activeCases.forEach(c => {
         const opt = document.createElement("option");
         opt.value = c.id;
-        opt.textContent = '#' + c.id + ' · ' + (c.subject || c.category || 'Case') + ' · ' + c.status;
+        opt.textContent = (c.trackingId || '#' + c.id) + ' · ' + (c.title || 'Case') + ' · ' + (c.status || '').replace(/_/g, ' ');
         sel.appendChild(opt);
       });
+
       // Auto-select from URL param
       const params = new URLSearchParams(window.location.search);
       const idParam = params.get('id');
       if (idParam) {
         sel.value = idParam;
-        loadCaseInfo();
+        await loadCaseInfo();
       }
     }
 
-    function loadCaseInfo() {
+    async function loadCaseInfo() {
       const caseId = document.getElementById("caseSelect").value;
       const box = document.getElementById("caseInfoBox");
       if (!caseId) { box.style.display = 'none'; selectedComplaint = null; renderTimeline(); return; }
-      const complaints = JSON.parse(localStorage.getItem("complaints")) || [];
-      selectedComplaint = complaints.find(c => String(c.id) === String(caseId));
-      if (!selectedComplaint) { box.style.display = 'none'; return; }
+
+      // Find from cached list or fetch from server
+      selectedComplaint = allCases.find(c => String(c.id) === String(caseId));
+      if (!selectedComplaint) {
+        try {
+          selectedComplaint = await authGet("/complaints/" + caseId);
+        } catch (e) {
+          showToast("Could not load case details", "error");
+          box.style.display = 'none';
+          return;
+        }
+      }
+
       box.style.display = 'flex';
       box.innerHTML = `
         <div>
-          <div style="font-size:14px;font-weight:700">Case #${selectedComplaint.id} — ${selectedComplaint.subject || selectedComplaint.category || ''}</div>
-          <div style="font-size:12px;color:var(--text-light)">${selectedComplaint.category || ''} · Submitted: ${formatDate(selectedComplaint.createdAt)}</div>
+          <div style="font-size:14px;font-weight:700">${selectedComplaint.trackingId || 'Case #' + selectedComplaint.id} — ${escHtml(selectedComplaint.title)}</div>
+          <div style="font-size:12px;color:var(--text-light)">${selectedComplaint.categoryName || ''} · Submitted: ${formatDate(selectedComplaint.createdAt)}</div>
         </div>
         <div style="display:flex;gap:8px">
           ${selectedComplaint.priority ? '<span class="badge badge-urgent">' + selectedComplaint.priority + '</span>' : ''}
-          <span class="badge badge-progress">${selectedComplaint.status}</span>
+          <span class="badge badge-progress">${(selectedComplaint.status || '').replace(/_/g, ' ')}</span>
         </div>
     `;
-      document.getElementById("currentStatusDisplay").value = selectedComplaint.status;
-      document.getElementById("progressInput").value = selectedComplaint.progress || '';
+      document.getElementById("currentStatusDisplay").value = (selectedComplaint.status || '').replace(/_/g, ' ');
       renderTimeline();
     }
 
     function renderTimeline() {
       const container = document.getElementById("timelineSidebar");
-      if (!selectedComplaint || !selectedComplaint.timeline || selectedComplaint.timeline.length === 0) {
+      if (!selectedComplaint || !selectedComplaint.updates || selectedComplaint.updates.length === 0) {
         container.innerHTML = '<div style="color:var(--text-light);font-size:13px;padding:10px;">No timeline entries yet.</div>';
         return;
       }
-      const entries = [...selectedComplaint.timeline].reverse().slice(0, 6);
+      const entries = [...selectedComplaint.updates].reverse().slice(0, 6);
       container.innerHTML = entries.map(t => `
         <div class="timeline-item done">
-          <div class="timeline-time">${formatDateTime(t.date)}</div>
-          <div class="timeline-card"><h4>${t.status || 'Update'}</h4><p>${t.description || ''}</p></div>
+          <div class="timeline-time">${formatDateTime(t.createdAt || t.date)}</div>
+          <div class="timeline-card"><h4>${escHtml(t.status || t.title || 'Update')}</h4><p>${escHtml(t.content || t.description || '')}</p></div>
         </div>
     `).join('');
     }
 
-    function submitUpdate() {
+    async function submitUpdate() {
       const caseId = document.getElementById("caseSelect").value;
       const type = document.getElementById("updateType").value;
       const title = document.getElementById("updateTitle").value;
       const desc = document.getElementById("updateDesc").value;
       const newStatus = document.getElementById("newStatus").value;
-      const progress = document.getElementById("progressInput").value;
+
       if (!caseId) { showToast("Please select a case first.", "error"); return; }
       if (!type || !title || !desc) { showToast("Please fill all required fields.", "error"); return; }
 
-      const complaints = JSON.parse(localStorage.getItem("complaints")) || [];
-      const comp = complaints.find(c => String(c.id) === String(caseId));
-      if (!comp) { showToast("Case not found.", "error"); return; }
-
-      // Add timeline entry
-      comp.timeline = comp.timeline || [];
-      comp.timeline.push({
-        status: title,
-        date: new Date().toISOString(),
-        description: '[' + type + '] ' + desc
-      });
-
-      // Update status if changed
-      if (newStatus && newStatus !== comp.status) {
-        comp.status = newStatus;
-        comp.timeline.push({
-          status: 'Status Changed to ' + newStatus,
-          date: new Date().toISOString(),
-          description: 'Status updated by authority'
+      try {
+        // Add investigation note via backend API
+        const noteContent = '[' + type + '] ' + title + '\n\n' + desc;
+        const notify = document.getElementById("notifyToggle") ? document.getElementById("notifyToggle").checked : false;
+        await authPost("/complaints/" + caseId + "/investigation-update", {
+          description: noteContent,
+          updateType: type.toUpperCase().replace(/ /g, '_'),
+          notifyComplainant: notify
         });
-      }
 
-      // Update progress
-      if (progress !== '' && !isNaN(progress)) {
-        comp.progress = parseInt(progress);
-      }
+        // Update status if changed
+        if (newStatus) {
+          const statusMap = { 'INVESTIGATING': 'INVESTIGATING', 'IN PROGRESS': 'INVESTIGATING', 'RESOLVED': 'RESOLVED' };
+          const backendStatus = statusMap[newStatus] || newStatus;
+          await authPatch("/complaints/" + caseId + "/status", { status: backendStatus, notes: title });
+        }
 
-      comp.updatedAt = new Date().toISOString();
-      localStorage.setItem("complaints", JSON.stringify(complaints));
-      showToast("Update submitted to timeline successfully!", "success");
-      setTimeout(() => window.location.href = "active-cases.html", 1500);
+        showToast("Investigation update submitted successfully!", "success");
+        setTimeout(() => window.location.href = "my-cases.html", 1500);
+      } catch (e) {
+        showToast("Failed to submit update: " + e.message, "error");
+      }
     }
 
     window.addEventListener('DOMContentLoaded', initPage);

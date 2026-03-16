@@ -403,28 +403,40 @@
     </div>
 
     <script>
+        const API = "http://localhost:8080/api";
         let pendingComplaints = [];
 
+        function getToken() { return localStorage.getItem("token"); }
+        function esc(s) { return (s||'').replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
         function checkAdminAccess() {
-            const currentUser = JSON.parse(localStorage.getItem("currentUser")) || {};
-            if (currentUser.role !== "admin") {
+            const role = localStorage.getItem("role");
+            if (!getToken() || role !== "ADMIN") {
                 window.location.href = "../login.html";
+                return false;
             }
-            document.getElementById("userEmail").innerText = currentUser.email || "Admin";
+            document.getElementById("userEmail").innerText = localStorage.getItem("fullName") || "Admin";
+            return true;
         }
 
-        function loadPendingComplaints() {
-            const complaints = JSON.parse(localStorage.getItem("complaints")) || [];
-            
-            // Filter only NEW complaints
-            pendingComplaints = complaints.filter(c => c.status === "NEW")
-                .sort((a, b) => {
-                    // Sort by priority: Critical > High > Medium > Low
-                    const priorityOrder = { "Critical": 0, "High": 1, "Medium": 2, "Low": 3 };
-                    return (priorityOrder[a.priority] || 4) - (priorityOrder[b.priority] || 4);
+        async function loadPendingComplaints() {
+            try {
+                const res = await fetch(API + "/complaints?status=SUBMITTED&page=0&size=100", {
+                    headers: { "Authorization": "Bearer " + getToken() }
                 });
-
-            displayQueue();
+                const json = await res.json();
+                if (!json.success) { console.error(json.message); return; }
+                const list = json.data.content || json.data || [];
+                
+                // Sort by priority
+                const priorityOrder = { "CRITICAL": 0, "HIGH": 1, "MEDIUM": 2, "LOW": 3 };
+                pendingComplaints = list.sort((a, b) =>
+                    (priorityOrder[a.priority] ?? 4) - (priorityOrder[b.priority] ?? 4)
+                );
+                displayQueue();
+            } catch(e) {
+                console.error("Failed to load pending complaints:", e);
+            }
         }
 
         function displayQueue() {
@@ -438,35 +450,44 @@
                 return;
             }
 
-            container.innerHTML = pendingComplaints.map(complaint => `
-                <div class="queue-card ${complaint.priority === 'Critical' || complaint.priority === 'High' ? 'urgent' : ''}">
-                    <div class="queue-priority ${complaint.priority.toLowerCase()}">
-                        ${complaint.priority} Priority
+            container.innerHTML = pendingComplaints.map(c => `
+                <div class="queue-card ${c.priority === 'CRITICAL' || c.priority === 'HIGH' ? 'urgent' : ''}">
+                    <div class="queue-priority ${(c.priority||'').toLowerCase()}">
+                        ${c.priority || 'Normal'} Priority
                     </div>
-                    <div class="queue-id">ID #${complaint.id}</div>
-                    <div class="queue-subject">${complaint.subject}</div>
+                    <div class="queue-id">${esc(c.trackingId || '#'+c.id)}</div>
+                    <div class="queue-subject">${esc(c.title)}</div>
                     <div class="queue-meta">
-                        <span>${complaint.category}</span>
-                        <span>${complaint.createdAt.split(' ')[0]}</span>
+                        <span>${c.categoryName || '—'}</span>
+                        <span>${c.createdAt ? new Date(c.createdAt).toLocaleDateString() : '—'}</span>
                     </div>
                     <div class="queue-actions">
-                        <button class="btn btn-primary" onclick="approveComplaint('${complaint.id}')">Approve</button>
-                        <button class="btn btn-secondary" onclick="reviewComplaint('${complaint.id}')">Review</button>
+                        <button class="btn btn-primary" onclick="approveComplaint(${c.id})">Approve</button>
+                        <button class="btn btn-secondary" onclick="reviewComplaint(${c.id})">Review</button>
                     </div>
                 </div>
             `).join("");
         }
 
-        function approveComplaint(complaintId) {
-            const complaints = JSON.parse(localStorage.getItem("complaints")) || [];
-            const index = complaints.findIndex(c => String(c.id) === String(complaintId));
-            
-            if (index !== -1) {
-                complaints[index].status = "UNDER REVIEW";
-                complaints[index].updatedAt = new Date().toLocaleString();
-                localStorage.setItem("complaints", JSON.stringify(complaints));
-                loadPendingComplaints();
-                alert("Complaint approved and moved to Under Review");
+        async function approveComplaint(complaintId) {
+            try {
+                const res = await fetch(API + "/complaints/" + complaintId + "/status", {
+                    method: "PATCH",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer " + getToken()
+                    },
+                    body: JSON.stringify({ status: "UNDER_REVIEW", notes: "Complaint approved for review" })
+                });
+                const json = await res.json();
+                if (json.success) {
+                    alert("Complaint approved and moved to Under Review");
+                    loadPendingComplaints();
+                } else {
+                    alert("Failed: " + json.message);
+                }
+            } catch(e) {
+                alert("Error: " + e.message);
             }
         }
 
@@ -474,38 +495,44 @@
             window.location.href = `review-complaint.html?id=${complaintId}`;
         }
 
-        function batchApproveAll() {
-            const complaints = JSON.parse(localStorage.getItem("complaints")) || [];
+        async function batchApproveAll() {
+            if (pendingComplaints.length === 0) { alert("No pending complaints"); return; }
+            if (!confirm("Approve all " + pendingComplaints.length + " pending complaints?")) return;
+
             let approvedCount = 0;
-
-            complaints.forEach(complaint => {
-                if (complaint.status === "NEW") {
-                    complaint.status = "UNDER REVIEW";
-                    complaint.updatedAt = new Date().toLocaleString();
-                    approvedCount++;
-                }
-            });
-
-            localStorage.setItem("complaints", JSON.stringify(complaints));
-            alert(`Approved ${approvedCount} complaints`);
+            for (const c of pendingComplaints) {
+                try {
+                    const res = await fetch(API + "/complaints/" + c.id + "/status", {
+                        method: "PATCH",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization": "Bearer " + getToken()
+                        },
+                        body: JSON.stringify({ status: "UNDER_REVIEW", notes: "Batch approved" })
+                    });
+                    const json = await res.json();
+                    if (json.success) approvedCount++;
+                } catch(e) { console.error("Failed to approve", c.id, e); }
+            }
+            alert(`Approved ${approvedCount} complaint(s)`);
             loadPendingComplaints();
         }
 
         function batchAssignToAuthority() {
-            alert("Assign to Authority feature coming soon");
+            alert("Use the Assigned Cases page to assign complaints to specific authorities.");
         }
 
         function batchPostpone() {
-            alert("Postpone feature coming soon");
+            alert("Postpone — select individual complaints and review them later.");
         }
 
         function logout() {
-            localStorage.removeItem("currentUser");
+            ["token","role","userId","fullName","email"].forEach(k => localStorage.removeItem(k));
             window.location.href = "../login.html";
         }
 
         window.addEventListener("DOMContentLoaded", () => {
-            checkAdminAccess();
+            if (!checkAdminAccess()) return;
             loadPendingComplaints();
         });
     </script>

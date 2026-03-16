@@ -7,21 +7,21 @@ const API_BASE = "http://localhost:8080/api";
 
 /* ── Auth helpers ─────────────────────────────────────────── */
 
-function getToken()   { return localStorage.getItem("token"); }
-function getRole()    { return localStorage.getItem("role"); }
-function getUserId()  { return localStorage.getItem("userId"); }
-function getUserName(){ return localStorage.getItem("fullName"); }
+function getToken() { return localStorage.getItem("token"); }
+function getRole() { return localStorage.getItem("role"); }
+function getUserId() { return localStorage.getItem("userId"); }
+function getUserName() { return localStorage.getItem("fullName"); }
 
 function saveAuth(data) {
-    localStorage.setItem("token",    data.accessToken);
-    localStorage.setItem("role",     data.role);
-    localStorage.setItem("userId",   data.userId);
+    localStorage.setItem("token", data.accessToken);
+    localStorage.setItem("role", data.role);
+    localStorage.setItem("userId", data.userId);
     localStorage.setItem("fullName", data.fullName);
-    localStorage.setItem("email",    data.email);
+    localStorage.setItem("email", data.email);
 }
 
 function clearAuth() {
-    ["token","role","userId","fullName","email"].forEach(k => localStorage.removeItem(k));
+    ["token", "role", "userId", "fullName", "email"].forEach(k => localStorage.removeItem(k));
 }
 
 /* ── Token expiry check (call on every page load) ─────────── */
@@ -35,7 +35,7 @@ function checkTokenExpiry() {
             clearAuth();
             redirectToLogin();
         }
-    } catch(e) {
+    } catch (e) {
         clearAuth();
         redirectToLogin();
     }
@@ -57,7 +57,7 @@ function logout() {
 function requireAuth(allowedRoles = []) {
     checkTokenExpiry();
     const token = getToken();
-    const role  = getRole();
+    const role = getRole();
     if (!token) { redirectToLogin(); return false; }
     if (allowedRoles.length && !allowedRoles.includes(role)) {
         alert("Access denied.");
@@ -88,35 +88,35 @@ async function apiFetch(path, options = {}) {
 /* ── Convenience methods ──────────────────────────────────── */
 
 async function apiGet(path) {
-    const res  = await apiFetch(path);
+    const res = await apiFetch(path);
     const json = await res.json();
     if (!json.success) throw new Error(json.message || "Request failed");
     return json.data;
 }
 
 async function apiPost(path, body) {
-    const res  = await apiFetch(path, { method: "POST", body: JSON.stringify(body) });
+    const res = await apiFetch(path, { method: "POST", body: JSON.stringify(body) });
     const json = await res.json();
     if (!json.success) throw new Error(json.message || "Request failed");
     return json.data;
 }
 
 async function apiPut(path, body) {
-    const res  = await apiFetch(path, { method: "PUT", body: JSON.stringify(body) });
+    const res = await apiFetch(path, { method: "PUT", body: JSON.stringify(body) });
     const json = await res.json();
     if (!json.success) throw new Error(json.message || "Request failed");
     return json.data;
 }
 
 async function apiPatch(path, body = {}) {
-    const res  = await apiFetch(path, { method: "PATCH", body: JSON.stringify(body) });
+    const res = await apiFetch(path, { method: "PATCH", body: JSON.stringify(body) });
     const json = await res.json();
     if (!json.success) throw new Error(json.message || "Request failed");
     return json.data;
 }
 
 async function apiDelete(path) {
-    const res  = await apiFetch(path, { method: "DELETE" });
+    const res = await apiFetch(path, { method: "DELETE" });
     const json = await res.json();
     if (!json.success) throw new Error(json.message || "Request failed");
     return json.data;
@@ -126,11 +126,30 @@ async function apiDelete(path) {
 
 function populateTopbar() {
     const name = getUserName() || "User";
-    const role = getRole()     || "";
-    const nameEl = document.getElementById("topbarName");
-    const roleEl = document.getElementById("topbarRole");
-    if (nameEl) nameEl.textContent = name;
-    if (roleEl) roleEl.textContent = role;
+    const role = getRole() || "User";
+    const initials = name.split(" ").map(w => w[0]).join("").toUpperCase().slice(0, 2);
+
+    // Support both id="topbarName" and class="user-name"
+    const nameElId = document.getElementById("topbarName");
+    if (nameElId) nameElId.textContent = name;
+    document.querySelectorAll(".user-name").forEach(el => el.textContent = name);
+
+    // Support both id="topbarRole" and class="user-role"
+    const roleElId = document.getElementById("topbarRole");
+    if (roleElId) roleElId.textContent = role;
+    document.querySelectorAll(".user-role").forEach(el => el.textContent = role);
+
+    // Support both id="userAvatar" and class="user-avatar"
+    const avatarElId = document.getElementById("userAvatar");
+    if (avatarElId) avatarElId.textContent = initials;
+    document.querySelectorAll(".user-avatar").forEach(el => {
+        // Only set text if no img inside
+        if (!el.querySelector("img")) el.textContent = initials;
+    });
+
+    // Welcome name
+    const welcomeEl = document.getElementById("welcomeName");
+    if (welcomeEl) welcomeEl.textContent = name.split(" ")[0]; // first name only
 }
 
 /* ── Init sidebar menus (highlight active link) ──────────── */
@@ -173,15 +192,15 @@ function fmtDateTime(iso) {
 
 function statusBadge(status) {
     const colors = {
-        SUBMITTED:     "badge-warning",
-        UNDER_REVIEW:  "badge-info",
-        VERIFIED:      "badge-primary",
-        ASSIGNED:      "badge-secondary",
+        SUBMITTED: "badge-warning",
+        UNDER_REVIEW: "badge-info",
+        VERIFIED: "badge-primary",
+        ASSIGNED: "badge-secondary",
         INVESTIGATING: "badge-primary",
-        RESOLVED:      "badge-success",
-        CLOSED:        "badge-success",
-        REJECTED:      "badge-danger",
-        DRAFT:         "badge-light"
+        RESOLVED: "badge-success",
+        CLOSED: "badge-success",
+        REJECTED: "badge-danger",
+        DRAFT: "badge-light"
     };
     return `<span class="badge ${colors[status] || 'badge-secondary'}">${status}</span>`;
 }
@@ -189,7 +208,7 @@ function statusBadge(status) {
 function priorityBadge(priority) {
     const colors = {
         LOW: "badge-success", MEDIUM: "badge-warning",
-        HIGH: "badge-danger",  CRITICAL: "badge-dark"
+        HIGH: "badge-danger", CRITICAL: "badge-dark"
     };
     return `<span class="badge ${colors[priority] || 'badge-secondary'}">${priority}</span>`;
 }
@@ -197,5 +216,140 @@ function priorityBadge(priority) {
 /* ── Escape HTML ─────────────────────────────────────────── */
 
 function escHtml(str) {
-    return (str || "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+    return (str || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
+
+/* ── Menu toggle functions ───────────────────────────────── */
+
+function toggleMenu() {
+    const d = document.getElementById("hamburgerDropdown");
+    if (d) d.classList.toggle("active");
+}
+
+function closeMenu() {
+    const d = document.getElementById("hamburgerDropdown");
+    if (d) d.classList.remove("active");
+}
+
+function toggleUserMenu() {
+    const d = document.getElementById("userMenuDropdown");
+    if (d) d.classList.toggle("active");
+}
+
+// Close dropdowns when clicking outside
+document.addEventListener("click", function (e) {
+    if (!e.target.closest(".hamburger-menu")) closeMenu();
+    if (!e.target.closest(".user-menu")) {
+        const d = document.getElementById("userMenuDropdown");
+        if (d) d.classList.remove("active");
+    }
+});
+
+/* ── Welcome name ────────────────────────────────────────── */
+
+function setWelcomeName() {
+    const name = getUserName() || "User";
+    const el = document.getElementById("welcomeName");
+    if (el) el.textContent = name;
+    const av = document.getElementById("userAvatar");
+    if (av) av.textContent = name.charAt(0).toUpperCase();
+}
+
+/* ── Status CSS class ────────────────────────────────────── */
+
+function statusClass(status) {
+    const map = {
+        SUBMITTED: "status-submitted",
+        UNDER_REVIEW: "status-review",
+        ASSIGNED: "status-assigned",
+        INVESTIGATING: "status-progress",
+        RESOLVED: "status-resolved",
+        CLOSED: "status-closed",
+        REJECTED: "status-danger",
+        DRAFT: "status-draft"
+    };
+    return map[status] || "status-draft";
+}
+
+/* ── Priority CSS class ──────────────────────────────────── */
+
+function priorityClass(priority) {
+    const map = {
+        CRITICAL: "priority-CRITICAL",
+        HIGH: "priority-HIGH",
+        MEDIUM: "priority-MEDIUM",
+        LOW: "priority-LOW"
+    };
+    return map[priority] || "priority-LOW";
+}
+
+/* ── Format date ─────────────────────────────────────────── */
+
+function formatDate(iso) {
+    if (!iso) return "—";
+    return new Date(iso).toLocaleDateString("en-IN", {
+        day: "2-digit", month: "short", year: "numeric"
+    });
+}
+
+function formatDateTime(iso) {
+    if (!iso) return "—";
+    return new Date(iso).toLocaleString("en-IN", {
+        day: "2-digit", month: "short", year: "numeric",
+        hour: "2-digit", minute: "2-digit"
+    });
+}
+
+/* ── Toast notification ──────────────────────────────────── */
+
+function showToast(msg, type = "success") {
+    let toast = document.getElementById("globalToast");
+    if (!toast) {
+        toast = document.createElement("div");
+        toast.id = "globalToast";
+        toast.style.cssText = `
+            position:fixed;bottom:24px;right:24px;padding:14px 20px;
+            border-radius:12px;font-size:14px;font-weight:600;
+            z-index:9999;display:none;max-width:320px;
+            box-shadow:0 8px 25px rgba(0,0,0,0.15);
+            animation:slideInRight 0.3s ease;
+        `;
+        document.body.appendChild(toast);
+    }
+    const colors = {
+        success: "background:#10b981;color:white",
+        error: "background:#ef4444;color:white",
+        warning: "background:#f59e0b;color:white",
+        info: "background:#6366f1;color:white"
+    };
+    toast.style.cssText += ";" + (colors[type] || colors.success);
+    toast.textContent = msg;
+    toast.style.display = "block";
+    clearTimeout(toast._timer);
+    toast._timer = setTimeout(() => { toast.style.display = "none"; }, 3000);
+}
+
+/* ── Notification bell badge (call on any page) ──────────── */
+
+async function loadNotifBadge() {
+    try {
+        const res = await apiFetch("/notifications/unread-count");
+        if (!res) return;
+        const json = await res.json();
+        const count = json.data || 0;
+        // Update any badge element on the page
+        document.querySelectorAll(".notif-badge, #notifBadge").forEach(el => {
+            el.textContent = count > 9 ? "9+" : count;
+            el.style.display = count > 0 ? "flex" : "none";
+        });
+    } catch (e) { /* silent fail */ }
+}
+
+// Call on every page load automatically
+window.addEventListener("load", () => {
+    if (getToken()) {
+        loadNotifBadge();
+        // Refresh badge every 60 seconds
+        setInterval(loadNotifBadge, 60000);
+    }
+});

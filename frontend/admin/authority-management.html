@@ -264,13 +264,12 @@
 
     <div class="sidebar">
         <ul class="sidebar-menu">
-            <li><a href="../admin-dashboard.html">Dashboard</a></li>
+            <li><a href="admin-dashboard.html">Dashboard</a></li>
             <li><a href="all-complaints.html">All Complaints</a></li>
             <li><a href="pending-review.html">Pending Review</a></li>
             <li><a href="assigned-cases.html">Assigned Cases</a></li>
             <li><a href="user-management.html">User Management</a></li>
             <li><a href="authority-management.html" class="active">Authorities</a></li>
-            <li><a href="reports.html">Reports</a></li>
             <li><a href="audit-logs.html">Audit Logs</a></li>
             <li><a href="settings.html">Settings</a></li>
         </ul>
@@ -286,81 +285,90 @@
     </div>
 
     <script>
+        const API = "http://localhost:8080/api";
+        function getToken() { return localStorage.getItem("token"); }
+        function esc(s) { return (s||'').replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
         function checkAdminAccess() {
-            const currentUser = JSON.parse(localStorage.getItem("currentUser")) || {};
-            if (currentUser.role !== "admin") {
+            const role = localStorage.getItem("role");
+            if (!getToken() || role !== "ADMIN") {
                 window.location.href = "../login.html";
+                return false;
             }
-            document.getElementById("userEmail").innerText = currentUser.email || "Admin";
+            document.getElementById("userEmail").innerText = localStorage.getItem("fullName") || "Admin";
+            return true;
         }
 
-        function loadAuthorities() {
-            const users = JSON.parse(localStorage.getItem("users")) || [];
-            const authorities = users.filter(u => u.role === "authority");
-            const complaints = JSON.parse(localStorage.getItem("complaints")) || [];
-            const grid = document.getElementById("authorityGrid");
+        async function loadAuthorities() {
+            try {
+                const res = await fetch(API + "/admin/authorities", {
+                    headers: { "Authorization": "Bearer " + getToken() }
+                });
+                const json = await res.json();
+                if (!json.success) { console.error(json.message); return; }
+                const authorities = json.data || [];
+                const grid = document.getElementById("authorityGrid");
 
-            if (authorities.length === 0) {
-                grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-light);">No authorities found. Click "+ Add Authority" to create one.</div>`;
-                return;
-            }
+                if (authorities.length === 0) {
+                    grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-light);">No authorities found. Click "+ Add Authority" to create one.</div>`;
+                    return;
+                }
 
-            grid.innerHTML = authorities.map(authority => {
-                const assigned = complaints.filter(c => c.assignedTo === authority.email && c.status !== "RESOLVED").length;
-                const resolved = complaints.filter(c => c.assignedTo === authority.email && c.status === "RESOLVED").length;
-
-                return `
+                grid.innerHTML = authorities.map(a => `
                     <div class="authority-card">
-                        <div class="auth-name">${authority.fullname || authority.name}</div>
+                        <div class="auth-name">${esc(a.fullName || a.email)}</div>
                         <div class="auth-info">
-                            <div><strong>Department:</strong> ${authority.department || 'N/A'}</div>
-                            <div><strong>Email:</strong> ${authority.email || 'N/A'}</div>
-                            <div><strong>Phone:</strong> ${authority.phone || 'N/A'}</div>
-                        </div>
-                        <div class="auth-stats">
-                            <div class="auth-stat">
-                                <div class="stat-number">${assigned}</div>
-                                <div class="stat-label">Active Cases</div>
-                            </div>
-                            <div class="auth-stat">
-                                <div class="stat-number">${resolved}</div>
-                                <div class="stat-label">Resolved</div>
-                            </div>
+                            <div><strong>Email:</strong> ${esc(a.email)}</div>
+                            <div><strong>Phone:</strong> ${esc(a.phone || 'N/A')}</div>
+                            <div><strong>Status:</strong> <span style="color:${a.active ? 'var(--success)' : 'var(--danger)'}">${a.active ? 'Active' : 'Disabled'}</span></div>
                         </div>
                         <div class="action-buttons">
-                            <button class="action-btn" onclick="editAuthority('${authority.email}')">Edit</button>
-                            <button class="action-btn" onclick="deleteAuthority('${authority.email}')" style="color: var(--danger);">Delete</button>
+                            <button class="action-btn" onclick="toggleStatus(${a.id})">${a.active ? 'Disable' : 'Enable'}</button>
+                            <button class="action-btn" onclick="deleteAuthority(${a.id})" style="color: var(--danger);">Delete</button>
                         </div>
                     </div>
-                `;
-            }).join("");
+                `).join("");
+            } catch(e) {
+                console.error("Failed to load authorities:", e);
+            }
         }
 
         function addAuthority() {
             window.location.href = "add-authority.html";
         }
 
-        function editAuthority(email) {
-            alert("Edit authority feature coming soon");
+        async function toggleStatus(id) {
+            try {
+                const res = await fetch(API + "/admin/users/" + id + "/toggle-status", {
+                    method: "PATCH",
+                    headers: { "Authorization": "Bearer " + getToken() }
+                });
+                const json = await res.json();
+                if (json.success) { alert("Status updated!"); loadAuthorities(); }
+                else alert("Failed: " + json.message);
+            } catch(e) { alert("Error: " + e.message); }
         }
 
-        function deleteAuthority(email) {
-            if (confirm("Are you sure you want to delete this authority?")) {
-                let users = JSON.parse(localStorage.getItem("users")) || [];
-                users = users.filter(u => !(u.email === email && u.role === "authority"));
-                localStorage.setItem("users", JSON.stringify(users));
-                loadAuthorities();
-                alert("Authority deleted successfully");
-            }
+        async function deleteAuthority(id) {
+            if (!confirm("Are you sure you want to delete this authority?")) return;
+            try {
+                const res = await fetch(API + "/admin/users/" + id, {
+                    method: "DELETE",
+                    headers: { "Authorization": "Bearer " + getToken() }
+                });
+                const json = await res.json();
+                if (json.success) { alert("Authority deleted successfully"); loadAuthorities(); }
+                else alert("Failed: " + json.message);
+            } catch(e) { alert("Error: " + e.message); }
         }
 
         function logout() {
-            localStorage.removeItem("currentUser");
+            ["token","role","userId","fullName","email"].forEach(k => localStorage.removeItem(k));
             window.location.href = "../login.html";
         }
 
         window.addEventListener("DOMContentLoaded", () => {
-            checkAdminAccess();
+            if (!checkAdminAccess()) return;
             loadAuthorities();
         });
     </script>
