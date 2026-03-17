@@ -866,7 +866,7 @@
             btn.disabled = true; btn.textContent = "Updating…";
             try {
                 const res = await apiFetch("/user/change-password", {
-                    method: "POST",
+                    method: "PUT",
                     body: JSON.stringify({ currentPassword: current, newPassword: newPw, confirmPassword: confirmPw })
                 });
                 const data = await res.json();
