@@ -98,8 +98,8 @@ public class AdminController {
             @RequestParam(name = "size", defaultValue = "20") int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<AuditLog> logs = userId != null
-                ? auditLogRepository.findByUserIdOrderByCreatedAtDesc(userId, pageable)
-                : auditLogRepository.findAllByOrderByCreatedAtDesc(pageable);
+                ? auditLogRepository.findByUserIdWithUser(userId, pageable)
+                : auditLogRepository.findAllWithUser(pageable);
         return ResponseEntity.ok(ApiResponse.success(logs));
     }
 }

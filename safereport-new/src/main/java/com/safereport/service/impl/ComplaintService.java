@@ -39,6 +39,7 @@ public class ComplaintService {
     private final EvidenceRepository evidenceRepository;
     private final ComplaintUpdateRepository updateRepository;
     private final NotificationService notificationService;
+    private final AuditLogRepository auditLogRepository;
 
     @Value("${app.upload.dir:uploads}")
     private String uploadDir;
@@ -85,6 +86,15 @@ public class ComplaintService {
                     "Your complaint #" + complaint.getTrackingId() + " has been submitted.",
                     "COMPLAINT", complaint.getId());
         }
+
+        // Audit log
+        auditLogRepository.save(AuditLog.builder()
+                .user(currentUser)
+                .action("COMPLAINT_SUBMITTED")
+                .entityType("COMPLAINT")
+                .entityId(complaint.getId())
+                .details("Complaint " + complaint.getTrackingId() + " submitted: " + complaint.getTitle())
+                .build());
 
         log.info("Complaint submitted: {}", complaint.getTrackingId());
         return toResponse(complaint);
@@ -155,6 +165,16 @@ public class ComplaintService {
         logUpdate(complaint, admin, "ASSIGNMENT", prevStatus, "ASSIGNED",
                 "Assigned to " + authority.getFullName(), true);
 
+        // Audit log
+        auditLogRepository.save(AuditLog.builder()
+                .user(admin)
+                .action("COMPLAINT_ASSIGNED")
+                .entityType("COMPLAINT")
+                .entityId(complaint.getId())
+                .details("Complaint " + complaint.getTrackingId() + " assigned to " + authority.getFullName()
+                        + " (" + authority.getEmail() + ")")
+                .build());
+
         notificationService.createNotification(authority,
                 "New Case Assigned",
                 "Complaint #" + complaint.getTrackingId() + " has been assigned to you.",
@@ -192,6 +212,16 @@ public class ComplaintService {
         logUpdate(complaint, updatedBy, "STATUS_CHANGE", prevStatus,
                 req.getStatus() != null ? req.getStatus().name() : prevStatus,
                 req.getNotes(), req.isNotifyComplainant());
+
+        // Audit log
+        auditLogRepository.save(AuditLog.builder()
+                .user(updatedBy)
+                .action("STATUS_UPDATED")
+                .entityType("COMPLAINT")
+                .entityId(complaint.getId())
+                .details("Complaint " + complaint.getTrackingId() + " status changed: "
+                        + prevStatus + " → " + complaint.getStatus().name())
+                .build());
 
         if (req.isNotifyComplainant() && complaint.getComplainant() != null) {
             notificationService.createNotification(complaint.getComplainant(),
