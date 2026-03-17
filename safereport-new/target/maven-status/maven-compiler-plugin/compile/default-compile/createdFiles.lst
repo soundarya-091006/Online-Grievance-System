@@ -25,6 +25,7 @@ com\safereport\entity\Notification.class
 com\safereport\dto\request\ComplaintRequest.class
 com\safereport\entity\Complaint$ComplaintBuilder.class
 com\safereport\dto\request\AssignComplaintRequest.class
+com\safereport\service\impl\EmailService.class
 com\safereport\entity\AuditLog.class
 com\safereport\repository\SupportTicketRepository.class
 com\safereport\dto\request\InvestigationUpdateRequest.class

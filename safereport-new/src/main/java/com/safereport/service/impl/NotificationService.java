@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class NotificationService {
 
     private final NotificationRepository notificationRepository;
+    private final EmailService emailService;
 
     public void createNotification(User user, String title, String message,
                                    String type, Long relatedId) {
@@ -27,6 +28,9 @@ public class NotificationService {
                 .read(false)
                 .build();
         notificationRepository.save(n);
+
+        // Also send email notification
+        emailService.sendNotificationEmail(user, title, message);
     }
 
     public Page<Notification> getNotifications(User user, Pageable pageable) {
