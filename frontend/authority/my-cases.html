@@ -82,22 +82,6 @@
             </a>
           </li>
           <li class="menu-item">
-            <a href="new-assignments.html" class="menu-link" onclick="closeMenu()">
-              <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" stroke-linecap="round" stroke-linejoin="round" />
-              </svg>
-              New Assignments
-            </a>
-          </li>
-          <li class="menu-item">
-            <a href="active-cases.html" class="menu-link" onclick="closeMenu()">
-              <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke-linecap="round" stroke-linejoin="round" />
-              </svg>
-              Active Investigations
-            </a>
-          </li>
-          <li class="menu-item">
             <a href="investigation.html" class="menu-link" onclick="closeMenu()">
               <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                 <path d="M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16zm10 2-4.35-4.35" stroke-linecap="round"
@@ -173,7 +157,7 @@
         <div class="nav-divider"></div>
         <ul class="sidebar-menu" style="margin-bottom:12px;">
           <li class="menu-item">
-            <a href="../login.html" class="menu-link" onclick="logoutAuth()" style="color:var(--danger);">
+            <a href="../login.html" class="menu-link" onclick="logoutAuth(); return false;" style="color:var(--danger);">
               <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"
                 stroke-linejoin="round">
                 <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
@@ -209,7 +193,7 @@
               <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
               <circle cx="12" cy="7" r="4" />
             </svg>My Profile</a>
-          <a href="../login.html" onclick="logoutAuth()" style="color:var(--danger);"><svg viewBox="0 0 24 24" fill="none"
+          <a href="../login.html" onclick="logoutAuth(); return false;" style="color:var(--danger);"><svg viewBox="0 0 24 24" fill="none"
               stroke="currentColor">
               <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
               <polyline points="16 17 21 12 16 7" />
@@ -413,11 +397,18 @@
           <td>${date}</td>
           <td>${priority}</td>
           <td>${statusBadge}</td>
-          <td>${c.complainantName || 'Anonymous'}</td>
+          <td>
+            ${c.anonymous || !c.complainantName || c.complainantName === 'Anonymous'
+              ? '<span style="color:var(--text-light);font-size:13px;">🕵️ Anonymous</span>'
+              : `<div style="font-size:13px;font-weight:600;color:var(--text);">${c.complainantName}</div>
+                 ${c.complainantEmail ? '<div style="font-size:11px;color:var(--primary);margin-top:2px;">📧 ' + c.complainantEmail + '</div>' : ''}
+                 ${c.complainantPhone ? '<div style="font-size:11px;color:var(--success);margin-top:2px;">📞 ' + c.complainantPhone + '</div>' : ''}`
+            }
+          </td>
           <td style="display:flex;gap:6px;flex-wrap:wrap">
-            ${isActive ? '<a href="add-update.html?id=' + c.id + '" class="btn btn-primary btn-sm">Update</a>' : ''}
+            <a href="investigation.html?id=${c.id}" class="btn btn-primary btn-sm">🔍 Investigate</a>
+            ${isActive ? '<a href="add-update.html?id=' + c.id + '" class="btn btn-outline btn-sm">Update</a>' : ''}
             ${isActive ? '<a href="close-cases.html?id=' + c.id + '" class="btn btn-outline btn-sm">Close</a>' : ''}
-            ${!isActive ? '<a href="add-update.html?id=' + c.id + '" class="btn btn-outline btn-sm">View</a>' : ''}
           </td>
         </tr>`;
       }).join('');

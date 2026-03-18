@@ -355,6 +355,10 @@ public class ComplaintService {
                         ? "Anonymous" : c.getComplainant().getFullName())
                 .complainantId(c.isAnonymous() || c.getComplainant() == null
                         ? null : c.getComplainant().getId())
+                .complainantEmail(c.isAnonymous() || c.getComplainant() == null
+                        ? null : c.getComplainant().getEmail())
+                .complainantPhone(c.isAnonymous() || c.getComplainant() == null
+                        ? null : c.getComplainant().getPhone())
                 .assignedAuthorityName(c.getAssignedAuthority() != null
                         ? c.getAssignedAuthority().getFullName() : null)
                 .assignedAuthorityId(c.getAssignedAuthority() != null

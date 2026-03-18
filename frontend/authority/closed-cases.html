@@ -82,22 +82,6 @@
             </a>
           </li>
           <li class="menu-item">
-            <a href="new-assignments.html" class="menu-link" onclick="closeMenu()">
-              <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" stroke-linecap="round" stroke-linejoin="round" />
-              </svg>
-              New Assignments
-            </a>
-          </li>
-          <li class="menu-item">
-            <a href="active-cases.html" class="menu-link" onclick="closeMenu()">
-              <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke-linecap="round" stroke-linejoin="round" />
-              </svg>
-              Active Investigations
-            </a>
-          </li>
-          <li class="menu-item">
             <a href="investigation.html" class="menu-link" onclick="closeMenu()">
               <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                 <path d="M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16zm10 2-4.35-4.35" stroke-linecap="round"
@@ -173,7 +157,7 @@
         <div class="nav-divider"></div>
         <ul class="sidebar-menu" style="margin-bottom:12px;">
           <li class="menu-item">
-            <a href="../login.html" class="menu-link" onclick="logoutAuth()" style="color:var(--danger);">
+            <a href="../login.html" class="menu-link" onclick="logoutAuth(); return false;" style="color:var(--danger);">
               <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"
                 stroke-linejoin="round">
                 <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
@@ -209,7 +193,7 @@
               <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
               <circle cx="12" cy="7" r="4" />
             </svg>My Profile</a>
-          <a href="../login.html" onclick="logoutAuth()" style="color:var(--danger);"><svg viewBox="0 0 24 24" fill="none"
+          <a href="../login.html" onclick="logoutAuth(); return false;" style="color:var(--danger);"><svg viewBox="0 0 24 24" fill="none"
               stroke="currentColor">
               <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
               <polyline points="16 17 21 12 16 7" />
@@ -287,7 +271,8 @@
             <th>Subject</th>
             <th>Category</th>
             <th>Closed On</th>
-            <th>Resolution</th>
+            <th>Complainant</th>
+            <th>Status</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -308,55 +293,67 @@
   <script>
     const API = "http://localhost:8080/api";
     let closedCases = [];
+    let allMyCases  = [];
 
     function getToken() { return localStorage.getItem("token"); }
 
     async function loadClosedCases() {
       const token = getToken();
-      const role = localStorage.getItem("role");
+      const role  = localStorage.getItem("role");
       if (!token || role !== "AUTHORITY") { window.location.href = "../login.html"; return; }
 
       try {
-        const res = await fetch(API + "/complaints/authority/my-cases?page=0&size=100&status=RESOLVED", {
-          headers: { "Authorization": "Bearer " + token }
+        // Fetch ALL assigned cases (to compute resolution rate)
+        const [resolvedRes, closedRes, allRes] = await Promise.all([
+          fetch(API + "/complaints/authority/assigned?status=RESOLVED&page=0&size=200", { headers: { "Authorization": "Bearer " + token } }),
+          fetch(API + "/complaints/authority/assigned?status=CLOSED&page=0&size=200",   { headers: { "Authorization": "Bearer " + token } }),
+          fetch(API + "/complaints/authority/assigned?page=0&size=200",                 { headers: { "Authorization": "Bearer " + token } })
+        ]);
+
+        const resolvedJson = await resolvedRes.json();
+        const closedJson   = await closedRes.json();
+        const allJson      = await allRes.json();
+
+        const resolved = resolvedJson.data?.content || resolvedJson.data || [];
+        const closed   = closedJson.data?.content   || closedJson.data   || [];
+        allMyCases     = allJson.data?.content       || allJson.data      || [];
+
+        // Merge resolved + closed, deduplicate by id
+        const seen = new Set();
+        closedCases = [...resolved, ...closed].filter(c => {
+          if (seen.has(c.id)) return false;
+          seen.add(c.id); return true;
         });
-        const json = await res.json();
-        closedCases = json.data?.content || json.data || [];
 
         // Stats
         document.getElementById("statTotalClosed").textContent = closedCases.length;
 
-        // Resolution rate - fetch all cases
-        try {
-          const allRes = await fetch(API + "/complaints/authority/my-cases?page=0&size=100", {
-            headers: { "Authorization": "Bearer " + token }
-          });
-          const allJson = await allRes.json();
-          const allCases = allJson.data?.content || allJson.data || [];
-          const rate = allCases.length > 0 ? Math.round((closedCases.length / allCases.length) * 100) : 0;
-          const rateEl = document.getElementById("statResolutionRate");
-          if (rateEl) rateEl.textContent = rate + "%";
-        } catch (e) { }
+        const rate = allMyCases.length > 0
+          ? Math.round((closedCases.length / allMyCases.length) * 100) : 0;
+        document.getElementById("statResolutionRate").textContent = rate + "%";
 
-        // Avg days
+        // Avg resolution days (createdAt → resolvedAt or updatedAt)
         let totalDays = 0, countWithDates = 0;
         closedCases.forEach(c => {
-          if (c.createdAt && c.updatedAt) {
-            const days = Math.ceil((new Date(c.updatedAt) - new Date(c.createdAt)) / 86400000);
+          const end   = c.resolvedAt || c.updatedAt;
+          const start = c.createdAt;
+          if (start && end) {
+            const days = Math.ceil((new Date(end) - new Date(start)) / 86400000);
             if (days >= 0) { totalDays += days; countWithDates++; }
           }
         });
-        const avgEl = document.getElementById("statAvgDays");
-        if (avgEl) avgEl.textContent = countWithDates > 0 ? Math.round(totalDays / countWithDates) + " days" : "—";
+        document.getElementById("statAvgDays").textContent =
+          countWithDates > 0 ? Math.round(totalDays / countWithDates) + " days" : "—";
 
-        const sub = document.querySelector(".page-subtitle");
-        if (sub) sub.textContent = closedCases.length + " case" + (closedCases.length !== 1 ? "s" : "") + " have been resolved and archived.";
+        document.querySelector(".page-subtitle").textContent =
+          closedCases.length + " case" + (closedCases.length !== 1 ? "s" : "") + " resolved and archived.";
 
         renderClosedCases();
+
       } catch (e) {
         console.error(e);
-        const errEl = document.getElementById("apiError");
-        if (errEl) { errEl.textContent = "⚠️ Could not load closed cases."; errEl.style.display = "block"; }
+        document.getElementById("closedCasesBody").innerHTML =
+          "<tr><td colspan='6' style='text-align:center;padding:40px;color:var(--danger);'>⚠️ Could not load closed cases. Is the backend running?</td></tr>";
       }
     }
 
@@ -365,44 +362,60 @@
       let cases = closedCases;
       if (search) {
         cases = cases.filter(c =>
-          (c.trackingId || "").toLowerCase().includes(search) ||
-          (c.title || "").toLowerCase().includes(search) ||
-          (c.categoryName || "").toLowerCase().includes(search)
+          (c.trackingId  || "").toLowerCase().includes(search) ||
+          (c.title       || "").toLowerCase().includes(search) ||
+          (c.categoryName|| "").toLowerCase().includes(search) ||
+          (c.complainantName || "").toLowerCase().includes(search)
         );
       }
-      const tbody = document.querySelector("tbody") || document.getElementById("closedCasesBody");
+
+      const tbody = document.getElementById("closedCasesBody");
       if (!tbody) return;
+
       if (!cases.length) {
-        tbody.innerHTML = "<tr><td colspan='6' style='text-align:center;padding:40px;color:#64748b;'>No closed cases found.</td></tr>";
+        tbody.innerHTML = closedCases.length === 0
+          ? "<tr><td colspan='6' style='text-align:center;padding:50px;color:var(--text-light);'>✅ No closed cases yet — cases you resolve will appear here.</td></tr>"
+          : "<tr><td colspan='6' style='text-align:center;padding:40px;color:var(--text-light);'>No cases match your search.</td></tr>";
         return;
       }
-      tbody.innerHTML = cases.map(c => `
+
+      tbody.innerHTML = cases.map(c => {
+        const statusColor = c.status === "CLOSED" ? "var(--success)" : "#059669";
+        const statusLabel = c.status === "CLOSED" ? "CLOSED" : "RESOLVED";
+        const closedOn    = fmtDate(c.resolvedAt || c.updatedAt);
+        const complainant = c.anonymous || !c.complainantName || c.complainantName === "Anonymous"
+          ? "<span style='color:var(--text-light);font-size:12px;'>🕵️ Anonymous</span>"
+          : `<div style='font-size:13px;font-weight:600'>${esc(c.complainantName)}</div>
+             ${c.complainantEmail ? "<div style='font-size:11px;color:var(--primary);'>📧 " + esc(c.complainantEmail) + "</div>" : ""}
+             ${c.complainantPhone ? "<div style='font-size:11px;color:var(--success);'>📞 " + esc(c.complainantPhone) + "</div>" : ""}`;
+
+        return `
         <tr>
-          <td><b style="color:var(--primary)">${c.trackingId || "#" + c.id}</b></td>
-          <td>${esc(c.title)}</td>
-          <td>${c.categoryName || "—"}</td>
-          <td>${fmtDate(c.updatedAt)}</td>
-          <td><span class="badge badge-RESOLVED">RESOLVED</span></td>
-          <td><a href="add-updates.html?id=${c.id}" class="btn btn-outline btn-sm">View</a></td>
-        </tr>
-      `).join("");
+          <td><b style="color:var(--primary);font-size:13px;">${esc(c.trackingId || "#" + c.id)}</b></td>
+          <td style="font-weight:500;max-width:200px;">${esc(c.title)}</td>
+          <td style="color:var(--text-light);font-size:13px;">${esc(c.categoryName || "—")}</td>
+          <td style="color:var(--text-light);font-size:13px;">${closedOn}</td>
+          <td>${complainant}</td>
+          <td>
+            <span style="display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;
+                         font-size:11px;font-weight:700;background:rgba(16,185,129,0.1);color:${statusColor};">
+              ✅ ${statusLabel}
+            </span>
+          </td>
+          <td>
+            <a href="investigation.html?id=${c.id}" class="btn btn-outline btn-sm">🔍 View</a>
+          </td>
+        </tr>`;
+      }).join("");
     }
 
     function esc(s) { return (s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
-    function fmtDate(iso) { if (!iso) return "—"; return new Date(iso).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" }); }
+    function fmtDate(iso) {
+      if (!iso) return "—";
+      return new Date(iso).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" });
+    }
 
     window.addEventListener("load", loadClosedCases);
-    document.getElementById("closedSearchInput")?.addEventListener("input", renderClosedCases);
-    // Also handle reopen from localStorage-based old code
-    function reopenCase(caseId) {
-      fetch(API + "/complaints/" + caseId + "/reopen", {
-        method: "POST",
-        headers: { "Authorization": "Bearer " + getToken(), "Content-Type": "application/json" }
-      }).then(r => r.json()).then(j => {
-        if (j.success) { loadClosedCases(); }
-        else alert(j.message || "Could not reopen case.");
-      }).catch(e => alert("Error: " + e.message));
-    }
   </script>
 </body>
 

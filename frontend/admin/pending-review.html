@@ -484,10 +484,10 @@
                     alert("Complaint approved and moved to Under Review");
                     loadPendingComplaints();
                 } else {
-                    alert("Failed: " + json.message);
+                    showToast("Failed: " + json.message, "error");
                 }
             } catch(e) {
-                alert("Error: " + e.message);
+                showToast("Error: " + e.message, "error");
             }
         }
 
@@ -519,13 +519,39 @@
         }
 
         function batchAssignToAuthority() {
-            alert("Use the Assigned Cases page to assign complaints to specific authorities.");
+            window.location.href = "assigned-cases.html";
         }
 
         function batchPostpone() {
-            alert("Postpone — select individual complaints and review them later.");
+            // Mark all pending as UNDER_REVIEW with a postpone note
+            if (pendingComplaints.length === 0) { showToast("No pending complaints.","warning"); return; }
+            if (!confirm("Postpone review of all " + pendingComplaints.length + " complaints? They will be moved to Under Review.")) return;
+            Promise.all(pendingComplaints.map(c =>
+                fetch(API + "/complaints/" + c.id + "/status", {
+                    method:"PATCH",
+                    headers:{"Content-Type":"application/json","Authorization":"Bearer " + getToken()},
+                    body: JSON.stringify({ status:"UNDER_REVIEW", notes:"Postponed for later review", notifyComplainant:false })
+                })
+            )).then(() => { showToast("All postponed to Under Review.","success"); loadPendingComplaints(); })
+              .catch(e => showToast("Error: " + e.message,"error"));
         }
 
+        function showToast(msg, type="success") {
+            let t = document.getElementById("toastMsg");
+            if (!t) {
+                t = document.createElement("div");
+                t.id = "toastMsg";
+                t.style.cssText="position:fixed;bottom:24px;right:24px;padding:14px 20px;border-radius:10px;font-size:14px;font-weight:600;color:white;z-index:9999;display:none;box-shadow:0 8px 24px rgba(0,0,0,0.15);";
+                document.body.appendChild(t);
+            }
+            t.style.background = type==="success"?"#10b981":type==="error"?"#ef4444":"#f59e0b";
+            t.textContent = msg;
+            t.style.display = "block";
+            clearTimeout(t._t);
+            t._t = setTimeout(()=>t.style.display="none", 3000);
+        }
+
+        // Also replace alerts in approveComplaint
         function logout() {
             ["token","role","userId","fullName","email"].forEach(k => localStorage.removeItem(k));
             window.location.href = "../login.html";

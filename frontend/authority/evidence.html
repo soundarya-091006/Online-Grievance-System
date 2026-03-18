@@ -82,22 +82,6 @@
             </a>
           </li>
           <li class="menu-item">
-            <a href="new-assignments.html" class="menu-link" onclick="closeMenu()">
-              <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" stroke-linecap="round" stroke-linejoin="round" />
-              </svg>
-              New Assignments
-            </a>
-          </li>
-          <li class="menu-item">
-            <a href="active-cases.html" class="menu-link" onclick="closeMenu()">
-              <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke-linecap="round" stroke-linejoin="round" />
-              </svg>
-              Active Investigations
-            </a>
-          </li>
-          <li class="menu-item">
             <a href="investigation.html" class="menu-link" onclick="closeMenu()">
               <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                 <path d="M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16zm10 2-4.35-4.35" stroke-linecap="round"
@@ -173,7 +157,7 @@
         <div class="nav-divider"></div>
         <ul class="sidebar-menu" style="margin-bottom:12px;">
           <li class="menu-item">
-            <a href="../login.html" class="menu-link" onclick="logoutAuth()" style="color:var(--danger);">
+            <a href="../login.html" class="menu-link" onclick="logoutAuth(); return false;" style="color:var(--danger);">
               <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"
                 stroke-linejoin="round">
                 <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
@@ -209,7 +193,7 @@
               <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
               <circle cx="12" cy="7" r="4" />
             </svg>My Profile</a>
-          <a href="../login.html" onclick="logoutAuth()" style="color:var(--danger);"><svg viewBox="0 0 24 24" fill="none"
+          <a href="../login.html" onclick="logoutAuth(); return false;" style="color:var(--danger);"><svg viewBox="0 0 24 24" fill="none"
               stroke="currentColor">
               <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
               <polyline points="16 17 21 12 16 7" />
@@ -356,33 +340,41 @@
       }
     }
 
+    /* ── Fetch evidence safely (returns [] on any error) ── */
+    async function fetchEvidence(caseId) {
+      try {
+        const res  = await authFetch('/evidence/complaint/' + caseId);
+        const json = await res.json();
+        return Array.isArray(json.data) ? json.data : [];
+      } catch {
+        return [];
+      }
+    }
+
     /* ── Load evidence for all assigned cases ── */
     async function loadAllEvidence() {
       allEvidence = [];
       for (const c of allCases) {
-        try {
-          const data = await authGet('/evidence/complaint/' + c.id);
-          const list = Array.isArray(data) ? data : [];
-          list.forEach(ev => { ev._caseId = c.id; ev._caseTitle = c.trackingId || ('SR-' + String(c.id).padStart(5, '0')); });
-          allEvidence.push(...list);
-        } catch { /* some cases may have no evidence */ }
+        const list = await fetchEvidence(c.id);
+        list.forEach(ev => {
+          ev._caseId    = c.id;
+          ev._caseTitle = c.trackingId || ('SR-' + String(c.id).padStart(5, '0'));
+        });
+        allEvidence.push(...list);
       }
       renderTable(allEvidence);
     }
 
     /* ── Load evidence for a specific case ── */
     async function loadEvidence(caseId) {
-      try {
-        const data = await authGet('/evidence/complaint/' + caseId);
-        const list = Array.isArray(data) ? data : [];
-        const c = allCases.find(x => x.id == caseId);
-        list.forEach(ev => { ev._caseId = caseId; ev._caseTitle = c ? (c.trackingId || ('SR-' + String(c.id).padStart(5, '0'))) : 'Case #' + caseId; });
-        allEvidence = list;
-        renderTable(allEvidence);
-      } catch (e) {
-        console.error('Failed to load evidence', e);
-        showToast('Could not load evidence for this case.', 'error');
-      }
+      const list = await fetchEvidence(caseId);
+      const c    = allCases.find(x => x.id == caseId);
+      list.forEach(ev => {
+        ev._caseId    = caseId;
+        ev._caseTitle = c ? (c.trackingId || ('SR-' + String(c.id).padStart(5, '0'))) : 'Case #' + caseId;
+      });
+      allEvidence = list;
+      renderTable(allEvidence);
     }
 
     /* ── Render evidence table ── */
@@ -411,10 +403,10 @@
         <td>${escHtml(ev._caseTitle || '—')}</td>
         <td>${escHtml(ev.fileType || ev.fileName?.split('.').pop() || '—')}</td>
         <td>${fmtSize(ev.fileSize)}</td>
-        <td>${escHtml(ev.uploadedBy || '—')}</td>
+        <td>${escHtml(ev.uploadedBy?.fullName || ev.uploadedBy || '—')}</td>
         <td>${formatDate(ev.uploadedAt || ev.createdAt)}</td>
         <td><button class="btn btn-outline btn-sm" onclick="viewCustody(${ev.id})">View</button></td>
-        <td><a href="${API_BASE}/evidence/download/${ev.id}" target="_blank" class="btn btn-outline btn-sm" style="text-decoration:none">⬇ Download</a></td>
+        <td><button class="btn btn-outline btn-sm" onclick="downloadEvidence(${ev.id}, '${escHtml(ev.fileName||'file')}')">⬇ Download</button></td>
     </tr>`).join('');
     }
 
@@ -426,7 +418,7 @@
         "<b>File:</b> " + escHtml(ev?.fileName || '—') + "<br>" +
         "<b>Case:</b> " + escHtml(ev?._caseTitle || '—') + "<br>" +
         "<b>Uploaded:</b> " + formatDate(ev?.uploadedAt || ev?.createdAt) + "<br>" +
-        "<b>Uploaded By:</b> " + escHtml(ev?.uploadedBy || '—') + "<br><br>" +
+        "<b>Uploaded By:</b> " + escHtml(ev?.uploadedBy?.fullName || ev?.uploadedBy || '—') + "<br><br>" +
         "<b>Access Log:</b><br>No entries available.";
       openModal("custodyModal");
     }
@@ -449,6 +441,21 @@
         }
       }
       await loadEvidence(caseId);
+    }
+
+    /* ── Authenticated download ── */
+    async function downloadEvidence(evidenceId, fileName) {
+      try {
+        const res = await authFetch('/evidence/download/' + evidenceId);
+        if (!res.ok) throw new Error('Download failed: ' + res.status);
+        const blob = await res.blob();
+        const url  = URL.createObjectURL(blob);
+        const a    = document.createElement('a');
+        a.href = url; a.download = fileName; a.click();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+      } catch(e) {
+        showToast('Download failed: ' + e.message, 'error');
+      }
     }
 
     // Wire upload inputs

@@ -26,6 +26,8 @@ public class ComplaintResponse {
     private LocalDate incidentDate;
     private String complainantName;
     private Long complainantId;
+    private String complainantEmail;
+    private String complainantPhone;
     private String assignedAuthorityName;
     private Long assignedAuthorityId;
     private String adminNotes;
