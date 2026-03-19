@@ -280,7 +280,7 @@
                 <div class="card">
                     <div class="card-title">⚡ Quick Actions</div>
 
-                    <div class="action-section">
+                    <div class="action-section" id="qaStatusSection">
                         <div class="action-section-title">Status</div>
                         <div class="action-btn-row">
                             <button class="btn btn-success"  onclick="approveComplaint()">✅ Approve</button>
@@ -288,10 +288,19 @@
                         </div>
                     </div>
 
-                    <div class="action-section" style="margin-top:20px;">
+                    <div class="action-section" id="qaAssignSection" style="margin-top:20px;">
                         <div class="action-section-title">Assignment</div>
                         <div class="action-btn-row">
                             <button class="btn btn-primary" onclick="openAssignModal()">📤 Assign to Authority</button>
+                        </div>
+                    </div>
+
+                    <!-- Shown after complaint is assigned -->
+                    <div class="action-section" id="qaAssignedInfo" style="display:none;margin-top:20px;align-items:center;gap:10px;padding:12px 14px;background:rgba(139,92,246,0.07);border:1px solid rgba(139,92,246,0.2);border-radius:10px;">
+                        <div style="font-size:22px;">👮</div>
+                        <div>
+                            <div style="font-size:11px;font-weight:700;color:var(--text-light);text-transform:uppercase;letter-spacing:0.4px;">Assigned To</div>
+                            <div id="qaAssignedName" style="font-size:14px;font-weight:600;color:#7c3aed;margin-top:2px;">—</div>
                         </div>
                     </div>
 
@@ -408,6 +417,25 @@
     </div>
 </div>
 
+<!-- Image Preview Modal -->
+<div class="modal-overlay" id="previewModal">
+    <div class="modal" style="max-width:700px;width:100%;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+            <div class="modal-title" style="margin-bottom:0;">🖼️ Evidence Preview</div>
+            <button onclick="closeModal('previewModal')" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--text-light);">✕</button>
+        </div>
+        <div style="font-size:13px;color:var(--text-light);margin-bottom:12px;" id="previewFileName"></div>
+        <div style="background:var(--bg);border-radius:10px;padding:10px;text-align:center;max-height:500px;overflow:auto;">
+            <img id="previewImg" src="" alt="Evidence preview"
+                 style="max-width:100%;max-height:460px;border-radius:6px;object-fit:contain;">
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-outline" onclick="closeModal('previewModal')">Close</button>
+            <button class="btn btn-primary" id="previewDownloadBtn">⬇ Download</button>
+        </div>
+    </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -440,7 +468,13 @@
     }
 
     function openModal(id)  { document.getElementById(id).classList.add("open"); }
-    function closeModal(id) { document.getElementById(id).classList.remove("open"); }
+    function closeModal(id) {
+        const el = document.getElementById(id);
+        el.classList.remove("open");
+        // Clean up blob URLs for preview modal
+        if (el._objUrl) { URL.revokeObjectURL(el._objUrl); el._objUrl = null; }
+        if (id === "previewModal") { document.getElementById("previewImg").src = ""; }
+    }
 
     function esc(s) { return (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
     function fmtDate(iso) {
@@ -606,14 +640,32 @@
     }
 
     function renderActionState(c) {
-        // Hide approve/assign if already past UNDER_REVIEW
+        // Hide approve/reject if already past SUBMITTED
         const doneStatuses = ["ASSIGNED","INVESTIGATING","RESOLVED","CLOSED","REJECTED"];
         if (doneStatuses.includes(c.status)) {
             document.getElementById("btnApprove").style.display = "none";
             document.getElementById("btnReject").style.display  = "none";
         }
-        if (["RESOLVED","CLOSED","REJECTED"].includes(c.status)) {
+        // Hide assign button if already assigned or further along
+        if (["ASSIGNED","INVESTIGATING","RESOLVED","CLOSED","REJECTED"].includes(c.status)) {
             document.getElementById("btnAssign").style.display = "none";
+        }
+
+        // Also update the Quick Actions panel based on status
+        const qaStatus    = document.getElementById("qaStatusSection");
+        const qaAssign    = document.getElementById("qaAssignSection");
+        const qaAssigned  = document.getElementById("qaAssignedInfo");
+
+        if (doneStatuses.includes(c.status)) {
+            if (qaStatus) qaStatus.style.display = "none";
+        }
+        if (["ASSIGNED","INVESTIGATING","RESOLVED","CLOSED","REJECTED"].includes(c.status)) {
+            if (qaAssign)   qaAssign.style.display   = "none";
+            if (qaAssigned) qaAssigned.style.display = "flex";
+            // Populate assigned authority info
+            if (c.assignedAuthorityName && qaAssigned) {
+                document.getElementById("qaAssignedName").textContent = c.assignedAuthorityName;
+            }
         }
     }
 
@@ -805,7 +857,10 @@
 
             body.innerHTML = `
                 <div style="display:flex;flex-direction:column;gap:10px;">
-                    ${list.map(ev => `
+                    ${list.map(ev => {
+                        const ext = (ev.fileName||"").split(".").pop().toLowerCase();
+                        const isImage = ["jpg","jpeg","png","gif","webp","bmp"].includes(ext);
+                        return `
                     <div style="display:flex;align-items:center;gap:12px;padding:12px 14px;
                                 background:var(--bg);border-radius:8px;border:1px solid var(--border);">
                         <div style="font-size:24px;flex-shrink:0;">${typeIcon(ev.fileName)}</div>
@@ -814,20 +869,48 @@
                                         white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
                                 ${esc(ev.fileName||"Unknown file")}</div>
                             <div style="font-size:11px;color:var(--text-light);margin-top:2px;">
-                                ${fmtSize(ev.fileSize)} · ${ev.uploadedBy?.fullName||ev.uploadedBy||"User"} · ${fmtDate(ev.uploadedAt)}
+                                ${fmtSize(ev.fileSize)} · ${ev.uploadedByName||"User"} · ${fmtDate(ev.uploadedAt)}
                             </div>
                             ${ev.description ? `<div style="font-size:12px;color:var(--text-light);margin-top:3px;">${esc(ev.description)}</div>` : ""}
                         </div>
-                        <button onclick="downloadEvidence(${ev.id},'${esc(ev.fileName||'file')}')"
-                            style="padding:6px 12px;border-radius:6px;border:1px solid rgba(99,102,241,0.3);
-                                   background:rgba(99,102,241,0.06);color:var(--primary);font-size:12px;
-                                   font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0;">
-                            ⬇ Download
-                        </button>
-                    </div>`).join("")}
+                        <div style="display:flex;gap:6px;flex-shrink:0;">
+                            ${isImage ? `<button onclick="previewEvidence(${ev.id},'${esc(ev.fileName||'file')}')"
+                                style="padding:6px 12px;border-radius:6px;border:1px solid rgba(16,185,129,0.3);
+                                       background:rgba(16,185,129,0.06);color:var(--success);font-size:12px;
+                                       font-weight:600;cursor:pointer;white-space:nowrap;">
+                                👁 View
+                            </button>` : ""}
+                            <button onclick="downloadEvidence(${ev.id},'${esc(ev.fileName||'file')}')"
+                                style="padding:6px 12px;border-radius:6px;border:1px solid rgba(99,102,241,0.3);
+                                       background:rgba(99,102,241,0.06);color:var(--primary);font-size:12px;
+                                       font-weight:600;cursor:pointer;white-space:nowrap;">
+                                ⬇ Download
+                            </button>
+                        </div>
+                    </div>`;
+                    }).join("")}
                 </div>`;
         } catch(e) {
             body.innerHTML = `<p style="color:var(--danger);font-size:13px;text-align:center;padding:20px;">Failed to load evidence.</p>`;
+        }
+    }
+
+    async function previewEvidence(evidenceId, fileName) {
+        try {
+            const res = await fetch(`${API}/evidence/download/${evidenceId}`, {
+                headers: { "Authorization": "Bearer " + getToken() }
+            });
+            if (!res.ok) throw new Error("Preview failed: " + res.status);
+            const blob = await res.blob();
+            const url  = URL.createObjectURL(blob);
+            document.getElementById("previewImg").src = url;
+            document.getElementById("previewFileName").textContent = fileName;
+            document.getElementById("previewDownloadBtn").onclick = () => downloadEvidence(evidenceId, fileName);
+            openModal("previewModal");
+            // Clean up object URL when modal closes
+            document.getElementById("previewModal")._objUrl = url;
+        } catch(e) {
+            showToast("Preview failed: " + e.message, "error");
         }
     }
 

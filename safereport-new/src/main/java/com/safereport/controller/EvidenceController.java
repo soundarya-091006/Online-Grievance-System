@@ -1,6 +1,7 @@
 package com.safereport.controller;
 
 import com.safereport.dto.response.ApiResponse;
+import com.safereport.dto.response.EvidenceResponse;
 import com.safereport.entity.Evidence;
 import com.safereport.entity.User;
 import com.safereport.service.impl.ComplaintService;
@@ -10,6 +11,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -38,21 +40,22 @@ public class EvidenceController {
     }
 
     /**
-     * List all evidence for a complaint
+     * List all evidence for a complaint — accessible by ADMIN, AUTHORITY, and the complainant
      */
     @GetMapping("/complaint/{complaintId}")
+    @PreAuthorize("hasAnyRole('ADMIN','AUTHORITY','USER')")
     public ResponseEntity<ApiResponse<List<Evidence>>> listEvidence(
             @PathVariable("complaintId") Long complaintId) {
         return ResponseEntity.ok(ApiResponse.success(complaintService.getEvidence(complaintId)));
     }
 
     /**
-     * Download a specific evidence file
+     * Download a specific evidence file — accessible by ADMIN and AUTHORITY
      */
     @GetMapping("/download/{evidenceId}")
+    @PreAuthorize("hasAnyRole('ADMIN','AUTHORITY','USER')")
     public ResponseEntity<Resource> download(
-            @PathVariable("evidenceId") Long evidenceId,
-            @AuthenticationPrincipal User user) {
+            @PathVariable("evidenceId") Long evidenceId) {
 
         Evidence evidence = complaintService.getEvidenceById(evidenceId);
         File file = new File(evidence.getFilePath());

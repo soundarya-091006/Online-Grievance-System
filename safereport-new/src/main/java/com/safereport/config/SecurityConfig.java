@@ -46,6 +46,8 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/api/complaints/track/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/complaints").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/categories").permitAll()
+                // Evidence endpoints (authenticated users with appropriate roles)
+                .requestMatchers("/api/evidence/**").authenticated()
                 // Evidence file serving (authenticated)
                 .requestMatchers("/uploads/**").authenticated()
                 // Role-based access

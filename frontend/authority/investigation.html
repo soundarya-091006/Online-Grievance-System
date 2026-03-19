@@ -585,7 +585,10 @@
           return "📎";
         };
         const fmtSize = b => b < 1048576 ? (b/1024).toFixed(1)+" KB" : (b/1048576).toFixed(1)+" MB";
-        body.innerHTML = list.map(ev => `
+        body.innerHTML = list.map(ev => {
+          const ext = (ev.fileName||"").split(".").pop().toLowerCase();
+          const isImage = ["jpg","jpeg","png","gif","webp","bmp"].includes(ext);
+          return `
           <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;
                       background:var(--bg-card,#f8fafc);border-radius:8px;margin-bottom:8px;
                       border:1px solid var(--border);">
@@ -594,15 +597,50 @@
               <div style="font-size:13px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escHtml(ev.fileName||"file")}</div>
               <div style="font-size:11px;color:var(--text-light);">${fmtSize(ev.fileSize||0)} · ${formatDate(ev.uploadedAt)}</div>
             </div>
-            <button onclick="downloadEv(${ev.id},'${escHtml(ev.fileName||'file')}')"
-              style="padding:5px 10px;border-radius:6px;border:1px solid rgba(99,102,241,0.3);
-                     background:rgba(99,102,241,0.06);color:var(--primary);font-size:12px;font-weight:600;cursor:pointer;">
-              ⬇
-            </button>
-          </div>`).join('');
+            <div style="display:flex;gap:5px;flex-shrink:0;">
+              ${isImage ? `<button onclick="previewEv(${ev.id},'${escHtml(ev.fileName||'file')}')"
+                style="padding:5px 10px;border-radius:6px;border:1px solid rgba(16,185,129,0.3);
+                       background:rgba(16,185,129,0.06);color:var(--success,#10b981);font-size:12px;font-weight:600;cursor:pointer;">
+                👁
+              </button>` : ''}
+              <button onclick="downloadEv(${ev.id},'${escHtml(ev.fileName||'file')}')"
+                style="padding:5px 10px;border-radius:6px;border:1px solid rgba(99,102,241,0.3);
+                       background:rgba(99,102,241,0.06);color:var(--primary);font-size:12px;font-weight:600;cursor:pointer;">
+                ⬇
+              </button>
+            </div>
+          </div>`;
+        }).join('');
       } catch(e) {
         body.innerHTML = '<p style="color:var(--danger);font-size:13px;">Could not load evidence.</p>';
       }
+    }
+
+    async function previewEv(evidenceId, fileName) {
+      try {
+        const res = await authFetch('/evidence/download/' + evidenceId);
+        if (!res.ok) throw new Error('status ' + res.status);
+        const blob = await res.blob();
+        const url  = URL.createObjectURL(blob);
+        // Create a quick lightbox
+        const overlay = document.createElement('div');
+        overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;';
+        overlay.innerHTML = `
+          <div style="color:white;font-size:14px;font-weight:600;">${escHtml(fileName)}</div>
+          <img src="${url}" style="max-width:90vw;max-height:80vh;border-radius:8px;object-fit:contain;">
+          <div style="display:flex;gap:10px;">
+            <button onclick="this.closest('div[style]').remove();URL.revokeObjectURL('${url}')"
+              style="padding:8px 20px;border-radius:8px;border:1px solid rgba(255,255,255,0.3);background:rgba(255,255,255,0.1);color:white;font-size:13px;font-weight:600;cursor:pointer;">
+              ✕ Close
+            </button>
+            <button onclick="downloadEv(${evidenceId},'${escHtml(fileName)}')"
+              style="padding:8px 20px;border-radius:8px;background:#6366f1;border:none;color:white;font-size:13px;font-weight:600;cursor:pointer;">
+              ⬇ Download
+            </button>
+          </div>`;
+        overlay.onclick = e => { if (e.target === overlay) { overlay.remove(); URL.revokeObjectURL(url); } };
+        document.body.appendChild(overlay);
+      } catch(e) { showToast('Preview failed: ' + e.message, 'error'); }
     }
 
     async function downloadEv(evidenceId, fileName) {
