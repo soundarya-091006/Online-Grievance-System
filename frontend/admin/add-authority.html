@@ -223,6 +223,17 @@
     <div class="toast" id="toast"></div>
 
     <script>
+        const API = "http://localhost:8080/api";
+        function getToken() { return localStorage.getItem("token"); }
+
+        // Auth check — only admin can access
+        (function() {
+            const role = localStorage.getItem("role");
+            if (!getToken() || role !== "ADMIN") {
+                window.location.href = "../login.html";
+            }
+        })();
+
         function showToast(msg, type = 'success') {
             const t = document.getElementById('toast');
             t.textContent = msg;
@@ -230,50 +241,44 @@
             setTimeout(() => t.classList.remove('show'), 3000);
         }
 
-        function createAuthority(event) {
+        async function createAuthority(event) {
             event.preventDefault();
 
-            const name = document.getElementById("authorityName").value.trim();
-            const email = document.getElementById("authorityEmail").value.trim();
-            const password = document.getElementById("authorityPassword").value;
+            const fullName   = document.getElementById("authorityName").value.trim();
+            const email      = document.getElementById("authorityEmail").value.trim();
+            const password   = document.getElementById("authorityPassword").value;
             const department = document.getElementById("authorityDepartment").value.trim();
-            const phone = document.getElementById("authorityPhone").value.trim();
-            const address = document.getElementById("authorityAddress").value.trim();
+            const phone      = document.getElementById("authorityPhone").value.trim();
+            const address    = document.getElementById("authorityAddress").value.trim();
 
-            if (!name || !email || !password || !department) {
+            if (!fullName || !email || !password || !department) {
                 showToast("Please fill all required fields", "error");
                 return;
             }
 
-            // Save to the unified 'users' array so the authority can log in
-            const users = JSON.parse(localStorage.getItem("users")) || [];
+            try {
+                const res = await fetch(API + "/admin/authorities", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer " + getToken()
+                    },
+                    body: JSON.stringify({ fullName, email, password, phone, address })
+                });
 
-            // Check if email already exists
-            if (users.find(u => u.email.toLowerCase() === email.toLowerCase())) {
-                showToast("A user with this email already exists", "error");
-                return;
+                const json = await res.json();
+                if (!json.success) {
+                    showToast(json.message || "Failed to create authority", "error");
+                    return;
+                }
+
+                showToast("Authority created successfully! They can now log in.");
+                setTimeout(() => {
+                    window.location.href = "authority-management.html";
+                }, 1500);
+            } catch(e) {
+                showToast("Error: " + e.message, "error");
             }
-
-            const newUser = {
-                fullname: name,
-                name: name,
-                email: email,
-                password: password,
-                role: "authority",
-                department: department,
-                phone: phone,
-                address: address,
-                status: "active",
-                createdAt: new Date().toLocaleString()
-            };
-
-            users.push(newUser);
-            localStorage.setItem("users", JSON.stringify(users));
-
-            showToast("Authority created successfully! They can now log in.");
-            setTimeout(() => {
-                window.location.href = "authority-management.html";
-            }, 1500);
         }
 
         function goBack() {

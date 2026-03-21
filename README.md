@@ -1,165 +1,332 @@
-﻿# SafeReport - Online Grievance Management System
+# 🛡️ SafeReport — Women's Grievance Reporting System
 
-> A modern, three-tier role-based grievance management platform for filing, reviewing, and resolving workplace complaints.
+<div align="center">
 
-![Status](https://img.shields.io/badge/Status-Complete-brightgreen) ![Version](https://img.shields.io/badge/Version-1.0.0-blue)
+![SafeReport Banner](https://img.shields.io/badge/SafeReport-v1.0.0-6366f1?style=for-the-badge&logo=shield&logoColor=white)
+![Java](https://img.shields.io/badge/Java_17-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
+![Spring Boot](https://img.shields.io/badge/Spring_Boot_3.2.5-6DB33F?style=for-the-badge&logo=springboot&logoColor=white)
+![MySQL](https://img.shields.io/badge/MySQL_8-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
+![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 
----
+**A secure, full-stack grievance management platform for women to report, track, and resolve complaints confidentially.**
 
-## 🎯 Quick Navigation
+[Features](#-features) · [Tech Stack](#-tech-stack) · [Getting Started](#-getting-started) · [API Reference](#-api-reference) · [Screenshots](#-project-structure)
 
-### 📖 **New to the System?**
-→ **START HERE:** [QUICKSTART.md](QUICKSTART.md) - 5-minute setup guide
-
-### 📋 **Want to Understand the Workflow?**
-→ Read: [WORKFLOW_GUIDE.md](WORKFLOW_GUIDE.md) - Complete workflow documentation
-
-### 🛠️ **Looking for Technical Details?**
-→ Check: [IMPLEMENTATION_SUMMARY.md](IMPLEMENTATION_SUMMARY.md) - Architecture and components
-
-### ✅ **Need to Validate the System?**
-→ Visit: `frontend/system-validation.html` - System health checker
+</div>
 
 ---
 
-## ✨ Key Features
+## 📋 Overview
 
-✅ **User Portal** - Submit complaints, track status in real-time, view history  
-✅ **Admin Portal** - Review complaints, approve, and assign to authorities  
-✅ **Authority Portal** - Accept assignments, investigate, and resolve cases  
-✅ **Real-time Updates** - Badge counts and status updates across all views  
-✅ **Complete Workflow** - NEW → UNDER REVIEW → ASSIGNED → IN PROGRESS → RESOLVED  
-✅ **Test Tools** - Data generator and system validator included  
-✅ **No Database Required** - Uses browser localStorage (perfect for demos)  
+SafeReport is a web-based grievance reporting system that allows women to securely submit complaints, track their status in real time, and receive updates from assigned authorities. The platform supports anonymous submissions, evidence uploads, and end-to-end case management by administrators and authority officers.
 
 ---
 
-## 🚀 Getting Started (2 Minutes)
+## ✨ Features
+
+### 👤 User Portal
+- Submit complaints — anonymous or identified
+- Upload supporting evidence (images, documents, videos)
+- Track complaint status in real time with a timeline
+- Receive email & in-app notifications on every update
+- Manage profile and change password securely
+
+### 🏛️ Authority Portal
+- View all assigned cases with complainant contact details
+- Add investigation updates and notes
+- Upload and manage evidence files (authenticated download)
+- Close cases with formal resolution summaries
+- Access investigation timeline and history
+
+### 🔐 Admin Portal
+- Full complaint management — review, approve, reject, assign
+- User & authority management (enable/disable/delete)
+- Real-time analytics dashboard with charts
+- Audit logs tracking every system action
+- Send custom notifications and request more details from complainants
+- Export complaints as CSV
+
+### 🔒 Security
+- JWT-based stateless authentication
+- Role-based access control (USER / AUTHORITY / ADMIN)
+- BCrypt password hashing
+- Anonymous complaint support (identity never stored)
+- Password reset via email token
+
+---
+
+## 🛠️ Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| **Backend** | Java 17, Spring Boot 3.2.5 |
+| **Security** | Spring Security, JWT (jjwt) |
+| **Database** | MySQL 8, Spring Data JPA / Hibernate |
+| **Email** | Spring Mail (Gmail SMTP) |
+| **Frontend** | Vanilla HTML, CSS, JavaScript |
+| **Build** | Maven |
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Java 17+
+- MySQL 8+
+- Maven 3.8+
+- Gmail account with App Password (for email features)
+- Any static file server (VS Code Live Server, Python http.server, etc.)
+
+---
+
+### 1. Clone the Repository
 
 ```bash
-1. Open: http://localhost:8000/frontend/test-data.html
-2. Click: "✅ Initialize All Sample Data"
-3. Go to: http://localhost:8000/frontend/login.html
-4. Login with any test credential below
-```
-
-### Test Credentials
-```
-👤 User:      amit@test.com          / User@123
-👨‍💼 Admin:     admin@test.com         / Admin@123
-👮 Authority:  rajan@authority.com    / Auth@123
+git clone https://github.com/your-username/safereport.git
+cd safereport
 ```
 
 ---
 
-## 📊 Complete Workflow
+### 2. Set Up the Database
 
-```
-USER SUBMITS → ADMIN REVIEWS → ADMIN ASSIGNS → AUTHORITY ACCEPTS → AUTHORITY RESOLVES
-    ↓              ↓                 ↓                  ↓                  ↓
-   NEW      UNDER REVIEW         ASSIGNED         IN PROGRESS          RESOLVED
-    ↓_____________________|________________|_________________|_________________|
-                            User tracks all updates in real-time
+```sql
+CREATE DATABASE safereport_db;
 ```
 
-### Workflow Example (5 minutes)
-See [QUICKSTART.md - Complete Workflow Test](QUICKSTART.md#-complete-workflow-test-5-minutes)
+---
+
+### 3. Configure the Backend
+
+Edit `backend/safereport-new/src/main/resources/application.properties`:
+
+```properties
+# Database
+spring.datasource.url=jdbc:mysql://localhost:3306/safereport_db?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+spring.datasource.username=root
+spring.datasource.password=YOUR_MYSQL_PASSWORD
+
+# JWT Secret (change this in production)
+app.jwt.secret=your-secret-key-minimum-32-characters-long
+app.jwt.expiration=86400000
+
+# Email (Gmail SMTP with App Password)
+spring.mail.username=your-email@gmail.com
+spring.mail.password=your-16-char-app-password
+```
+
+> **Gmail App Password**: Go to [myaccount.google.com](https://myaccount.google.com) → Security → 2-Step Verification → App passwords → Generate.
 
 ---
 
-## 📁 Key Files
+### 4. Run the Backend
 
-| File | Purpose |
-|------|---------|
-| [QUICKSTART.md](QUICKSTART.md) | 5-min setup & testing |
-| [WORKFLOW_GUIDE.md](WORKFLOW_GUIDE.md) | Complete architecture |
-| [IMPLEMENTATION_SUMMARY.md](IMPLEMENTATION_SUMMARY.md) | Technical details |
-| [frontend/test-data.html](frontend/test-data.html) | Data initialization |
-| [frontend/system-validation.html](frontend/system-validation.html) | System validator |
+```bash
+cd backend/safereport-new
+mvn spring-boot:run
+```
 
----
+The server starts at `http://localhost:8080`
 
-## 🧪 Testing Tools Included
-
-1. **Test Data Generator** - Create sample users, authorities, and complaints
-2. **System Validator** - Check system health and data integrity
-3. **Test Credentials** - Multiple roles to test complete workflows
+On first startup, the system automatically seeds:
+- **Admin account**: `admin@safereport.com` / `Admin@123`
+- **8 complaint categories**
 
 ---
 
-## 💾 Data Storage
+### 5. Run the Frontend
 
-All data persists in browser **localStorage**:
-- `users` - Registered users
-- `authorities` - Authority departments
-- `complaints` - Grievance records with status
-- `currentUser` - Active session
+```bash
+cd frontend/frontend
+python -m http.server 3000
+```
 
----
+Then open `http://localhost:3000` in your browser.
 
-## ✅ What's Implemented
-
-- [x] Three-tier role-based system (User/Admin/Authority)
-- [x] Complete complaint lifecycle workflow
-- [x] Admin review and approval system
-- [x] Authority assignment and investigation
-- [x] Real-time status tracking
-- [x] Dynamic navigation badges
-- [x] Responsive UI design
-- [x] Session management
-- [x] Test data tools
-- [x] System validation tools
-- [x] Complete documentation
+> Alternatively use **VS Code Live Server** extension — right-click `index.html` → Open with Live Server.
 
 ---
 
-## 🆕 Recently Added
+### Default Credentials
 
-**Files Created:**
-- ✨ `test-data.html` - Interactive test data initialization
-- ✨ `system-validation.html` - System health checker
-- ✨ `complaint-status.html` - Individual complaint tracking
-- ✨ `user-management.html` - User management for admin
-- ✨ `authority-shared.js` - Shared authority utilities
-- ✨ QUICKSTART.md - Quick start guide
-- ✨ WORKFLOW_GUIDE.md - Complete workflow docs
-- ✨ IMPLEMENTATION_SUMMARY.md - Technical summary
+| Role | Email | Password |
+|------|-------|----------|
+| Admin | `admin@safereport.com` | `Admin@123` |
+| Authority | *(Create via Admin panel)* | — |
+| User | *(Register via `/register.html`)* | — |
 
-**Features Enhanced:**
-- 🔄 Dynamic complaint loading (authority pages)
-- 🔄 Real-time badge count updates
-- 🔄 Email-based authority assignment
-- 🔄 Admin assignment workflow
-- 🔄 Timeline tracking for all status changes
+> **Authority Registration**: Use verification code `AUTH-CODE-001` during registration.
 
 ---
 
-## 🎯 Next Steps
+## 📁 Project Structure
 
-1. **Read:** [QUICKSTART.md](QUICKSTART.md) for 5-minute introduction
-2. **Test:** Initialize data and test all three roles
-3. **Validate:** Run system validator to check integrity
-4. **Learn:** Read [WORKFLOW_GUIDE.md](WORKFLOW_GUIDE.md) for complete details
+```
+safereport/
+├── backend/
+│   └── safereport-new/
+│       ├── src/main/java/com/safereport/
+│       │   ├── config/          # Security, CORS, data seeding
+│       │   ├── controller/      # REST API controllers
+│       │   ├── dto/             # Request/Response DTOs
+│       │   ├── entity/          # JPA entities
+│       │   ├── enums/           # Status, Role, Priority enums
+│       │   ├── exception/       # Global exception handler
+│       │   ├── repository/      # Spring Data JPA repositories
+│       │   ├── security/        # JWT filter & utilities
+│       │   └── service/         # Business logic
+│       └── src/main/resources/
+│           └── application.properties
+│
+└── frontend/
+    └── frontend/
+        ├── index.html           # Landing page
+        ├── login.html           # Login
+        ├── register.html        # Registration
+        ├── forgot-password.html # Password reset
+        ├── api.js               # Shared API helper
+        ├── admin/               # Admin portal pages
+        ├── authority/           # Authority portal pages
+        └── user/                # User portal pages
+```
 
 ---
 
-## 📞 Quick Links
+## 🔌 API Reference
 
-- 🚀 [Get Started](QUICKSTART.md)
-- 📖 [Learn System](WORKFLOW_GUIDE.md)  
-- 🛠️ [Technical Details](IMPLEMENTATION_SUMMARY.md)
-- 🧪 [Test Data Tool](frontend/test-data.html)
-- ✅ [System Validator](frontend/system-validation.html)
-- 🔐 [Login Portal](frontend/login.html)
+### Base URL
+```
+http://localhost:8080/api
+```
+
+### Authentication
+All protected endpoints require:
+```
+Authorization: Bearer <jwt-token>
+```
+
+---
+
+### Auth  `/api/auth`
+
+| Method | Endpoint | Auth | Description |
+|--------|----------|------|-------------|
+| POST | `/register` | No | Register user/authority |
+| POST | `/login` | No | Login → returns JWT |
+| POST | `/forgot-password` | No | Send password reset token to email |
+| POST | `/reset-password` | No | Reset password with token |
+
+---
+
+### Complaints  `/api/complaints`
+
+| Method | Endpoint | Roles | Description |
+|--------|----------|-------|-------------|
+| POST | `/` | All | Submit complaint (multipart) |
+| GET | `/track/{trackingId}` | Public | Track by ID |
+| GET | `/my` | USER | My complaints |
+| GET | `/{id}` | All | Get complaint |
+| GET | `/{id}/history` | All | Update history |
+| GET | `/` | ADMIN, AUTHORITY | All complaints |
+| POST | `/{id}/assign` | ADMIN | Assign to authority |
+| PATCH | `/{id}/status` | ADMIN, AUTHORITY | Update status/priority |
+| GET | `/authority/assigned` | AUTHORITY | My assigned cases |
+| POST | `/{id}/investigation-update` | AUTHORITY | Add investigation note |
+
+**Complaint Status Flow:**
+```
+SUBMITTED → UNDER_REVIEW → ASSIGNED → INVESTIGATING → RESOLVED → CLOSED
+                                                              ↘ REJECTED
+```
+
+---
+
+### Evidence  `/api/evidence`
+
+| Method | Endpoint | Auth | Description |
+|--------|----------|------|-------------|
+| POST | `/upload/{complaintId}` | Yes | Upload file |
+| GET | `/complaint/{complaintId}` | Yes | List evidence |
+| GET | `/download/{evidenceId}` | Yes | Download file (authenticated) |
+
+---
+
+### User  `/api/user`
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/profile` | Get profile |
+| PUT | `/profile` | Update profile |
+| PUT | `/change-password` | Change password |
+
+---
+
+### Admin  `/api/admin`
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/dashboard` | Analytics stats |
+| GET | `/users` | All users (`?role=USER`) |
+| GET | `/authorities` | All authorities |
+| PATCH | `/users/{id}/toggle-status` | Enable/disable user |
+| DELETE | `/users/{id}` | Delete user |
+| POST | `/authorities` | Create authority account |
+| GET | `/audit-logs` | System audit logs |
+
+---
+
+### Public Stats  `/api/stats`
+
+| Method | Endpoint | Auth | Description |
+|--------|----------|------|-------------|
+| GET | `/public` | No | Platform statistics for landing page |
+
+---
+
+## 🗄️ Database Schema (Key Entities)
+
+```
+users          → id, fullName, email, password, phone, role, active
+complaints     → id, trackingId, title, description, status, priority, anonymous, complainantId
+categories     → id, name, description, icon, active
+evidences      → id, complaintId, fileName, filePath, fileType, fileSize, uploadedById
+notifications  → id, userId, title, message, read, type
+complaint_updates → id, complaintId, updatedById, updateType, previousStatus, newStatus
+audit_logs     → id, userId, action, entityType, entityId, details
+```
+
+---
+
+## 🔧 Environment Variables
+
+For production, use environment variables instead of hardcoding in `application.properties`:
+
+```properties
+spring.datasource.password=${DB_PASSWORD}
+spring.mail.username=${MAIL_USERNAME}
+spring.mail.password=${MAIL_PASSWORD}
+app.jwt.secret=${JWT_SECRET}
+```
 
 ---
 
 ## 📄 License
 
-MIT License - Free for testing and educational use
+This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
 
 ---
 
-**Ready to get started?** → Open [QUICKSTART.md](QUICKSTART.md) now!
+## 🤝 Contributing
 
-*Last Updated: January 2025*
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/my-feature`
+3. Commit your changes: `git commit -m 'Add my feature'`
+4. Push to the branch: `git push origin feature/my-feature`
+5. Open a Pull Request
+
+---
+
+<div align="center">
+Made with ❤️ for women's safety and justice.
+</div>

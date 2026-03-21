@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <style>
+        body {
+            visibility: hidden
+        }
+    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SafeReport | Notifications</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --secondary: #8b5cf6;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+            --bg: #f8fafc;
+            --white: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        .topbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+            z-index: 1000;
+            gap: 20px;
+        }
+
+        .hamburger-menu {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            position: relative;
+        }
+
+        .hamburger-btn {
+            display: flex;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 8px;
+        }
+
+        .hamburger-btn svg {
+            width: 24px;
+            height: 24px;
+            stroke: var(--text);
+            stroke-width: 2;
+        }
+
+        .logo-text {
+            font-size: 20px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .hamburger-menu-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            min-width: 220px;
+            margin-top: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+            display: none;
+            z-index: 2000;
+            overflow: hidden;
+        }
+
+        .hamburger-menu-dropdown.active {
+            display: block;
+        }
+
+        .hamburger-menu-dropdown .menu-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 20px;
+            color: var(--text);
+            text-decoration: none;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .hamburger-menu-dropdown .menu-link:hover {
+            background: var(--bg);
+            padding-left: 22px;
+        }
+
+        .hamburger-menu-dropdown .menu-link.active {
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--primary);
+        }
+
+        .menu-icon {
+            width: 18px;
+            height: 18px;
+            stroke-width: 2;
+            flex-shrink: 0;
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 15px;
+            border-radius: 12px;
+            background: var(--white);
+            border: 1px solid var(--border);
+            cursor: pointer;
+            position: relative;
+        }
+
+        .user-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .user-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .user-name {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .user-role {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .user-menu-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            min-width: 190px;
+            margin-top: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+            display: none;
+            z-index: 2000;
+            overflow: hidden;
+        }
+
+        .user-menu-dropdown.active {
+            display: block;
+        }
+
+        .user-menu-dropdown a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 18px;
+            color: var(--text);
+            text-decoration: none;
+            font-size: 14px;
+            border-bottom: 1px solid var(--border);
+            transition: all 0.2s;
+        }
+
+        .user-menu-dropdown a:last-child {
+            border-bottom: none;
+        }
+
+        .user-menu-dropdown a:hover {
+            background: var(--bg);
+        }
+
+        .user-menu-dropdown svg {
+            width: 16px;
+            height: 16px;
+            stroke: var(--text-light);
+        }
+
+        .main-content {
+            margin-top: 70px;
+            padding: 30px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 28px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .page-title {
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 6px;
+        }
+
+        .page-subtitle {
+            font-size: 15px;
+            color: var(--text-light);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-outline {
+            padding: 9px 18px;
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
+            background: var(--white);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            color: var(--text);
+            transition: all 0.2s;
+        }
+
+        .btn-outline:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .filter-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .filter-tab {
+            padding: 8px 18px;
+            border-radius: 10px;
+            border: 1.5px solid var(--border);
+            background: var(--white);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            color: var(--text-light);
+            transition: all 0.2s;
+        }
+
+        .filter-tab.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+        }
+
+        /* Notification items */
+        .notif-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            overflow: hidden;
+        }
+
+        .notif-item {
+            display: flex;
+            gap: 16px;
+            padding: 18px 22px;
+            border-bottom: 1px solid var(--border);
+            transition: background 0.2s;
+            cursor: pointer;
+            align-items: flex-start;
+        }
+
+        .notif-item:last-child {
+            border-bottom: none;
+        }
+
+        .notif-item:hover {
+            background: var(--bg);
+        }
+
+        .notif-item.unread {
+            background: rgba(99, 102, 241, 0.03);
+        }
+
+        .notif-item.unread:hover {
+            background: rgba(99, 102, 241, 0.06);
+        }
+
+        .notif-icon-wrap {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .icon-status {
+            background: rgba(99, 102, 241, 0.1);
+        }
+
+        .icon-assigned {
+            background: rgba(139, 92, 246, 0.1);
+        }
+
+        .icon-resolved {
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .icon-update {
+            background: rgba(245, 158, 11, 0.1);
+        }
+
+        .icon-system {
+            background: rgba(100, 116, 139, 0.1);
+        }
+
+        .notif-body {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .notif-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .unread-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--primary);
+            flex-shrink: 0;
+        }
+
+        .notif-message {
+            font-size: 13px;
+            color: var(--text-light);
+            line-height: 1.5;
+            margin-bottom: 6px;
+        }
+
+        .notif-time {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .notif-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .notif-link {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .notif-link:hover {
+            text-decoration: underline;
+        }
+
+        .mark-read-btn {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-light);
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+        }
+
+        .mark-read-btn:hover {
+            color: var(--primary);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-light);
+        }
+
+        .empty-state .emoji {
+            font-size: 52px;
+            display: block;
+            margin-bottom: 16px;
+        }
+
+        .api-error {
+            background: rgba(239, 68, 68, 0.08);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            border-radius: 12px;
+            padding: 14px 18px;
+            font-size: 14px;
+            color: var(--danger);
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 8px;
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: 200% 0
+            }
+
+            100% {
+                background-position: -200% 0
+            }
+        }
+
+        @media(max-width:768px) {
+            .topbar {
+                padding: 0 15px;
+            }
+
+            .main-content {
+                padding: 15px;
+            }
+
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="topbar">
+        <div class="hamburger-menu">
+            <button class="hamburger-btn" onclick="toggleMenu()"><svg viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor">
+                    <line x1="3" y1="6" x2="21" y2="6" />
+                    <line x1="3" y1="12" x2="21" y2="12" />
+                    <line x1="3" y1="18" x2="21" y2="18" />
+                </svg></button>
+            <div class="logo-section">
+                <div
+                    style="width:45px;height:45px;border-radius:12px;display:flex;align-items:center;justify-content:center;">
+                    <svg width="45" height="45" viewBox="0 0 24 24" fill="none">
+                        <defs>
+                            <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
+                                <stop offset="0%" stop-color="#6366f1" />
+                                <stop offset="100%" stop-color="#8b5cf6" />
+                            </linearGradient>
+                        </defs>
+                        <path d="M12 2L4 5V11C4 16 7.5 20 12 22C16.5 20 20 16 20 11V5L12 2Z" fill="url(#g1)" />
+                        <path d="M9.5 12.5L11 14L14.5 10.5" stroke="white" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
+                </div>
+                <span class="logo-text">SafeReport</span>
+            </div>
+            <div id="hamburgerDropdown" class="hamburger-menu-dropdown">
+                <ul style="list-style:none;padding:8px 0;">
+                    <li><a href="user-dashboard.html" class="menu-link" onclick="closeMenu()"><svg class="menu-icon"
+                                viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <rect x="3" y="3" width="7" height="7" />
+                                <rect x="14" y="3" width="7" height="7" />
+                                <rect x="14" y="14" width="7" height="7" />
+                                <rect x="3" y="14" width="7" height="7" />
+                            </svg>Dashboard</a></li>
+                    <li><a href="submit-complaint.html" class="menu-link" onclick="closeMenu()"><svg class="menu-icon"
+                                viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <circle cx="12" cy="12" r="10" />
+                                <line x1="12" y1="8" x2="12" y2="16" />
+                                <line x1="8" y1="12" x2="16" y2="12" />
+                            </svg>Submit Complaint</a></li>
+                    <li><a href="my-complaint.html" class="menu-link" onclick="closeMenu()"><svg class="menu-icon"
+                                viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                                <polyline points="14 2 14 8 20 8" />
+                            </svg>My Complaints</a></li>
+                    <li><a href="complaint-status.html" class="menu-link" onclick="closeMenu()"><svg class="menu-icon"
+                                viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke-linecap="round"
+                                    stroke-linejoin="round" />
+                            </svg>Track Status</a></li>
+                    <li><a href="notifications.html" class="menu-link active" onclick="closeMenu()"><svg
+                                class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+                                <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+                            </svg>Notifications</a></li>
+                    <li><a href="user-profile.html" class="menu-link" onclick="closeMenu()"><svg class="menu-icon"
+                                viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                                <circle cx="12" cy="7" r="4" />
+                            </svg>My Profile</a></li>
+                    <li><a href="login.html" class="menu-link" onclick="logoutUser(); return false;"><svg
+                                class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                                <polyline points="16 17 21 12 16 7" />
+                                <line x1="21" y1="12" x2="9" y2="12" />
+                            </svg>Logout</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="topbar-right">
+            <div class="user-menu" onclick="toggleUserMenu()">
+                <div class="user-avatar">--</div>
+                <div class="user-info">
+                    <div class="user-name">…</div>
+                    <div class="user-role">user</div>
+                </div>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="6 9 12 15 18 9" />
+                </svg>
+                <div id="userMenuDropdown" class="user-menu-dropdown">
+                    <a href="user-profile.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                            <circle cx="12" cy="7" r="4" />
+                        </svg>My Profile</a>
+                    <a href="login.html" onclick="logoutUser(); return false;"><svg viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                            <polyline points="16 17 21 12 16 7" />
+                            <line x1="21" y1="12" x2="9" y2="12" />
+                        </svg>Logout</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="page-header">
+            <div>
+                <h1 class="page-title">Notifications 🔔</h1>
+                <p class="page-subtitle"><span id="unreadCount">0</span> unread notifications</p>
+            </div>
+            <div class="header-actions">
+                <button class="btn-outline" onclick="markAllRead()">Mark all as read</button>
+            </div>
+        </div>
+
+        <div class="filter-tabs">
+            <button class="filter-tab active" onclick="filterNotifs('all', this)">All</button>
+            <button class="filter-tab" onclick="filterNotifs('unread', this)">Unread</button>
+            <button class="filter-tab" onclick="filterNotifs('STATUS_UPDATE', this)">Status Updates</button>
+            <button class="filter-tab" onclick="filterNotifs('ASSIGNMENT', this)">Assignments</button>
+            <button class="filter-tab" onclick="filterNotifs('SYSTEM', this)">System</button>
+        </div>
+
+        <div id="apiError" class="api-error"></div>
+        <div id="notifContainer"></div>
+    </div>
+
+    <script src="../api.js"></script>
+    <script>
+        let allNotifs = [];
+        let activeFilter = "all";
+
+        window.addEventListener("load", async () => {
+            if (!requireAuth()) return;
+            document.body.style.visibility = "visible";
+            initMenus();
+            populateTopbar();
+            await loadNotifications();
+            // Auto-refresh every 30 seconds
+            setInterval(loadNotifications, 30000);
+        });
+
+        async function loadNotifications() {
+            document.getElementById("notifContainer").innerHTML = `<div style="display:flex;flex-direction:column;gap:0;background:var(--white);border:1px solid var(--border);border-radius:18px;overflow:hidden;">${[1, 2, 3, 4].map(() => `<div style="height:72px;margin:0;" class="skeleton"></div>`).join("")}</div>`;
+            try {
+                const res = await apiFetch("/notifications?page=0&size=50");
+                if (!res.ok) throw new Error(res.status);
+                const json = await res.json();
+                allNotifs = json.data?.content || json.data || [];
+                updateUnreadCount();
+                renderNotifs(allNotifs);
+            } catch {
+                document.getElementById("apiError").textContent = "⚠️ Could not load notifications.";
+                document.getElementById("apiError").style.display = "block";
+                document.getElementById("notifContainer").innerHTML = "";
+            }
+        }
+
+        function updateUnreadCount() {
+            const count = allNotifs.filter(n => !n.read).length;
+            document.getElementById("unreadCount").textContent = count;
+        }
+
+        function filterNotifs(type, el) {
+            activeFilter = type;
+            document.querySelectorAll(".filter-tab").forEach(t => t.classList.remove("active"));
+            el.classList.add("active");
+            let list = [...allNotifs];
+            if (type === "unread") list = list.filter(n => !n.read);
+            else if (type !== "all") list = list.filter(n => (n.type || "").toUpperCase() === type);
+            renderNotifs(list);
+        }
+
+        const NOTIF_ICONS = {
+            STATUS_UPDATE: { icon: "🔄", cls: "icon-status" },
+            ASSIGNMENT: { icon: "📋", cls: "icon-assigned" },
+            RESOLVED: { icon: "✅", cls: "icon-resolved" },
+            UPDATE: { icon: "📝", cls: "icon-update" },
+            SYSTEM: { icon: "⚙️", cls: "icon-system" },
+            DEFAULT: { icon: "🔔", cls: "icon-system" },
+        };
+
+        function renderNotifs(list) {
+            const el = document.getElementById("notifContainer");
+            if (!list.length) {
+                el.innerHTML = `<div class="empty-state"><span class="emoji">🔕</span><p>No notifications here.</p></div>`;
+                return;
+            }
+            el.innerHTML = `<div class="notif-list">${list.map(n => {
+                const cfg = NOTIF_ICONS[(n.type || "").toUpperCase()] || NOTIF_ICONS.DEFAULT;
+                const link = n.relatedId ? `complaint-status.html?id=${n.relatedId}` : null;
+                return `<div class="notif-item ${n.read ? '' : 'unread'}" id="notif-${n.id}">
+                <div class="notif-icon-wrap ${cfg.cls}">${cfg.icon}</div>
+                <div class="notif-body">
+                    <div class="notif-title">
+                        ${escHtml(n.title || n.type || "Notification")}
+                        ${!n.read ? '<span class="unread-dot"></span>' : ""}
+                    </div>
+                    <div class="notif-message">${escHtml(n.message || n.body || "")}</div>
+                    <div class="notif-time">${timeAgo(n.createdAt)}</div>
+                    <div class="notif-actions">
+                        ${link ? `<a href="${link}" class="notif-link">View Complaint →</a>` : ""}
+                        ${!n.read ? `<button class="mark-read-btn" onclick="markRead(${n.id}, event)">Mark as read</button>` : ""}
+                    </div>
+                </div>
+            </div>`;
+            }).join("")}</div>`;
+        }
+
+        async function markRead(id, e) {
+            e.stopPropagation();
+            try {
+                const res = await apiFetch(`/notifications/${id}/read`, { method: "PATCH" });
+                const mj = await res.json();
+                if (mj.success) {
+                    const n = allNotifs.find(x => x.id === id);
+                    if (n) n.read = true;
+                    updateUnreadCount();
+                    filterNotifs(activeFilter, document.querySelector(".filter-tab.active"));
+                }
+            } catch { /* silent */ }
+        }
+
+        async function markAllRead() {
+            try {
+                const res = await apiFetch("/notifications/read-all", { method: "PATCH" });
+                const aj = await res.json();
+                if (aj.success) {
+                    allNotifs.forEach(n => n.read = true);
+                    updateUnreadCount();
+                    showToast("All notifications marked as read");
+                    filterNotifs(activeFilter, document.querySelector(".filter-tab.active"));
+                }
+            } catch { showToast("Failed to update notifications", "error"); }
+        }
+
+        function timeAgo(dateStr) {
+            if (!dateStr) return "—";
+            const diff = Date.now() - new Date(dateStr).getTime();
+            const mins = Math.floor(diff / 60000);
+            if (mins < 1) return "Just now";
+            if (mins < 60) return `${mins}m ago`;
+            const hrs = Math.floor(mins / 60);
+            if (hrs < 24) return `${hrs}h ago`;
+            const days = Math.floor(hrs / 24);
+            if (days < 7) return `${days}d ago`;
+            return formatDate(dateStr);
+        }
+
+        function escHtml(s) { return (s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+    </script>
+</body>
+
+</html>

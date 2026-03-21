@@ -1,0 +1,79 @@
+# ============================================================
+# SafeReport — .gitignore
+# ============================================================
+
+# ── Java / Maven ─────────────────────────────────────────────
+target/
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+*.zip
+*.tar.gz
+*.rar
+.mvn/wrapper/maven-wrapper.jar
+
+# ── Spring Boot ───────────────────────────────────────────────
+spring-boot-*.log
+*.log
+
+# ── IDE ───────────────────────────────────────────────────────
+.idea/
+*.iml
+*.ipr
+*.iws
+.eclipse/
+.settings/
+.project
+.classpath
+*.swp
+*.swo
+*~
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# NetBeans
+nbproject/
+build/
+nbbuild/
+dist/
+nbdist/
+
+# ── Credentials & Secrets ─────────────────────────────────────
+# Real application.properties contains DB password, JWT secret, email credentials
+# Use application.properties.template as the safe version to commit
+**/application.properties
+!**/application.properties.template
+
+# ── Uploaded Files ────────────────────────────────────────────
+# User-uploaded evidence files — never commit to git
+backend/safereport-new/uploads/
+uploads/
+
+# ── OS Files ──────────────────────────────────────────────────
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# ── Node (if any tooling added) ───────────────────────────────
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ── Backup files created during development ───────────────────
+*.bak
+*.orig
+*.tmp
+
+# ── Test outputs ──────────────────────────────────────────────
+surefire-reports/
+failsafe-reports/

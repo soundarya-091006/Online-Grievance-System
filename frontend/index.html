@@ -858,16 +858,16 @@
                 </div>
                 <div class="hero-stats">
                     <div class="stat">
-                        <div class="stat-number">1,234+</div>
+                        <div class="stat-number" id="heroResolved">—</div>
                         <div class="stat-label">Cases Resolved</div>
                     </div>
                     <div class="stat">
-                        <div class="stat-number">96%</div>
-                        <div class="stat-label">Satisfaction</div>
+                        <div class="stat-number" id="heroRate">—</div>
+                        <div class="stat-label">Resolution Rate</div>
                     </div>
                     <div class="stat">
-                        <div class="stat-number">24/7</div>
-                        <div class="stat-label">Support</div>
+                        <div class="stat-number" id="heroUsers">—</div>
+                        <div class="stat-label">Users Protected</div>
                     </div>
                 </div>
             </div>
@@ -994,20 +994,20 @@
     <section class="stats-section" id="stats">
         <div class="stats-grid">
             <div class="stat-card">
-                <div class="stat-card-number">1,234</div>
-                <div class="stat-card-label">Cases Handled</div>
+                <div class="stat-card-number" id="statTotal">—</div>
+                <div class="stat-card-label">Total Complaints</div>
             </div>
             <div class="stat-card">
-                <div class="stat-card-number">89%</div>
+                <div class="stat-card-number" id="statResolved">—</div>
+                <div class="stat-card-label">Cases Resolved</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-number" id="statRate">—</div>
                 <div class="stat-card-label">Resolution Rate</div>
             </div>
             <div class="stat-card">
-                <div class="stat-card-number">4.5</div>
-                <div class="stat-card-label">Days to Resolve</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-card-number">96%</div>
-                <div class="stat-card-label">User Satisfaction</div>
+                <div class="stat-card-number" id="statUsers">—</div>
+                <div class="stat-card-label">Users Protected</div>
             </div>
         </div>
     </section>
@@ -1084,6 +1084,51 @@
     </footer>
 
     <script>
+        /* ── Load real stats from public API ── */
+        async function loadPublicStats() {
+            try {
+                const res  = await fetch('http://localhost:8080/api/stats/public');
+                const json = await res.json();
+                const d    = json.data || {};
+
+                const fmt = n => n >= 1000
+                    ? (n / 1000).toFixed(1).replace(/\.0$/, '') + 'k+'
+                    : String(n);
+
+                // Hero stats
+                const heroResolved = document.getElementById('heroResolved');
+                const heroRate     = document.getElementById('heroRate');
+                const heroUsers    = document.getElementById('heroUsers');
+                if (heroResolved) heroResolved.textContent = fmt(d.resolvedComplaints || 0);
+                if (heroRate)     heroRate.textContent     = (d.resolutionRate || 0) + '%';
+                if (heroUsers)    heroUsers.textContent    = fmt(d.totalUsers || 0) + '+';
+
+                // Stats section
+                const statTotal    = document.getElementById('statTotal');
+                const statResolved = document.getElementById('statResolved');
+                const statRate     = document.getElementById('statRate');
+                const statUsers    = document.getElementById('statUsers');
+                if (statTotal)    statTotal.textContent    = fmt(d.totalComplaints || 0);
+                if (statResolved) statResolved.textContent = fmt(d.resolvedComplaints || 0);
+                if (statRate)     statRate.textContent     = (d.resolutionRate || 0) + '%';
+                if (statUsers)    statUsers.textContent    = fmt(d.totalUsers || 0) + '+';
+
+                // Fade-in animation
+                document.querySelectorAll('.stat-number, .stat-card-number').forEach(el => {
+                    el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                    el.style.opacity = '0'; el.style.transform = 'translateY(8px)';
+                    requestAnimationFrame(() => requestAnimationFrame(() => {
+                        el.style.opacity = '1'; el.style.transform = 'translateY(0)';
+                    }));
+                });
+            } catch(e) {
+                // Backend offline — leave as — (already set in HTML)
+                console.info('Stats unavailable:', e.message);
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', loadPublicStats);
+
         // Navbar scroll effect
         window.addEventListener('scroll', function() {
             const navbar = document.getElementById('navbar');

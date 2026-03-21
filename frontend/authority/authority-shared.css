@@ -226,6 +226,8 @@ body {
     display: flex; align-items: center; justify-content: center;
     cursor: pointer;
     transition: all 0.3s ease;
+    text-decoration: none;
+    color: var(--text);
 }
 .notification-icon:hover { background: var(--bg); transform: translateY(-2px); }
 .notification-badge {
@@ -865,10 +867,16 @@ tbody td { padding: 14px 20px; font-size: 13px; color: var(--text); vertical-ali
     .grid-2, .grid-3 { grid-template-columns: 1fr; }
     .form-row, .form-row-3 { grid-template-columns: 1fr; }
     .search-box input { width: 160px; }
+    .topbar-right { gap: 12px; }
+    .notification-icon { width: 36px; height: 36px; }
+    .notification-badge { top: -4px; right: -4px; }
     .page-title { font-size: 22px; }
     .case-card-header { flex-direction: column; align-items: flex-start; }
 }
 @media (max-width: 480px) {
     .search-box { display: none; }
+    .topbar-right { gap: 8px; }
+    .notification-icon { width: 34px; height: 34px; border-radius: 8px; }
     .stats-grid { grid-template-columns: 1fr; }
+    .table-wrap { overflow-x: auto; }
 }

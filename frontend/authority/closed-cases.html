@@ -82,22 +82,6 @@
             </a>
           </li>
           <li class="menu-item">
-            <a href="new-assignments.html" class="menu-link" onclick="closeMenu()">
-              <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" stroke-linecap="round" stroke-linejoin="round" />
-              </svg>
-              New Assignments<span class="menu-badge">5</span>
-            </a>
-          </li>
-          <li class="menu-item">
-            <a href="active-cases.html" class="menu-link" onclick="closeMenu()">
-              <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke-linecap="round" stroke-linejoin="round" />
-              </svg>
-              Active Investigations<span class="menu-badge">3</span>
-            </a>
-          </li>
-          <li class="menu-item">
             <a href="investigation.html" class="menu-link" onclick="closeMenu()">
               <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                 <path d="M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16zm10 2-4.35-4.35" stroke-linecap="round"
@@ -157,15 +141,6 @@
               Generate Report
             </a>
           </li>
-          <li class="menu-item">
-            <a href="schedule.html" class="menu-link" onclick="closeMenu()">
-              <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <path d="M8 2v3M16 2v3M3 9h18M19 4H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"
-                  stroke-linecap="round" stroke-linejoin="round" />
-              </svg>
-              Schedule Manager
-            </a>
-          </li>
         </ul>
         <div class="nav-section-label">ACCOUNT</div>
         <ul class="sidebar-menu">
@@ -182,7 +157,7 @@
         <div class="nav-divider"></div>
         <ul class="sidebar-menu" style="margin-bottom:12px;">
           <li class="menu-item">
-            <a href="../login.html" class="menu-link" onclick="logoutAuth()" style="color:var(--danger);">
+            <a href="../login.html" class="menu-link" onclick="logoutAuth(); return false;" style="color:var(--danger);">
               <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"
                 stroke-linejoin="round">
                 <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
@@ -204,13 +179,6 @@
         </svg>
         <input type="text" placeholder="Search cases, IDs...">
       </div>
-      <div class="notification-icon">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
-          <path d="M13.73 21a2 2 0 0 1-3.46 0" />
-        </svg>
-        <span class="notification-badge">5</span>
-      </div>
       <div class="user-menu" onclick="toggleUserMenu()">
         <div class="user-avatar js-auth-initials">RA</div>
         <div>
@@ -225,13 +193,7 @@
               <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
               <circle cx="12" cy="7" r="4" />
             </svg>My Profile</a>
-          <a href="schedule.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <rect x="3" y="4" width="18" height="18" rx="2" />
-              <line x1="16" y1="2" x2="16" y2="6" />
-              <line x1="8" y1="2" x2="8" y2="6" />
-              <line x1="3" y1="10" x2="21" y2="10" />
-            </svg>My Schedule</a>
-          <a href="../login.html" onclick="logoutAuth()" style="color:var(--danger);"><svg viewBox="0 0 24 24" fill="none"
+          <a href="../login.html" onclick="logoutAuth(); return false;" style="color:var(--danger);"><svg viewBox="0 0 24 24" fill="none"
               stroke="currentColor">
               <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
               <polyline points="16 17 21 12 16 7" />
@@ -309,7 +271,8 @@
             <th>Subject</th>
             <th>Category</th>
             <th>Closed On</th>
-            <th>Resolution</th>
+            <th>Complainant</th>
+            <th>Status</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -328,85 +291,131 @@
 
   <script src="authority-shared.js"></script>
   <script>
-
+    const API = "http://localhost:8080/api";
     let closedCases = [];
+    let allMyCases  = [];
 
-    function loadClosedCases() {
-      const currentUser = JSON.parse(localStorage.getItem("currentUser")) || {};
-      if (currentUser.role !== "authority") { window.location.href = "../login.html"; return; }
-      const complaints = JSON.parse(localStorage.getItem("complaints")) || [];
-      closedCases = complaints.filter(c => c.assignedTo === currentUser.email && c.status === "RESOLVED");
+    function getToken() { return localStorage.getItem("token"); }
 
-      // Update stats
-      document.getElementById("statTotalClosed").textContent = closedCases.length;
-      if (closedCases.length > 0) {
-        const allMyCases = complaints.filter(c => c.assignedTo === currentUser.email);
-        const rate = allMyCases.length > 0 ? Math.round((closedCases.length / allMyCases.length) * 100) : 0;
-        document.getElementById("statResolutionRate").textContent = rate + '%';
+    async function loadClosedCases() {
+      const token = getToken();
+      const role  = localStorage.getItem("role");
+      if (!token || role !== "AUTHORITY") { window.location.href = "../login.html"; return; }
+
+      try {
+        // Fetch ALL assigned cases (to compute resolution rate)
+        const [resolvedRes, closedRes, allRes] = await Promise.all([
+          fetch(API + "/complaints/authority/assigned?status=RESOLVED&page=0&size=200", { headers: { "Authorization": "Bearer " + token } }),
+          fetch(API + "/complaints/authority/assigned?status=CLOSED&page=0&size=200",   { headers: { "Authorization": "Bearer " + token } }),
+          fetch(API + "/complaints/authority/assigned?page=0&size=200",                 { headers: { "Authorization": "Bearer " + token } })
+        ]);
+
+        const resolvedJson = await resolvedRes.json();
+        const closedJson   = await closedRes.json();
+        const allJson      = await allRes.json();
+
+        const resolved = resolvedJson.data?.content || resolvedJson.data || [];
+        const closed   = closedJson.data?.content   || closedJson.data   || [];
+        allMyCases     = allJson.data?.content       || allJson.data      || [];
+
+        // Merge resolved + closed, deduplicate by id
+        const seen = new Set();
+        closedCases = [...resolved, ...closed].filter(c => {
+          if (seen.has(c.id)) return false;
+          seen.add(c.id); return true;
+        });
+
+        // Stats
+        document.getElementById("statTotalClosed").textContent = closedCases.length;
+
+        const rate = allMyCases.length > 0
+          ? Math.round((closedCases.length / allMyCases.length) * 100) : 0;
+        document.getElementById("statResolutionRate").textContent = rate + "%";
+
+        // Avg resolution days (createdAt → resolvedAt or updatedAt)
         let totalDays = 0, countWithDates = 0;
         closedCases.forEach(c => {
-          if (c.createdAt && c.updatedAt) {
-            const days = Math.ceil((new Date(c.updatedAt) - new Date(c.createdAt)) / 86400000);
+          const end   = c.resolvedAt || c.updatedAt;
+          const start = c.createdAt;
+          if (start && end) {
+            const days = Math.ceil((new Date(end) - new Date(start)) / 86400000);
             if (days >= 0) { totalDays += days; countWithDates++; }
           }
         });
-        document.getElementById("statAvgDays").textContent = countWithDates > 0 ? Math.round(totalDays / countWithDates) + ' days' : '—';
+        document.getElementById("statAvgDays").textContent =
+          countWithDates > 0 ? Math.round(totalDays / countWithDates) + " days" : "—";
+
+        document.querySelector(".page-subtitle").textContent =
+          closedCases.length + " case" + (closedCases.length !== 1 ? "s" : "") + " resolved and archived.";
+
+        renderClosedCases();
+
+      } catch (e) {
+        console.error(e);
+        document.getElementById("closedCasesBody").innerHTML =
+          "<tr><td colspan='6' style='text-align:center;padding:40px;color:var(--danger);'>⚠️ Could not load closed cases. Is the backend running?</td></tr>";
       }
-
-      // Update subtitle
-      const sub = document.querySelector('.page-subtitle');
-      if (sub) sub.textContent = closedCases.length + ' case' + (closedCases.length !== 1 ? 's' : '') + ' have been resolved and archived.';
-
-      renderClosedCases();
     }
 
     function renderClosedCases() {
-      const search = (document.getElementById("closedSearchInput")?.value || '').toLowerCase();
+      const search = (document.getElementById("closedSearchInput")?.value || "").toLowerCase();
       let cases = closedCases;
       if (search) {
         cases = cases.filter(c =>
-          (c.id && c.id.toString().includes(search)) ||
-          (c.subject && c.subject.toLowerCase().includes(search)) ||
-          (c.category && c.category.toLowerCase().includes(search))
+          (c.trackingId  || "").toLowerCase().includes(search) ||
+          (c.title       || "").toLowerCase().includes(search) ||
+          (c.categoryName|| "").toLowerCase().includes(search) ||
+          (c.complainantName || "").toLowerCase().includes(search)
         );
       }
+
       const tbody = document.getElementById("closedCasesBody");
-      if (cases.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:30px;color:var(--text-light)">No closed cases found.</td></tr>';
+      if (!tbody) return;
+
+      if (!cases.length) {
+        tbody.innerHTML = closedCases.length === 0
+          ? "<tr><td colspan='6' style='text-align:center;padding:50px;color:var(--text-light);'>✅ No closed cases yet — cases you resolve will appear here.</td></tr>"
+          : "<tr><td colspan='6' style='text-align:center;padding:40px;color:var(--text-light);'>No cases match your search.</td></tr>";
         return;
       }
-      tbody.innerHTML = cases.map(c => `
+
+      tbody.innerHTML = cases.map(c => {
+        const statusColor = c.status === "CLOSED" ? "var(--success)" : "#059669";
+        const statusLabel = c.status === "CLOSED" ? "CLOSED" : "RESOLVED";
+        const closedOn    = fmtDate(c.resolvedAt || c.updatedAt);
+        const complainant = c.anonymous || !c.complainantName || c.complainantName === "Anonymous"
+          ? "<span style='color:var(--text-light);font-size:12px;'>🕵️ Anonymous</span>"
+          : `<div style='font-size:13px;font-weight:600'>${esc(c.complainantName)}</div>
+             ${c.complainantEmail ? "<div style='font-size:11px;color:var(--primary);'>📧 " + esc(c.complainantEmail) + "</div>" : ""}
+             ${c.complainantPhone ? "<div style='font-size:11px;color:var(--success);'>📞 " + esc(c.complainantPhone) + "</div>" : ""}`;
+
+        return `
         <tr>
-            <td><b style="color:var(--primary)">#${c.id}</b></td>
-            <td>${c.subject || '—'}</td>
-            <td>${c.category || '—'}</td>
-            <td>${formatDate(c.updatedAt || c.createdAt)}</td>
-            <td>${c.resolution || '<span style="color:var(--success);font-weight:600">Resolved</span>'}</td>
-            <td style="display:flex;gap:6px">
-                <button class="btn btn-sm" style="background:rgba(245,158,11,0.1);color:var(--warning);border:1px solid rgba(245,158,11,0.3)" onclick="reopenCase('${c.id}')">🔄 Reopen</button>
-            </td>
-        </tr>
-    `).join('');
+          <td><b style="color:var(--primary);font-size:13px;">${esc(c.trackingId || "#" + c.id)}</b></td>
+          <td style="font-weight:500;max-width:200px;">${esc(c.title)}</td>
+          <td style="color:var(--text-light);font-size:13px;">${esc(c.categoryName || "—")}</td>
+          <td style="color:var(--text-light);font-size:13px;">${closedOn}</td>
+          <td>${complainant}</td>
+          <td>
+            <span style="display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;
+                         font-size:11px;font-weight:700;background:rgba(16,185,129,0.1);color:${statusColor};">
+              ✅ ${statusLabel}
+            </span>
+          </td>
+          <td>
+            <a href="investigation.html?id=${c.id}" class="btn btn-outline btn-sm">🔍 View</a>
+          </td>
+        </tr>`;
+      }).join("");
     }
 
-    function reopenCase(caseId) {
-      if (!confirm('Are you sure you want to reopen Case #' + caseId + '?')) return;
-      const complaints = JSON.parse(localStorage.getItem("complaints")) || [];
-      const comp = complaints.find(c => String(c.id) === String(caseId));
-      if (comp) {
-        comp.status = "IN PROGRESS";
-        comp.progress = Math.max((comp.progress || 100) - 20, 50);
-        comp.updatedAt = new Date().toISOString();
-        comp.timeline = comp.timeline || [];
-        comp.timeline.push({ status: 'Reopened', date: new Date().toISOString(), description: 'Case reopened for further investigation.' });
-        localStorage.setItem("complaints", JSON.stringify(complaints));
-        showToast("Case #" + caseId + " has been reopened.", "success");
-        loadClosedCases();
-      }
+    function esc(s) { return (s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+    function fmtDate(iso) {
+      if (!iso) return "—";
+      return new Date(iso).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" });
     }
 
-    window.addEventListener('DOMContentLoaded', loadClosedCases);
-
+    window.addEventListener("load", loadClosedCases);
   </script>
 </body>
 

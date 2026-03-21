@@ -1,6 +1,62 @@
 /* ============================================================
-   authority-shared.js  –  SafeReport Authority Portal
+   authority-shared.js  –  SafeReport Authority Portal (API-based)
    ============================================================ */
+
+const API_BASE = "http://localhost:8080/api";
+
+/* ─── AUTH HELPERS ─── */
+function getToken()   { return localStorage.getItem("token"); }
+function getRole()    { return localStorage.getItem("role"); }
+function getUserName(){ return localStorage.getItem("fullName"); }
+
+function requireAuthority() {
+    const token = getToken();
+    const role  = getRole();
+    if (!token || role !== "AUTHORITY") {
+        window.location.href = "../login.html";
+        return false;
+    }
+    return true;
+}
+
+function doLogout() {
+    ["token","role","userId","fullName","email"].forEach(k => localStorage.removeItem(k));
+    window.location.href = "../login.html";
+}
+
+function logoutAuth() { doLogout(); }
+
+/* ─── API FETCH ─── */
+async function authFetch(path, options = {}) {
+    const token = getToken();
+    const isFormData = options.body instanceof FormData;
+    const headers = isFormData
+        ? { ...(options.headers || {}) }
+        : { "Content-Type": "application/json", ...(options.headers || {}) };
+    if (token) headers["Authorization"] = "Bearer " + token;
+    return fetch(API_BASE + path, { ...options, headers });
+}
+
+async function authGet(path) {
+    const res  = await authFetch(path);
+    const json = await res.json();
+    if (!json.success) throw new Error(json.message || "Request failed");
+    return json.data;
+}
+
+async function authPost(path, body) {
+    const res  = await authFetch(path, { method: "POST", body: JSON.stringify(body) });
+    const json = await res.json();
+    if (!json.success) throw new Error(json.message || "Request failed");
+    return json.data;
+}
+
+async function authPatch(path, body = {}) {
+    const res  = await authFetch(path, { method: "PATCH", body: JSON.stringify(body) });
+    const json = await res.json();
+    if (!json.success) throw new Error(json.message || "Request failed");
+    return json.data;
+}
 
 /* ─── HAMBURGER SIDENAV ─── */
 function toggleMenu() {
@@ -85,24 +141,12 @@ document.addEventListener('keydown', e => {
 
 /* ─── AUTHORITY USER ─── */
 function getAuthUser() {
-    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    if (currentUser && currentUser.role === 'authority') {
-        const displayName = currentUser.fullname || currentUser.name || 'Authority Officer';
-        // Try to get department from the users array
-        const users = JSON.parse(localStorage.getItem('users')) || [];
-        const fullRecord = users.find(u => u.email === currentUser.email && u.role === 'authority');
-        return {
-            name: displayName,
-            role: 'Authority Officer',
-            dept: (fullRecord && fullRecord.department) || 'Investigation Department',
-            initials: displayName.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2)
-        };
-    }
+    const name = getUserName() || 'Authority Officer';
     return {
-        name: 'Authority Officer',
+        name: name,
         role: 'Authority Officer',
         dept: 'Investigation Department',
-        initials: 'AO'
+        initials: name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2)
     };
 }
 function loadAuthUser() {
@@ -114,13 +158,6 @@ function loadAuthUser() {
 }
 window.addEventListener('DOMContentLoaded', loadAuthUser);
 
-/* ─── LOGOUT ─── */
-function logoutAuth() {
-    localStorage.removeItem('currentUser');
-    localStorage.removeItem('authUser');
-    window.location.href = '../login.html';
-}
-
 /* ─── UTILS ─── */
 function formatDate(d) {
     if (!d) return 'N/A';
@@ -130,22 +167,6 @@ function formatDateTime(d) {
     if (!d) return 'N/A';
     return new Date(d).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
 }
-function priorityBadge(p) {
-    const map = { critical: 'badge-urgent', high: 'badge-high', medium: 'badge-medium', low: 'badge-low' };
-    return `<span class="badge ${map[p.toLowerCase()] || 'badge-medium'}">${p}</span>`;
+function escHtml(str) {
+    return (str || "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 }
-function statusBadge(s) {
-    const map = {
-        'NEW': 'badge-new', 'UNDER REVIEW': 'badge-active', 'ASSIGNED': 'badge-progress',
-        'IN PROGRESS': 'badge-pending', 'RESOLVED': 'badge-resolved', 'CLOSED': 'badge-closed',
-        'ACTIVE': 'badge-active', 'PENDING': 'badge-pending'
-    };
-    return `<span class="badge ${map[s] || 'badge-new'}">${s}</span>`;
-}
-
-// keep authority pages in sync when complaints change elsewhere
-window.addEventListener("storage", function(evt) {
-    if (evt.key === "complaints") {
-        document.dispatchEvent(new Event("complaintsUpdated"));
-    }
-});

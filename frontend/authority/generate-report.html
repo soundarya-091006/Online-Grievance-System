@@ -1,341 +1,515 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SafeReport Authority | Generate Report</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="authority-shared.css">
-<style>
 
-</style>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SafeReport Authority | Generate Report</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="authority-shared.css">
+  <style>
+
+  </style>
 </head>
+
 <body>
 
-<!-- TOPBAR -->
-<div class="topbar">
-  <div class="hamburger-menu">
-    <button class="hamburger-btn" onclick="toggleMenu()" aria-label="Menu">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-        <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
-      </svg>
-    </button>
-    <a href="authority-dashboard.html" class="logo-section">
-      <div class="logo-icon">
-        <svg viewBox="0 0 24 24" fill="none">
-          <defs><linearGradient id="sg" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stop-color="#6366f1"/><stop offset="100%" stop-color="#8b5cf6"/>
-          </linearGradient></defs>
-          <path d="M12 2L4 5V11C4 16 7.5 20 12 22C16.5 20 20 16 20 11V5L12 2Z" fill="url(#sg)"/>
-          <path d="M9.5 12.5L11 14L14.5 10.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="hamburger-menu">
+      <button class="hamburger-btn" onclick="toggleMenu()" aria-label="Menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <line x1="3" y1="6" x2="21" y2="6" />
+          <line x1="3" y1="12" x2="21" y2="12" />
+          <line x1="3" y1="18" x2="21" y2="18" />
         </svg>
-      </div>
-      <span class="logo-text">SafeReport</span>
-      <span class="logo-badge">AUTHORITY</span>
-    </a>
-    <!-- SIDENAV DROPDOWN -->
-    <div id="hamburgerDropdown" class="hamburger-menu-dropdown">
-      <div style="padding:14px 14px 6px;">
-        <div class="sidenav-user-section">
-          <div style="display:flex;align-items:center;gap:10px;">
-            <div style="width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,var(--primary),var(--secondary));display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:14px;" class="js-auth-initials">RA</div>
-            <div>
-              <div class="sidenav-user-name js-auth-name">Rajan Arora</div>
-              <div class="sidenav-user-role js-auth-role">Senior Investigator</div>
-              <div class="sidenav-user-dept js-auth-dept">Dept. of Labour</div>
+      </button>
+      <a href="authority-dashboard.html" class="logo-section">
+        <div class="logo-icon">
+          <svg viewBox="0 0 24 24" fill="none">
+            <defs>
+              <linearGradient id="sg" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#6366f1" />
+                <stop offset="100%" stop-color="#8b5cf6" />
+              </linearGradient>
+            </defs>
+            <path d="M12 2L4 5V11C4 16 7.5 20 12 22C16.5 20 20 16 20 11V5L12 2Z" fill="url(#sg)" />
+            <path d="M9.5 12.5L11 14L14.5 10.5" stroke="white" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round" />
+          </svg>
+        </div>
+        <span class="logo-text">SafeReport</span>
+        <span class="logo-badge">AUTHORITY</span>
+      </a>
+      <!-- SIDENAV DROPDOWN -->
+      <div id="hamburgerDropdown" class="hamburger-menu-dropdown">
+        <div style="padding:14px 14px 6px;">
+          <div class="sidenav-user-section">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <div
+                style="width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,var(--primary),var(--secondary));display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:14px;"
+                class="js-auth-initials">RA</div>
+              <div>
+                <div class="sidenav-user-name js-auth-name">Rajan Arora</div>
+                <div class="sidenav-user-role js-auth-role">Senior Investigator</div>
+                <div class="sidenav-user-dept js-auth-dept">Dept. of Labour</div>
+              </div>
             </div>
           </div>
         </div>
+        <div class="nav-section-label">OVERVIEW</div>
+        <ul class="sidebar-menu">
+          <li class="menu-item">
+            <a href="authority-dashboard.html" class="menu-link" onclick="closeMenu()">
+              <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M3 3h7v7H3V3zm11 0h7v7h-7V3zm0 11h7v7h-7v-7zm-11 0h7v7H3v-7z" stroke-linecap="round"
+                  stroke-linejoin="round" />
+              </svg>
+              Dashboard
+            </a>
+          </li>
+        </ul>
+        <div class="nav-section-label">CASES</div>
+        <ul class="sidebar-menu">
+          <li class="menu-item">
+            <a href="my-cases.html" class="menu-link" onclick="closeMenu()">
+              <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke-linecap="round"
+                  stroke-linejoin="round" />
+              </svg>
+              My Cases
+            </a>
+          </li>
+          <li class="menu-item">
+            <a href="investigation.html" class="menu-link" onclick="closeMenu()">
+              <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16zm10 2-4.35-4.35" stroke-linecap="round"
+                  stroke-linejoin="round" />
+              </svg>
+              Investigation Panel
+            </a>
+          </li>
+        </ul>
+        <div class="nav-section-label">ACTIONS</div>
+        <ul class="sidebar-menu">
+          <li class="menu-item">
+            <a href="add-update.html" class="menu-link" onclick="closeMenu()">
+              <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" stroke-linecap="round"
+                  stroke-linejoin="round" />
+              </svg>
+              Add Update
+            </a>
+          </li>
+          <li class="menu-item">
+            <a href="close-cases.html" class="menu-link" onclick="closeMenu()">
+              <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" stroke-linecap="round"
+                  stroke-linejoin="round" />
+              </svg>
+              Close Case
+            </a>
+          </li>
+          <li class="menu-item">
+            <a href="closed-cases.html" class="menu-link" onclick="closeMenu()">
+              <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M5 8h14M5 8a2 2 0 1 0 0-4h14a2 2 0 1 0 0 4M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8"
+                  stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+              Closed Cases
+            </a>
+          </li>
+        </ul>
+        <div class="nav-section-label">TOOLS</div>
+        <ul class="sidebar-menu">
+          <li class="menu-item">
+            <a href="evidence.html" class="menu-link" onclick="closeMenu()">
+              <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M3 7v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2H9l-2-2H5a2 2 0 0 0-2 2z"
+                  stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+              Evidence Manager
+            </a>
+          </li>
+          <li class="menu-item">
+            <a href="generate-report.html" class="menu-link active" onclick="closeMenu()">
+              <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke-linecap="round"
+                  stroke-linejoin="round" />
+              </svg>
+              Generate Report
+            </a>
+          </li>
+        </ul>
+        <div class="nav-section-label">ACCOUNT</div>
+        <ul class="sidebar-menu">
+          <li class="menu-item">
+            <a href="profile.html" class="menu-link" onclick="closeMenu()">
+              <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"
+                  stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+              My Profile
+            </a>
+          </li>
+        </ul>
+        <div class="nav-divider"></div>
+        <ul class="sidebar-menu" style="margin-bottom:12px;">
+          <li class="menu-item">
+            <a href="../login.html" class="menu-link" onclick="logoutAuth()" style="color:var(--danger);">
+              <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"
+                stroke-linejoin="round">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                <polyline points="16 17 21 12 16 7" />
+                <line x1="21" y1="12" x2="9" y2="12" />
+              </svg>
+              Sign Out
+            </a>
+          </li>
+        </ul>
       </div>
-      <div class="nav-section-label">OVERVIEW</div><ul class="sidebar-menu">
-            <li class="menu-item">
-              <a href="authority-dashboard.html" class="menu-link" onclick="closeMenu()">
-                <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 3h7v7H3V3zm11 0h7v7h-7V3zm0 11h7v7h-7v-7zm-11 0h7v7H3v-7z" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                Dashboard
-              </a>
-            </li></ul><div class="nav-section-label">CASES</div><ul class="sidebar-menu">
-            <li class="menu-item">
-              <a href="my-cases.html" class="menu-link" onclick="closeMenu()">
-                <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                My Cases
-              </a>
-            </li>
-            <li class="menu-item">
-              <a href="new-assignments.html" class="menu-link" onclick="closeMenu()">
-                <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                New Assignments<span class="menu-badge">5</span>
-              </a>
-            </li>
-            <li class="menu-item">
-              <a href="active-cases.html" class="menu-link" onclick="closeMenu()">
-                <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                Active Investigations<span class="menu-badge">3</span>
-              </a>
-            </li>
-            <li class="menu-item">
-              <a href="investigation.html" class="menu-link" onclick="closeMenu()">
-                <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16zm10 2-4.35-4.35" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                Investigation Panel
-              </a>
-            </li></ul><div class="nav-section-label">ACTIONS</div><ul class="sidebar-menu">
-            <li class="menu-item">
-              <a href="add-update.html" class="menu-link" onclick="closeMenu()">
-                <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                Add Update
-              </a>
-            </li>
-            <li class="menu-item">
-              <a href="close-cases.html" class="menu-link" onclick="closeMenu()">
-                <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                Close Case
-              </a>
-            </li>
-            <li class="menu-item">
-              <a href="closed-cases.html" class="menu-link" onclick="closeMenu()">
-                <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 8h14M5 8a2 2 0 1 0 0-4h14a2 2 0 1 0 0 4M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                Closed Cases
-              </a>
-            </li></ul><div class="nav-section-label">TOOLS</div><ul class="sidebar-menu">
-            <li class="menu-item">
-              <a href="evidence.html" class="menu-link" onclick="closeMenu()">
-                <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 7v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2H9l-2-2H5a2 2 0 0 0-2 2z" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                Evidence Manager
-              </a>
-            </li>
-            <li class="menu-item">
-              <a href="generate-report.html" class="menu-link active" onclick="closeMenu()">
-                <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                Generate Report
-              </a>
-            </li>
-            <li class="menu-item">
-              <a href="schedule.html" class="menu-link" onclick="closeMenu()">
-                <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M8 2v3M16 2v3M3 9h18M19 4H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                Schedule Manager
-              </a>
-            </li></ul><div class="nav-section-label">ACCOUNT</div><ul class="sidebar-menu">
-            <li class="menu-item">
-              <a href="profile.html" class="menu-link" onclick="closeMenu()">
-                <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                My Profile
-              </a>
-            </li></ul>
-      <div class="nav-divider"></div>
-      <ul class="sidebar-menu" style="margin-bottom:12px;">
-        <li class="menu-item">
-          <a href="../login.html" class="menu-link" onclick="logoutAuth()" style="color:var(--danger);">
-            <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+    </div>
+
+    <div class="topbar-right">
+      <div class="search-box">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <circle cx="11" cy="11" r="8" />
+          <path d="M21 21l-4.35-4.35" />
+        </svg>
+        <input type="text" placeholder="Search cases, IDs...">
+      </div>
+      <div class="user-menu" onclick="toggleUserMenu()">
+        <div class="user-avatar js-auth-initials">RA</div>
+        <div>
+          <div class="user-name js-auth-name">Rajan Arora</div>
+          <div class="user-role js-auth-role">Investigator</div>
+        </div>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="6 9 12 15 18 9" />
+        </svg>
+        <div id="userMenuDropdown" class="user-menu-dropdown">
+          <a href="profile.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
+            </svg>My Profile</a>
+          <a href="../login.html" onclick="logoutAuth()" style="color:var(--danger);"><svg viewBox="0 0 24 24" fill="none"
+              stroke="currentColor">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+              <polyline points="16 17 21 12 16 7" />
+              <line x1="21" y1="12" x2="9" y2="12" />
+            </svg>Sign Out</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="main-content">
+
+    <div class="page-header">
+      <div class="page-header-top">
+        <div>
+          <div class="breadcrumb"><a href="authority-dashboard.html">Dashboard</a> <svg viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2">
+              <polyline points="9 18 15 12 9 6" />
+            </svg> Generate Report</div>
+          <h1 class="page-title">Generate Report 📄</h1>
+          <p class="page-subtitle">Create detailed investigation reports for individual cases or performance summaries.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid-21">
+      <div class="form-card">
+        <!-- REPORT TYPE -->
+        <div class="form-section">
+          <div class="form-section-title"><span class="section-icon">📊</span> Report Configuration</div>
+          <div class="form-group">
+            <label class="form-label">Report Type <span class="required">*</span></label>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px" id="reportTypeGrid">
+              <div class="report-type-card active" data-type="case" onclick="selectReportType(this,'case')"
+                style="border:1.5px solid var(--primary);background:rgba(99,102,241,0.06);border-radius:12px;padding:16px;cursor:pointer;transition:all 0.2s">
+                <div style="font-size:24px;margin-bottom:6px">📋</div>
+                <div style="font-size:13px;font-weight:700">Case Investigation Report</div>
+                <div style="font-size:12px;color:var(--text-light)">Detailed report for a single case</div>
+              </div>
+              <div class="report-type-card" data-type="summary" onclick="selectReportType(this,'summary')"
+                style="border:1.5px solid var(--border);border-radius:12px;padding:16px;cursor:pointer;transition:all 0.2s">
+                <div style="font-size:24px;margin-bottom:6px">📊</div>
+                <div style="font-size:13px;font-weight:700">Performance Summary</div>
+                <div style="font-size:12px;color:var(--text-light)">Overview of all your cases</div>
+              </div>
+              <div class="report-type-card" data-type="evidence" onclick="selectReportType(this,'evidence')"
+                style="border:1.5px solid var(--border);border-radius:12px;padding:16px;cursor:pointer;transition:all 0.2s">
+                <div style="font-size:24px;margin-bottom:6px">🗂️</div>
+                <div style="font-size:13px;font-weight:700">Evidence Report</div>
+                <div style="font-size:12px;color:var(--text-light)">Evidence chain of custody report</div>
+              </div>
+              <div class="report-type-card" data-type="timeline" onclick="selectReportType(this,'timeline')"
+                style="border:1.5px solid var(--border);border-radius:12px;padding:16px;cursor:pointer;transition:all 0.2s">
+                <div style="font-size:24px;margin-bottom:6px">📍</div>
+                <div style="font-size:13px;font-weight:700">Timeline Report</div>
+                <div style="font-size:12px;color:var(--text-light)">Investigation timeline & milestones</div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Select Case <span class="required">*</span></label>
+            <select class="form-select" id="reportCase">
+              <option value="">— Select a case —</option>
+              <!-- dynamic case list will be filled here -->
+            </select>
+          </div>
+        </div>
+
+        <!-- SECTIONS -->
+        <div class="form-section">
+          <div class="form-section-title"><span class="section-icon">☑️</span> Include in Report</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <label
+              style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;padding:10px;background:var(--bg);border-radius:8px"><input
+                type="checkbox" checked style="accent-color:var(--primary)"> Case Summary</label>
+            <label
+              style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;padding:10px;background:var(--bg);border-radius:8px"><input
+                type="checkbox" checked style="accent-color:var(--primary)"> Investigation Details</label>
+            <label
+              style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;padding:10px;background:var(--bg);border-radius:8px"><input
+                type="checkbox" checked style="accent-color:var(--primary)"> Evidence List</label>
+            <label
+              style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;padding:10px;background:var(--bg);border-radius:8px"><input
+                type="checkbox" checked style="accent-color:var(--primary)"> Timeline</label>
+            <label
+              style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;padding:10px;background:var(--bg);border-radius:8px"><input
+                type="checkbox" checked style="accent-color:var(--primary)"> Witness Summary</label>
+            <label
+              style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;padding:10px;background:var(--bg);border-radius:8px"><input
+                type="checkbox" checked style="accent-color:var(--primary)"> Resolution & Actions</label>
+            <label
+              style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;padding:10px;background:var(--bg);border-radius:8px"><input
+                type="checkbox" style="accent-color:var(--primary)"> Confidential Notes</label>
+            <label
+              style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;padding:10px;background:var(--bg);border-radius:8px"><input
+                type="checkbox" style="accent-color:var(--primary)"> Chain of Custody</label>
+          </div>
+        </div>
+
+        <!-- FORMAT -->
+        <div class="form-section">
+          <div class="form-section-title"><span class="section-icon">⚙️</span> Export Settings</div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Output Format</label>
+              <select class="form-select">
+                <option>PDF Document</option>
+                <option>Word Document (.docx)</option>
+                <option>Excel Spreadsheet</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Confidentiality Level</label>
+              <select class="form-select">
+                <option>CONFIDENTIAL</option>
+                <option>INTERNAL USE ONLY</option>
+                <option>PUBLIC RECORD</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Additional Notes (Optional)</label>
+            <textarea class="form-textarea" placeholder="Any additional remarks to include in the report header..."
+              style="min-height:80px"></textarea>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button class="btn btn-outline" onclick="previewReport()">👁 Preview Report</button>
+          <button class="btn btn-primary" onclick="generateReport()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="7 10 12 15 17 10" />
+              <line x1="12" y1="15" x2="12" y2="3" />
             </svg>
-            Sign Out
-          </a>
-        </li>
-      </ul>
-    </div>
-  </div>
-
-  <div class="topbar-right">
-    <div class="search-box">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-      <input type="text" placeholder="Search cases, IDs...">
-    </div>
-    <div class="notification-icon">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-      <span class="notification-badge">5</span>
-    </div>
-    <div class="user-menu" onclick="toggleUserMenu()">
-      <div class="user-avatar js-auth-initials">RA</div>
-      <div>
-        <div class="user-name js-auth-name">Rajan Arora</div>
-        <div class="user-role js-auth-role">Investigator</div>
-      </div>
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-      <div id="userMenuDropdown" class="user-menu-dropdown">
-        <a href="profile.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>My Profile</a>
-        <a href="schedule.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>My Schedule</a>
-        <a href="../login.html" onclick="logoutAuth()" style="color:var(--danger);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Sign Out</a>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- MAIN CONTENT -->
-<div class="main-content">
-  
-<div class="page-header">
-  <div class="page-header-top">
-    <div>
-      <div class="breadcrumb"><a href="authority-dashboard.html">Dashboard</a> <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg> Generate Report</div>
-      <h1 class="page-title">Generate Report 📄</h1>
-      <p class="page-subtitle">Create detailed investigation reports for individual cases or performance summaries.</p>
-    </div>
-  </div>
-</div>
-
-<div class="grid-21">
-  <div class="form-card">
-    <!-- REPORT TYPE -->
-    <div class="form-section">
-      <div class="form-section-title"><span class="section-icon">📊</span> Report Configuration</div>
-      <div class="form-group">
-        <label class="form-label">Report Type <span class="required">*</span></label>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px" id="reportTypeGrid">
-          <div class="report-type-card active" data-type="case" onclick="selectReportType(this,'case')" style="border:1.5px solid var(--primary);background:rgba(99,102,241,0.06);border-radius:12px;padding:16px;cursor:pointer;transition:all 0.2s">
-            <div style="font-size:24px;margin-bottom:6px">📋</div>
-            <div style="font-size:13px;font-weight:700">Case Investigation Report</div>
-            <div style="font-size:12px;color:var(--text-light)">Detailed report for a single case</div>
-          </div>
-          <div class="report-type-card" data-type="summary" onclick="selectReportType(this,'summary')" style="border:1.5px solid var(--border);border-radius:12px;padding:16px;cursor:pointer;transition:all 0.2s">
-            <div style="font-size:24px;margin-bottom:6px">📊</div>
-            <div style="font-size:13px;font-weight:700">Performance Summary</div>
-            <div style="font-size:12px;color:var(--text-light)">Overview of all your cases</div>
-          </div>
-          <div class="report-type-card" data-type="evidence" onclick="selectReportType(this,'evidence')" style="border:1.5px solid var(--border);border-radius:12px;padding:16px;cursor:pointer;transition:all 0.2s">
-            <div style="font-size:24px;margin-bottom:6px">🗂️</div>
-            <div style="font-size:13px;font-weight:700">Evidence Report</div>
-            <div style="font-size:12px;color:var(--text-light)">Evidence chain of custody report</div>
-          </div>
-          <div class="report-type-card" data-type="timeline" onclick="selectReportType(this,'timeline')" style="border:1.5px solid var(--border);border-radius:12px;padding:16px;cursor:pointer;transition:all 0.2s">
-            <div style="font-size:24px;margin-bottom:6px">📍</div>
-            <div style="font-size:13px;font-weight:700">Timeline Report</div>
-            <div style="font-size:12px;color:var(--text-light)">Investigation timeline & milestones</div>
-          </div>
+            Generate & Download
+          </button>
         </div>
       </div>
-      <div class="form-group">
-        <label class="form-label">Select Case <span class="required">*</span></label>
-        <select class="form-select" id="reportCase">
-          <option value="">— Select a case —</option>
-          <option>#C1042 · Workplace Harassment</option>
-          <option>#C1039 · Verbal Abuse</option>
-          <option>#C1036 · Stalking</option>
-          <option>#C1031 · Discrimination (Closed)</option>
-          <option>All My Cases (Summary)</option>
-        </select>
-      </div>
-    </div>
 
-    <!-- SECTIONS -->
-    <div class="form-section">
-      <div class="form-section-title"><span class="section-icon">☑️</span> Include in Report</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;padding:10px;background:var(--bg);border-radius:8px"><input type="checkbox" checked style="accent-color:var(--primary)"> Case Summary</label>
-        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;padding:10px;background:var(--bg);border-radius:8px"><input type="checkbox" checked style="accent-color:var(--primary)"> Investigation Details</label>
-        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;padding:10px;background:var(--bg);border-radius:8px"><input type="checkbox" checked style="accent-color:var(--primary)"> Evidence List</label>
-        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;padding:10px;background:var(--bg);border-radius:8px"><input type="checkbox" checked style="accent-color:var(--primary)"> Timeline</label>
-        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;padding:10px;background:var(--bg);border-radius:8px"><input type="checkbox" checked style="accent-color:var(--primary)"> Witness Summary</label>
-        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;padding:10px;background:var(--bg);border-radius:8px"><input type="checkbox" checked style="accent-color:var(--primary)"> Resolution & Actions</label>
-        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;padding:10px;background:var(--bg);border-radius:8px"><input type="checkbox" style="accent-color:var(--primary)"> Confidential Notes</label>
-        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;padding:10px;background:var(--bg);border-radius:8px"><input type="checkbox" style="accent-color:var(--primary)"> Chain of Custody</label>
-      </div>
-    </div>
-
-    <!-- FORMAT -->
-    <div class="form-section">
-      <div class="form-section-title"><span class="section-icon">⚙️</span> Export Settings</div>
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">Output Format</label>
-          <select class="form-select">
-            <option>PDF Document</option>
-            <option>Word Document (.docx)</option>
-            <option>Excel Spreadsheet</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Confidentiality Level</label>
-          <select class="form-select">
-            <option>CONFIDENTIAL</option>
-            <option>INTERNAL USE ONLY</option>
-            <option>PUBLIC RECORD</option>
-          </select>
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Additional Notes (Optional)</label>
-        <textarea class="form-textarea" placeholder="Any additional remarks to include in the report header..." style="min-height:80px"></textarea>
-      </div>
-    </div>
-
-    <div class="form-actions">
-      <button class="btn btn-outline" onclick="previewReport()">👁 Preview Report</button>
-      <button class="btn btn-primary" onclick="generateReport()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        Generate & Download
-      </button>
-    </div>
-  </div>
-
-  <!-- SIDEBAR -->
-  <div style="display:flex;flex-direction:column;gap:22px">
-    <div class="card" style="animation:fadeInUp 0.5s ease 0.1s both">
-      <div class="card-header"><div class="card-title">📋 Report Preview</div></div>
-      <div class="card-body">
-        <div style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:20px;font-size:12px;color:var(--text-light);line-height:1.8">
-          <div style="text-align:center;margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--border)">
-            <div style="font-size:18px;font-weight:800;color:var(--primary)">🛡️ SafeReport</div>
-            <div style="font-size:10px;text-transform:uppercase;letter-spacing:.5px">Official Investigation Report</div>
+      <!-- SIDEBAR -->
+      <div style="display:flex;flex-direction:column;gap:22px">
+        <div class="card" style="animation:fadeInUp 0.5s ease 0.1s both">
+          <div class="card-header">
+            <div class="card-title">📋 Report Preview</div>
           </div>
-          <div><b>Report Type:</b> Case Investigation Report</div>
-          <div><b>Case ID:</b> #C1042</div>
-          <div><b>Investigator:</b> Rajan Arora</div>
-          <div><b>Department:</b> Dept. of Labour</div>
-          <div><b>Generated:</b> <span id="reportDate"></span></div>
-          <div><b>Confidentiality:</b> CONFIDENTIAL</div>
-          <hr style="margin:10px 0;border-color:var(--border)">
-          <div style="opacity:0.5;font-size:11px">[ Case Summary ]<br>[ Investigation Details ]<br>[ Evidence List ]<br>[ Timeline ]<br>[ Resolution ]</div>
+          <div class="card-body">
+            <div
+              style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:20px;font-size:12px;color:var(--text-light);line-height:1.8">
+              <div
+                style="text-align:center;margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--border)">
+                <div style="font-size:18px;font-weight:800;color:var(--primary)">🛡️ SafeReport</div>
+                <div style="font-size:10px;text-transform:uppercase;letter-spacing:.5px">Official Investigation Report
+                </div>
+              </div>
+              <div><b>Report Type:</b> Case Investigation Report</div>
+              <div><b>Case ID:</b> —</div>
+              <div><b>Investigator:</b> —</div>
+              <div><b>Department:</b> —</div>
+              <div><b>Generated:</b> <span id="reportDate"></span></div>
+              <div><b>Confidentiality:</b> CONFIDENTIAL</div>
+              <hr style="margin:10px 0;border-color:var(--border)">
+              <div style="opacity:0.5;font-size:11px">[ Case Summary ]<br>[ Investigation Details ]<br>[ Evidence List
+                ]<br>[ Timeline ]<br>[ Resolution ]</div>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
-    <div class="card" style="animation:fadeInUp 0.5s ease 0.15s both">
-      <div class="card-header"><div class="card-title">📂 Recent Reports</div></div>
-      <div class="card-body" style="padding:0">
-        <div style="padding:0 20px">
-          <div class="overview-item">
-            <div><div style="font-size:13px;font-weight:600">#C1031 — Final Report</div><div style="font-size:11px;color:var(--text-light)">Jan 10, 2025 · PDF</div></div>
-            <button class="btn btn-outline btn-sm">⬇</button>
+        <div class="card" style="animation:fadeInUp 0.5s ease 0.15s both">
+          <div class="card-header">
+            <div class="card-title">📂 Recent Reports</div>
           </div>
-          <div class="overview-item">
-            <div><div style="font-size:13px;font-weight:600">Performance Summary Q4</div><div style="font-size:11px;color:var(--text-light)">Jan 1, 2025 · PDF</div></div>
-            <button class="btn btn-outline btn-sm">⬇</button>
-          </div>
-          <div class="overview-item">
-            <div><div style="font-size:13px;font-weight:600">#C1021 — Evidence Report</div><div style="font-size:11px;color:var(--text-light)">Dec 28, 2024 · PDF</div></div>
-            <button class="btn btn-outline btn-sm">⬇</button>
+          <div class="card-body" style="padding:0">
+            <div style="padding:20px;text-align:center;color:var(--text-light)">No reports generated yet.</div>
           </div>
         </div>
       </div>
     </div>
+
   </div>
-</div>
 
-</div>
+  <!-- TOAST -->
+  <div class="toast" id="globalToast"><span id="globalToastIcon"></span><span id="globalToastMsg"></span></div>
 
-<!-- TOAST -->
-<div class="toast" id="globalToast"><span id="globalToastIcon"></span><span id="globalToastMsg"></span></div>
+  <script src="authority-shared.js"></script>
+  <script>
 
-<script src="authority-shared.js"></script>
-<script>
+    let reportCases = [];
 
-document.getElementById("reportDate").textContent = new Date().toLocaleDateString("en-US",{year:"numeric",month:"short",day:"numeric"});
-function selectReportType(el, type) {
-    document.querySelectorAll(".report-type-card").forEach(c => {
-        c.style.borderColor = "var(--border)"; c.style.background = "";
+    window.addEventListener('DOMContentLoaded', async () => {
+      if (!requireAuthority()) return;
+      loadAuthUser();
+      document.getElementById("reportDate").textContent = new Date().toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
+      await loadReportCases();
     });
-    el.style.borderColor = "var(--primary)"; el.style.background = "rgba(99,102,241,0.06)";
-}
-function previewReport() { showToast("Generating preview...", "info"); }
-function generateReport() {
-    const c = document.getElementById("reportCase").value;
-    if (!c) { showToast("Please select a case.", "error"); return; }
-    showToast("Report generated and downloading...", "success");
-    setTimeout(() => {
-        const w = window.open("","_blank");
-        w.document.write("<h2>SafeReport — Investigation Report</h2><p>Case: " + c + "</p><p>Investigator: Rajan Arora</p><p>Generated: " + new Date().toLocaleString() + "</p>");
-        w.document.close(); w.focus(); setTimeout(() => w.print(), 300);
-    }, 600);
-}
 
-</script>
+    /* ── Load assigned cases into select ── */
+    async function loadReportCases() {
+      try {
+        const data = await authGet('/complaints/authority/assigned');
+        reportCases = Array.isArray(data) ? data : (data.content || []);
+        const sel = document.getElementById('reportCase');
+        sel.innerHTML = '<option value="">— Select a case —</option>';
+        reportCases.forEach(c => {
+          const opt = document.createElement('option');
+          opt.value = c.id;
+          opt.textContent = (c.trackingId || ('SR-' + String(c.id).padStart(5, '0'))) + ' — ' + escHtml((c.title || '').substring(0, 50));
+          sel.appendChild(opt);
+        });
+      } catch (e) {
+        console.error('Failed to load cases', e);
+        showToast('Could not load cases. Make sure the backend is running.', 'error');
+      }
+    }
+
+    function selectReportType(el, type) {
+      document.querySelectorAll(".report-type-card").forEach(c => {
+        c.style.borderColor = "var(--border)"; c.style.background = "";
+      });
+      el.style.borderColor = "var(--primary)"; el.style.background = "rgba(99,102,241,0.06)";
+    }
+
+    function previewReport() { showToast("Generating preview...", "info"); }
+
+    async function generateReport() {
+      const caseId = document.getElementById("reportCase").value;
+      if (!caseId) { showToast("Please select a case.", "error"); return; }
+
+      showToast("Generating report...", "info");
+
+      try {
+        // Fetch case details
+        const caseData = await authGet('/complaints/' + caseId);
+        const c = caseData || {};
+
+        // Fetch evidence list
+        let evidence = [];
+        try { evidence = await authGet('/evidence/complaint/' + caseId); } catch { }
+        if (!Array.isArray(evidence)) evidence = [];
+
+        const user = getAuthUser();
+        const trackId = c.trackingId || ('SR-' + String(c.id || caseId).padStart(5, '0'));
+        const now = new Date().toLocaleString();
+
+        // Build printable report
+        const w = window.open("", "_blank");
+        w.document.write(`<!DOCTYPE html><html><head><title>Report — ${trackId}</title>
+        <style>
+            body { font-family: 'Segoe UI', Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 40px; color: #1e293b; }
+            h1 { color: #6366f1; font-size: 22px; margin-bottom: 4px; }
+            h2 { font-size: 16px; color: #475569; margin-top: 28px; border-bottom: 2px solid #e2e8f0; padding-bottom: 6px; }
+            .header { text-align: center; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 3px solid #6366f1; }
+            .header small { color: #64748b; }
+            .meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 16px 0; }
+            .meta-item { background: #f8fafc; padding: 10px 14px; border-radius: 8px; border: 1px solid #e2e8f0; }
+            .meta-label { font-size: 11px; color: #64748b; text-transform: uppercase; font-weight: 700; }
+            .meta-value { font-size: 14px; font-weight: 600; margin-top: 2px; }
+            .desc { background: #f8fafc; padding: 16px; border-radius: 10px; border: 1px solid #e2e8f0; margin: 12px 0; line-height: 1.7; }
+            table { width: 100%; border-collapse: collapse; margin: 12px 0; }
+            th, td { padding: 8px 12px; border: 1px solid #e2e8f0; text-align: left; font-size: 13px; }
+            th { background: #f1f5f9; font-weight: 700; }
+            .footer { margin-top: 40px; padding-top: 16px; border-top: 2px solid #e2e8f0; font-size: 11px; color: #94a3b8; text-align: center; }
+            .badge { display: inline-block; padding: 3px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; }
+            @media print { body { padding: 20px; } }
+        </style></head><body>
+        <div class="header">
+            <h1>🛡️ SafeReport</h1>
+            <small>Official Investigation Report · CONFIDENTIAL</small>
+        </div>
+        <h2>📋 Case Summary</h2>
+        <div class="meta-grid">
+            <div class="meta-item"><div class="meta-label">Case ID</div><div class="meta-value">${trackId}</div></div>
+            <div class="meta-item"><div class="meta-label">Status</div><div class="meta-value">${(c.status || '—').replace(/_/g, ' ')}</div></div>
+            <div class="meta-item"><div class="meta-label">Priority</div><div class="meta-value">${c.priority || '—'}</div></div>
+            <div class="meta-item"><div class="meta-label">Category</div><div class="meta-value">${c.categoryName || '—'}</div></div>
+            <div class="meta-item"><div class="meta-label">Submitted</div><div class="meta-value">${formatDate(c.createdAt)}</div></div>
+            <div class="meta-item"><div class="meta-label">Location</div><div class="meta-value">${escHtml(c.location || '—')}</div></div>
+            <div class="meta-item"><div class="meta-label">Incident Date</div><div class="meta-value">${c.incidentDate || '—'}</div></div>
+            <div class="meta-item"><div class="meta-label">Assigned To</div><div class="meta-value">${escHtml(c.assignedAuthorityName || user.name)}</div></div>
+        </div>
+        <h2>📝 Title</h2>
+        <p><strong>${escHtml(c.title || '—')}</strong></p>
+        <h2>📄 Description</h2>
+        <div class="desc">${escHtml(c.description || 'No description provided.')}</div>
+        <h2>🗂️ Evidence (${evidence.length} files)</h2>
+        ${evidence.length > 0 ? `<table>
+            <thead><tr><th>#</th><th>File Name</th><th>Type</th><th>Uploaded</th></tr></thead>
+            <tbody>${evidence.map((ev, i) => `<tr>
+                <td>${i + 1}</td>
+                <td>${escHtml(ev.fileName || '—')}</td>
+                <td>${escHtml(ev.fileType || '—')}</td>
+                <td>${formatDate(ev.uploadedAt || ev.createdAt)}</td>
+            </tr>`).join('')}</tbody>
+        </table>` : '<p style="color:#94a3b8">No evidence files attached to this case.</p>'}
+        <h2>👤 Investigator Details</h2>
+        <div class="meta-grid">
+            <div class="meta-item"><div class="meta-label">Name</div><div class="meta-value">${escHtml(user.name)}</div></div>
+            <div class="meta-item"><div class="meta-label">Department</div><div class="meta-value">${escHtml(user.dept)}</div></div>
+        </div>
+        <div class="footer">
+            <p>Report generated on ${now} · SafeReport Investigation System</p>
+            <p>This document is confidential and intended for authorized personnel only.</p>
+        </div>
+        </body></html>`);
+        w.document.close();
+        w.focus();
+        setTimeout(() => w.print(), 500);
+        showToast("Report generated successfully!", "success");
+      } catch (e) {
+        console.error('Report generation error', e);
+        showToast("Failed to generate report. Please try again.", "error");
+      }
+    }
+
+  </script>
 </body>
+
 </html>

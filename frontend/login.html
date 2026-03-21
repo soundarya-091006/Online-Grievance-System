@@ -2,525 +2,398 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SafeReport | Login</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SafeReport | Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #8b5cf6;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+            --bg: #f8fafc;
+            --white: #ffffff;
+        }
 
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-  <style>
-    :root {
-      --primary: #6366f1;
-      --secondary: #8b5cf6;
-      --success: #10b981;
-      --danger: #ef4444;
-      --warning: #f59e0b;
-      --text: #1e293b;
-      --border: #e2e8f0;
-      --bg: #f8fafc;
-    }
+        body {
+            font-family: 'Inter', sans-serif;
+            /*background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);*/
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Inter', sans-serif;
-    }
+        .auth-card {
+            background: var(--white);
+            border-radius: 24px;
+            padding: 50px 45px;
+            width: 100%;
+            max-width: 440px;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.2);
+            animation: slideUp 0.5s ease;
+        }
 
-    body {
-      height: 100vh;
-      background: var(--bg);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
 
-    .login-container {
-      width: 520px;
-      background: white;
-      padding: 45px;
-      border-radius: 24px;
-      box-shadow: 0 25px 70px rgba(0, 0, 0, 0.08);
-    }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
-    .logo-box {
-      width: 75px;
-      height: 75px;
-      margin: 0 auto 15px;
-      border-radius: 18px;
-      background: linear-gradient(135deg, var(--primary), var(--secondary));
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 35px;
+            justify-content: center;
+        }
 
-    .logo-box svg {
-      width: 38px;
-      height: 38px;
-      stroke: white;
-    }
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
-    h1 {
-      text-align: center;
-      color: var(--text);
-    }
+        .logo-icon svg {
+            width: 26px;
+            height: 26px;
+        }
 
-    .subtitle {
-      text-align: center;
-      color: #64748b;
-      margin-bottom: 25px;
-    }
+        .logo-text {
+            font-size: 22px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
 
-    .role-options {
-      display: flex;
-      gap: 12px;
-      margin-bottom: 25px;
-    }
+        h1 {
+            font-size: 26px;
+            font-weight: 800;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
 
-    .role-card {
-      flex: 1;
-      padding: 18px;
-      border: 2px solid var(--border);
-      border-radius: 16px;
-      text-align: center;
-      cursor: pointer;
-      transition: .3s;
-    }
+        .subtitle {
+            font-size: 14px;
+            color: var(--text-light);
+            margin-bottom: 30px;
+        }
 
-    .role-card {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      padding: 20px 10px;
-    }
+        .role-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 28px;
+            background: var(--bg);
+            padding: 6px;
+            border-radius: 12px;
+        }
 
-    .role-label {
-      font-size: 14px;
-      font-weight: 500;
-      color: var(--text);
-      letter-spacing: .3px;
-    }
+        .role-tab {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            background: transparent;
+            color: var(--text-light);
+            transition: all 0.3s;
+        }
 
-    .role-card.active .role-label {
-      color: var(--primary);
-      font-weight: 600;
-    }
+        .role-tab.active {
+            background: var(--white);
+            color: var(--primary);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
 
-    .role-card.active {
-      border-color: var(--primary);
-      background: rgba(99, 102, 241, 0.08);
-    }
+        .form-group {
+            margin-bottom: 20px;
+        }
 
-    .role-card svg {
-      width: 28px;
-      height: 28px;
-      margin-bottom: 6px;
-      stroke: var(--primary);
-    }
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
 
-    .form-group {
-      margin-bottom: 18px;
-    }
+        input,
+        select {
+            width: 100%;
+            padding: 13px 16px;
+            border: 1.5px solid var(--border);
+            border-radius: 12px;
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s;
+            color: var(--text);
+            background: var(--white);
+        }
 
-    label {
-      display: block;
-      font-size: 14px;
-      margin-bottom: 6px;
-      color: var(--text);
-    }
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
 
-    input {
-      width: 100%;
-      padding: 12px;
-      border-radius: 10px;
-      border: 1px solid var(--border);
-      outline: none;
-      transition: .3s;
-    }
+        .password-wrapper {
+            position: relative;
+        }
 
-    input:focus {
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
-    }
+        .toggle-pw {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+        }
 
-    .password-wrapper {
-      position: relative;
-    }
+        .btn-primary {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 8px;
+        }
 
-    .password-wrapper input {
-      padding-right: 40px;
-    }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
+        }
 
-    #togglePassword {
-      position: absolute;
-      right: 12px;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 18px;
-      height: 18px;
-      cursor: pointer;
-    }
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
 
-    /* Hidden by default */
-    .password-feedback {
-      display: none;
-    }
+        .error-box {
+            background: rgba(239, 68, 68, 0.08);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            border-radius: 10px;
+            padding: 12px 16px;
+            font-size: 13px;
+            color: var(--danger);
+            margin-bottom: 20px;
+            display: none;
+        }
 
-    .password-feedback.active {
-      display: block;
-      margin-top: 8px;
-    }
+        .success-box {
+            background: rgba(16, 185, 129, 0.08);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            border-radius: 10px;
+            padding: 12px 16px;
+            font-size: 13px;
+            color: var(--success);
+            margin-bottom: 20px;
+            display: none;
+        }
 
-    .password-rules {
-      list-style: none;
-      font-size: 12px;
-      color: #64748b;
-      margin-top: 5px;
-    }
+        .switch-link {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: var(--text-light);
+        }
 
-    .password-rules li {
-      margin-bottom: 4px;
-    }
-
-    .password-rules li.valid {
-      color: var(--success);
-      font-weight: 500;
-    }
-
-    .error-message {
-      font-size: 13px;
-      color: var(--danger);
-      margin-top: 8px;
-      display: none;
-      font-weight: 500;
-    }
-
-    .caps-warning {
-      font-size: 12px;
-      color: var(--danger);
-      margin-top: 5px;
-      display: none;
-    }
-
-    .login-btn {
-      width: 100%;
-      padding: 13px;
-      border: none;
-      border-radius: 12px;
-      background: linear-gradient(135deg, var(--primary), var(--secondary));
-      color: white;
-      font-weight: 600;
-      cursor: pointer;
-      margin-top: 10px;
-      font-size: 15px;
-    }
-
-    .register-text {
-      margin-top: 18px;
-      text-align: center;
-      font-size: 14px;
-      color: #64748b;
-    }
-
-    .register-text a {
-      color: var(--primary);
-      text-decoration: none;
-      font-weight: 500;
-    }
-
-    /* Toast */
-    .toast {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      background: var(--primary);
-      color: white;
-      padding: 12px 18px;
-      border-radius: 10px;
-      opacity: 0;
-      transition: .4s;
-      font-size: 14px;
-      font-weight: 500;
-    }
-
-    .toast.show {
-      opacity: 1;
-    }
-  </style>
+        .switch-link a {
+            color: var(--primary);
+            font-weight: 600;
+            text-decoration: none;
+        }
+    </style>
 </head>
 
 <body>
-
-  <div class="login-container">
-
-    <div class="logo-box">
-      <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
-        <path d="M12 2L4 7v5c0 5 3.5 8 8 10 4.5-2 8-5 8-10V7l-8-5z" />
-      </svg>
-    </div>
-
-    <h1>Welcome</h1>
-    <div class="subtitle">Login to your SafeReport account</div>
-
-    <div class="role-options">
-
-      <div class="role-card active" onclick="selectRole(this,'user')">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
-          <circle cx="12" cy="7" r="4" />
-          <path d="M5.5 21a6.5 6.5 0 0 1 13 0" />
-        </svg>
-        <span class="role-label">User</span>
-      </div>
-
-      <div class="role-card" onclick="selectRole(this,'admin')">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
-          <path d="M12 2L4 7v5c0 5 3.5 8 8 10 4.5-2 8-5 8-10V7l-8-5z" />
-        </svg>
-        <span class="role-label">Admin</span>
-      </div>
-
-      <div class="role-card" onclick="selectRole(this,'authority')">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
-          <path d="M12 2L4 7v5c0 5 3.5 8 8 10 4.5-2 8-5 8-10V7l-8-5z" />
-          <path d="M9 12l2 2 4-4" />
-        </svg>
-        <span class="role-label">Authority</span>
-      </div>
-
-    </div>
-
-    <form id="loginForm">
-
-      <div class="form-group">
-        <label>Email</label>
-        <input type="text" id="email" placeholder="Enter your email">
-      </div>
-
-      <div class="form-group">
-        <label>Password</label>
-        <div class="password-wrapper">
-          <input type="password" id="password" placeholder="Enter your password" onfocus="showChecklist()"
-            onkeyup="checkRules(event)">
-          <svg id="togglePassword" onclick="togglePassword()" viewBox="0 0 24 24" fill="none" stroke="#64748b"
-            stroke-width="2">
-            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z" />
-            <circle cx="12" cy="12" r="3" />
-          </svg>
+    <div class="auth-card">
+        <div class="logo">
+            <div class="logo-icon">
+                <svg viewBox="0 0 24 24" fill="none">
+                    <path d="M12 2L4 5V11C4 16 7.5 20 12 22C16.5 20 20 16 20 11V5L12 2Z" fill="white" />
+                    <path d="M9.5 12.5L11 14L14.5 10.5" stroke="#6366f1" stroke-width="2.5" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                </svg>
+            </div>
+            <span class="logo-text">SafeReport</span>
         </div>
 
-        <div class="password-feedback" id="passwordFeedback">
-          <ul class="password-rules">
-            <li id="ruleLength">Minimum 6 characters</li>
-            <li id="ruleUpper">At least 1 uppercase letter</li>
-            <li id="ruleNumber">At least 1 number</li>
-            <li id="ruleSpecial">At least 1 special character</li>
-          </ul>
-          <div class="caps-warning" id="capsWarning">Caps Lock is ON</div>
+        <h1>Welcome back</h1>
+        <p class="subtitle">Sign in to your SafeReport account</p>
+
+        <!-- Role Tabs -->
+        <div class="role-tabs">
+            <button class="role-tab active" onclick="setRole('USER', this)">User</button>
+            <button class="role-tab" onclick="setRole('ADMIN', this)">Admin</button>
+            <button class="role-tab" onclick="setRole('AUTHORITY', this)">Authority</button>
         </div>
-        <div class="error-message" id="passwordError">
-          Password must meet all strength requirements.
+
+        <div id="errorBox" class="error-box"></div>
+        <div id="successBox" class="success-box"></div>
+
+        <div class="form-group">
+            <label>Email Address</label>
+            <input type="email" id="email" placeholder="you@example.com" autocomplete="email">
         </div>
-      </div>
+        <div class="form-group">
+            <label>Password</label>
+            <div class="password-wrapper">
+                <input type="password" id="password" placeholder="••••••••" autocomplete="current-password">
+                <button class="toggle-pw" onclick="togglePw()">
+                    <svg id="eyeIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                        <circle cx="12" cy="12" r="3" />
+                    </svg>
+                </button>
+            </div>
+        </div>
 
-      <!-- Remember & Forgot Row -->
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;font-size:14px;">
-        <label style="display:flex;align-items:center;gap:6px;cursor:pointer;color:#64748b;">
-          <input type="checkbox" id="rememberMe" style="width:14px;height:14px;">
-          Remember Me
-        </label>
-        <a href="forgot-password.html" style="color:var(--primary);text-decoration:none;font-weight:500;">
-          Forgot Password?
-        </a>
-      </div>
+        <div style="text-align:right; margin-bottom:18px; margin-top:-6px;">
+            <a href="forgot-password.html"
+               style="font-size:13px; color:#6366f1; text-decoration:none; font-weight:500;">
+                Forgot password?
+            </a>
+        </div>
 
-      <button class="login-btn" id="loginBtn" type="submit">
-        <span id="btnText">LOGIN</span>
-      </button>
+        <button class="btn-primary" id="loginBtn" onclick="doLogin()">Sign In</button>
 
-    </form>
-
-    <div class="register-text">
-      Don't have an account? <a href="register.html">Register here</a>
+        <div class="switch-link">
+            Don't have an account? <a href="register.html">Create one</a>
+        </div>
     </div>
 
-  </div>
+    <script>
+        let selectedRole = "USER";
 
-  <div class="toast" id="toast"></div>
-
-  <script>
-
-    let selectedRole = "user";
-    let loginAttempts = 0;
-    const MAX_ATTEMPTS = 3;
-
-    /* ================= ROLE SELECTION ================= */
-    function selectRole(el, role) {
-      document.querySelectorAll(".role-card").forEach(card => card.classList.remove("active"));
-      el.classList.add("active");
-      selectedRole = role;
-    }
-
-    /* ================= PASSWORD TOGGLE ================= */
-    function togglePassword() {
-      const input = document.getElementById("password");
-      input.type = input.type === "password" ? "text" : "password";
-    }
-
-    /* ================= SHOW CHECKLIST ON FOCUS ================= */
-    function showChecklist() {
-      document.getElementById("passwordFeedback").classList.add("active");
-    }
-
-    /* ================= LIVE PASSWORD VALIDATION ================= */
-    function checkRules(e) {
-      const pwd = document.getElementById("password").value;
-
-      const hasLength = pwd.length >= 6;
-      const hasUpper = /[A-Z]/.test(pwd);
-      const hasNumber = /[0-9]/.test(pwd);
-      const hasSpecial = /[^A-Za-z0-9]/.test(pwd);
-
-      toggleRule("ruleLength", hasLength);
-      toggleRule("ruleUpper", hasUpper);
-      toggleRule("ruleNumber", hasNumber);
-      toggleRule("ruleSpecial", hasSpecial);
-
-      /* Caps Lock Detection */
-      if (e.getModifierState && e.getModifierState("CapsLock")) {
-        document.getElementById("capsWarning").style.display = "block";
-      } else {
-        document.getElementById("capsWarning").style.display = "none";
-      }
-
-      /* Hide error once password becomes strong */
-      if (hasLength && hasUpper && hasNumber && hasSpecial) {
-        document.getElementById("passwordError").style.display = "none";
-      }
-    }
-
-    function toggleRule(id, valid) {
-      document.getElementById(id).classList.toggle("valid", valid);
-    }
-
-    /* ================= TOAST FUNCTION ================= */
-    function showToast(message) {
-      const toast = document.getElementById("toast");
-      toast.innerText = message;
-      toast.classList.add("show");
-      setTimeout(() => toast.classList.remove("show"), 3000);
-    }
-
-    /* ================= LOGIN SUBMIT ================= */
-    document.getElementById("loginForm").addEventListener("submit", function (e) {
-      e.preventDefault();
-
-      if (loginAttempts >= MAX_ATTEMPTS) {
-        showToast("Account locked. Too many failed attempts.");
-        return;
-      }
-
-      const email = document.getElementById("email").value.trim();
-      const pwd = document.getElementById("password").value;
-
-      /* Remember Me */
-      const remember = document.getElementById("rememberMe").checked;
-      if (remember) {
-        localStorage.setItem("rememberEmail", email);
-      } else {
-        localStorage.removeItem("rememberEmail");
-      }
-
-      const hasLength = pwd.length >= 6;
-      const hasUpper = /[A-Z]/.test(pwd);
-      const hasNumber = /[0-9]/.test(pwd);
-      const hasSpecial = /[^A-Za-z0-9]/.test(pwd);
-      const isStrong = hasLength && hasUpper && hasNumber && hasSpecial;
-
-      /* Email validation */
-      if (!email.includes("@")) {
-        showToast("Please enter a valid email address");
-        return;
-      }
-
-      /* Strong password enforcement */
-      if (!isStrong) {
-        document.getElementById("passwordError").style.display = "block";
-        showToast("Password does not meet security requirements");
-        loginAttempts++;
-        return;
-      }
-
-      /* Show loading state */
-      const btn = document.getElementById("loginBtn");
-      const btnText = document.getElementById("btnText");
-      btnText.innerText = "Authenticating...";
-      btn.disabled = true;
-
-      setTimeout(() => {
-
-        btnText.innerText = "LOGIN";
-        btn.disabled = false;
-
-        /* ---- Hardcoded Admin credentials ---- */
-        let validUser = null;
-
-        if (email === "admin@test.com" && pwd === "Admin@2006" && selectedRole === "admin") {
-          validUser = { email: "admin@test.com", role: "admin", fullname: "System Admin", name: "System Admin" };
-        } /* ---- Check Registered Users (User & Authority) ---- */
-        else {
-          const users = JSON.parse(localStorage.getItem("users")) || [];
-
-          validUser = users.find(user =>
-            user.email.toLowerCase() === email.toLowerCase() &&
-            user.password === pwd &&
-            user.role &&
-            user.role.toLowerCase() === selectedRole.toLowerCase()
-          );
+        function setRole(role, el) {
+            selectedRole = role;
+            document.querySelectorAll(".role-tab").forEach(t => t.classList.remove("active"));
+            el.classList.add("active");
         }
 
-        if (validUser) {
-          validUser.role = validUser.role.toLowerCase();
-          // Store full user details so authority/user pages can display name etc.
-          const sessionUser = {
-            email: validUser.email,
-            role: validUser.role,
-            fullname: validUser.fullname || validUser.name || '',
-            name: validUser.name || validUser.fullname || ''
-          };
-          localStorage.setItem("currentUser", JSON.stringify(sessionUser));
-          showToast("Login Successful!");
-          setTimeout(() => redirectToDashboard(sessionUser.role), 800);
-        } else {
-          showToast("Invalid Credentials");
-          loginAttempts++;
+        function togglePw() {
+            const input = document.getElementById("password");
+            input.type = input.type === "password" ? "text" : "password";
         }
 
-      }, 1500);
-    });
+        function showError(msg) {
+            const el = document.getElementById("errorBox");
+            el.textContent = msg;
+            el.style.display = "block";
+            document.getElementById("successBox").style.display = "none";
+        }
 
-    /* ================= ROLE BASED REDIRECT ================= */
-    function redirectToDashboard(role) {
-      switch (role.toLowerCase()) {
-        case "user": window.location.href = "user/user-dashboard.html"; break;
-        case "admin": window.location.href = "admin/admin-dashboard.html"; break;
-        case "authority": window.location.href = "authority/authority-dashboard.html"; break;
-        default: window.location.href = "index.html";
-      }
-    }
+        function showSuccess(msg) {
+            const el = document.getElementById("successBox");
+            el.textContent = msg;
+            el.style.display = "block";
+            document.getElementById("errorBox").style.display = "none";
+        }
 
-    /* ================= REMEMBER ME ON LOAD ================= */
-    window.addEventListener("load", function () {
-      const savedEmail = localStorage.getItem("rememberEmail");
-      if (savedEmail) {
-        document.getElementById("email").value = savedEmail;
-        document.getElementById("rememberMe").checked = true;
-      }
-    });
+        async function doLogin() {
+            const email = document.getElementById("email").value.trim();
+            const password = document.getElementById("password").value;
+            const btn = document.getElementById("loginBtn");
 
-  </script>
+            if (!email || !password) { showError("Please fill in all fields."); return; }
 
+            btn.disabled = true;
+            btn.textContent = "Signing in…";
+
+            try {
+                const res = await fetch("http://localhost:8080/api/auth/login", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email, password, role: selectedRole })
+                });
+
+                const data = await res.json();
+
+                if (!data.success) {
+                    showError(data.message || "Invalid credentials.");
+                    return;
+                }
+
+                // ✅ Save JWT + user info to localStorage
+                const d = data.data;
+                localStorage.setItem("token", d.accessToken);
+                localStorage.setItem("role", d.role);
+                localStorage.setItem("userId", d.userId);
+                localStorage.setItem("fullName", d.fullName);
+                localStorage.setItem("email", d.email);
+
+                showSuccess("Login successful! Redirecting…");
+
+                setTimeout(() => {
+                    if (d.role === "ADMIN") window.location.replace("admin/admin-dashboard.html");
+                    else if (d.role === "AUTHORITY") window.location.replace("authority/authority-dashboard.html");
+                    else window.location.replace("user/user-dashboard.html");
+                }, 800);
+
+            } catch (err) {
+                showError("Cannot connect to server. Make sure the backend is running.");
+            } finally {
+                btn.disabled = false;
+                btn.textContent = "Sign In";
+            }
+        }
+
+        // Allow Enter key
+        document.addEventListener("keydown", e => {
+            if (e.key === "Enter") doLogin();
+        });
+
+        // If already logged in, redirect
+        window.addEventListener("load", () => {
+            const token = localStorage.getItem("token");
+            const role = localStorage.getItem("role");
+            if (token && role) {
+                if (role === "ADMIN") window.location.replace("admin/admin-dashboard.html");
+                else if (role === "AUTHORITY") window.location.replace("authority/authority-dashboard.html");
+                else window.location.replace("user/user-dashboard.html");
+            }
+        });
+    </script>
 </body>
 
 </html>
