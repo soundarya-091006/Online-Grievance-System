@@ -3,7 +3,7 @@
 # ============================================================
 
 # ── Java / Maven ─────────────────────────────────────────────
-target/
+safereport-new/target/
 *.class
 *.jar
 *.war
@@ -50,7 +50,7 @@ nbdist/
 
 # ── Uploaded Files ────────────────────────────────────────────
 # User-uploaded evidence files — never commit to git
-backend/safereport-new/uploads/
+safereport-new/uploads/
 uploads/
 
 # ── OS Files ──────────────────────────────────────────────────
